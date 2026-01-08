@@ -1,7 +1,7 @@
 import streamlit as st
 
 # =========================
-# BRIS Logistics калькулятор
+# BRIS Logistics калькулятор (v0+)
 # =========================
 
 st.set_page_config(
@@ -16,25 +16,25 @@ with col1:
     st.image("assets/bris_logo.png", width=120)
 with col2:
     st.title("BRIS Logistics калькулятор")
-    st.caption("Логистика + таможня + себестоимость единицы товара")
+    st.caption("Черновик v0+: логистика + таможня + себестоимость единицы товара")
 
 VAT_PCT_FIXED = 22.0
 
 # =========================
-# Вспомогательные функции
+# Утилиты
 # =========================
 
-def convert_to_usd(amount, currency, usd_cny, usd_inr):
+def convert_to_usd(amount: float, currency: str, usd_cny: float, usd_inr: float) -> float:
     if currency == "USD":
         return amount
     if currency == "CNY":
-        return amount / usd_cny if usd_cny else 0
+        return amount / usd_cny if usd_cny else 0.0
     if currency == "INR":
-        return amount / usd_inr if usd_inr else 0
+        return amount / usd_inr if usd_inr else 0.0
     return amount
 
 
-def infer_hs_and_duty(product_type, finish):
+def infer_hs_and_duty(product_type: str, finish: str):
     if product_type == "Керамогранит":
         if finish == "Неглазурованный":
             return "69072100", 12.0
@@ -47,8 +47,8 @@ def infer_hs_and_duty(product_type, finish):
 
 
 def calc_model(
-    qty,
-    price_per_unit,
+    qty_m2,
+    price_per_m2,
     price_currency,
     usd_cny,
     usd_inr,
@@ -60,7 +60,7 @@ def calc_model(
     vat_pct,
     incoterms,
 ):
-    goods_amount = qty * price_per_unit
+    goods_amount = qty_m2 * price_per_m2
     goods_usd = convert_to_usd(goods_amount, price_currency, usd_cny, usd_inr)
 
     if incoterms in ["EXW", "FOB"]:
@@ -72,7 +72,7 @@ def calc_model(
     vat_usd = (customs_value_usd + duty_usd) * vat_pct / 100
 
     total_rub = (customs_value_usd + duty_usd + vat_usd) * usd_rub + local_rub
-    cost_per_unit = total_rub / qty if qty else 0
+    cost_rub_m2 = total_rub / qty_m2 if qty_m2 else 0
 
     return {
         "goods_usd": goods_usd,
@@ -80,7 +80,7 @@ def calc_model(
         "duty_usd": duty_usd,
         "vat_usd": vat_usd,
         "total_rub": total_rub,
-        "cost_per_unit": cost_per_unit,
+        "cost_rub_m2": cost_rub_m2,
     }
 
 
@@ -98,12 +98,12 @@ with st.sidebar:
 
     transport = st.selectbox(
         "Тип доставки",
-        ["Море (20фут.контейнер)", "Море (40фут.контейнер)", "ЖД", "Авто"]
+        ["Море (20фут.контейнер)", "Море (40фут.контейнер)", "ЖД", "Авто"],
     )
 
     st.subheader("Порты")
-
     c1, c2 = st.columns(2)
+
     with c1:
         if country == "Индия":
             port_loading = st.selectbox("Порт отгрузки", ["Mundra", "Nhava Sheva"])
@@ -123,9 +123,10 @@ with st.sidebar:
     usd_inr = 0.0
 
     if country == "Китай":
-        usd_cny = st.number_input("Курс USD→CNY (RMB)", value=7.2, step=0.01)
+        usd_cny = st.number_input("Курс USD→CNY (RMB)", value=7.20, step=0.01)
         price_currency = st.selectbox("Валюта цены товара", ["CNY", "USD"], index=0)
-    else:
+
+    elif country == "Индия":
         usd_inr = st.number_input("Курс USD→INR", value=83.0, step=0.1)
         price_currency = st.selectbox("Валюта цены товара", ["USD", "INR"], index=0)
 
@@ -134,10 +135,7 @@ with st.sidebar:
     # --- Товар ---
     st.subheader("Товар / партия")
 
-    product_type = st.selectbox(
-        "Тип товара",
-        ["Керамогранит", "Сантехника (унитазы)"]
-    )
+    product_type = st.selectbox("Тип товара", ["Керамогранит", "Сантехника (унитазы)"])
 
     if product_type == "Керамогранит":
         finish = st.selectbox("Поверхность", ["Глазурованный", "Неглазурованный"])
@@ -146,18 +144,25 @@ with st.sidebar:
 
     hs_auto, duty_auto = infer_hs_and_duty(product_type, finish)
 
-    st.text_input("Код ТН ВЭД (HS Code)", value=hs_auto)
-    duty_pct = st.number_input("Пошлина, %", value=duty_auto, step=0.5)
+    hs_code = st.text_input("Код ТН ВЭД (HS Code)", value=hs_auto)
+
+    manual_duty = st.checkbox("Ручная ставка пошлины")
+    if manual_duty:
+        duty_pct = st.number_input("Пошлина, %", value=duty_auto, step=0.5)
+    else:
+        duty_pct = duty_auto
+        st.text_input("Пошлина, % (авто)", value=str(duty_pct), disabled=True)
+
     st.text_input("НДС, % (фикс)", value=str(VAT_PCT_FIXED), disabled=True)
 
-    # ====== ВАЖНОЕ НОВОЕ ======
-    unit = st.selectbox("Единица измерения", ["м²", "шт"])
+    # ====== ДОБАВЛЕНО: единица измерения (шт / м²) ======
+    unit = st.selectbox("Ед. измерения", ["м²", "шт"], index=0)
 
     qty_label = f"Кол-во, {unit}"
-    qty = st.number_input(qty_label, value=1200.0, step=10.0)
+    qty_m2 = st.number_input(qty_label, value=1200.0, step=10.0)
 
     price_label = f"Цена товара, {price_currency}/{unit}"
-    price_per_unit = st.number_input(price_label, value=7.5, step=0.1)
+    price_per_m2 = st.number_input(price_label, value=7.5, step=0.1)
 
     st.divider()
 
@@ -176,8 +181,8 @@ with st.sidebar:
 
 if calc:
     res = calc_model(
-        qty,
-        price_per_unit,
+        qty_m2,
+        price_per_m2,
         price_currency,
         usd_cny,
         usd_inr,
@@ -199,7 +204,7 @@ if calc:
     st.divider()
     c5, c6 = st.columns(2)
     c5.metric("Итого затраты, RUB", f"{res['total_rub']:,.0f}")
-    c6.metric(f"Себестоимость, RUB/{unit}", f"{res['cost_per_unit']:,.2f}")
+    c6.metric(f"Себестоимость, RUB/{unit}", f"{res['cost_rub_m2']:,.2f}")
 
 else:
     st.write("Заполни параметры слева и нажми **Рассчитать**.")
