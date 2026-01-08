@@ -43,7 +43,7 @@ PRODUCT_PRESETS = {
     },
 }
 
-INCOTERMS = ["EXW", "FOB", "CIF", "DAP"]
+INCOTERMS = ["FOB", "EXW", "CIF", "DAP"]
 
 TRANSPORTS = [
     "Море (20фут.контейнер)",
