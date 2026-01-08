@@ -23,8 +23,8 @@ with col2:
 # Dictionaries / presets
 # ----------------------------
 PORTS_BY_COUNTRY = {
-    "Китай": ["Qingdao", "Shanghai", "Ningbo", "Shenzhen (Yantian)", "Xiamen", "Tianjin"],
     "Индия": ["Mundra", "Nhava Sheva (JNPT)", "Chennai", "Hazira", "Kandla"],
+    "Китай": ["Qingdao", "Shanghai", "Ningbo", "Shenzhen (Yantian)", "Xiamen", "Tianjin"],
 }
 
 # Товары / HS / пошлина
