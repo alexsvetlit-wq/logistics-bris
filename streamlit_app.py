@@ -20,7 +20,33 @@ with st.sidebar:
 
     country = st.selectbox("Страна", ["Китай", "Индия"])
     incoterms = st.selectbox("Инкотермс", ["EXW", "FOB", "CIF", "DAP"])
-    transport = st.selectbox("Тип доставки", ["Море (контейнер)", "ЖД", "Авто"])
+
+    # Тип доставки + порт отгрузки (рядом)
+    tcol1, tcol2 = st.columns(2)
+
+    with tcol1:
+        transport = st.selectbox("Тип доставки", ["Море (контейнер)", "ЖД", "Авто"])
+
+    with tcol2:
+        port_of_loading = None
+        if transport == "Море (контейнер)":
+            if country == "Индия":
+                port_of_loading = st.selectbox("Порт отгрузки", ["Mundra"])
+            elif country == "Китай":
+                port_of_loading = st.selectbox(
+                    "Порт отгрузки",
+                    [
+                        "Shanghai",
+                        "Ningbo",
+                        "Qingdao",
+                        "Shenzhen (Yantian)",
+                        "Guangzhou (Nansha)"
+                    ]
+                )
+        else:
+            # чтобы колонка не "прыгала" при переключении
+            st.caption(" ")
+
     currency_rate = st.number_input("Курс USD→RUB", min_value=0.0, value=95.0, step=0.1)
 
     st.divider()
@@ -40,6 +66,7 @@ with st.sidebar:
     vat_pct = st.number_input("НДС, %", min_value=0.0, value=20.0, step=0.5)
 
     calc = st.button("Рассчитать", type="primary")
+
 
 # --- Расчёт ---
 def calc_model(
@@ -79,6 +106,7 @@ def calc_model(
         "total_rub": total_rub,
         "cost_rub_per_m2": cost_rub_per_m2,
     }
+
 
 if calc:
     res = calc_model(
