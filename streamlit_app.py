@@ -25,7 +25,7 @@ VAT_PCT_FIXED = 22.0
 # =========================
 
 FREIGHT_DEFAULTS = {
-    # Индия
+    # Индия (старые портовые ставки оставлены как fallback, но для Индии ниже добавлены ставки по линиям)
     ("Индия", "Mundra", "Новороссийск", "20"): 4500.0,
     ("Индия", "Mundra", "Санкт-Петербург", "20"): 5200.0,
     ("Индия", "Mundra", "Владивосток", "20"): 6800.0,
@@ -66,6 +66,19 @@ FREIGHT_DEFAULTS = {
     ("Китай", "Foshan", "Новороссийск", "40"): 6000.0,
     ("Китай", "Foshan", "Санкт-Петербург", "40"): 6700.0,
     ("Китай", "Foshan", "Владивосток", "40"): 3600.0,
+}
+
+# =========================
+# (НОВОЕ) Дефолтные ставки по Индии из таблицы (морские линии + прямой/непрямой)
+# =========================
+# Применяем для "Море (20фут.контейнер)".
+INDIA_LINE_DEFAULTS_20 = {
+    # line: {"direct": rate, "indirect": rate}
+    "Fesco": {"direct": 2500.0, "indirect": 2300.0},
+    "Silmar": {"direct": 2800.0, "indirect": 2600.0},
+    "Akkon": {"direct": None,  "indirect": 2400.0},
+    "Arkas": {"direct": 2600.0, "indirect": 2350.0},
+    "ExpertTrans": {"direct": 2550.0, "indirect": 2400.0},
 }
 
 # =========================
@@ -203,15 +216,24 @@ with st.sidebar:
 
     st.text_input("НДС, % (фикс)", value=str(VAT_PCT_FIXED), disabled=True)
 
-    qty_m2 = st.number_input("Кол-во, м²", value=1200.0, step=10.0)
+    # =========================
+    # ВСТАВКА: выбор ед. измерения (шт / м²) — БОЛЬШЕ НИЧЕГО НЕ МЕНЯЕМ
+    # =========================
+    unit = st.selectbox("Ед. измерения", ["м²", "шт."], index=0)
 
-    price_label = f"Цена товара, {price_currency}/м²"
-    price_per_m2 = st.number_input(price_label, value=7.5, step=0.1)
+    if unit == "м²":
+        qty_m2 = st.number_input("Кол-во, м²", value=1200.0, step=10.0)
+        price_label = f"Цена товара, {price_currency}/м²"
+        price_per_m2 = st.number_input(price_label, value=7.5, step=0.1)
+    else:
+        qty_m2 = st.number_input("Кол-во, шт.", value=1000.0, step=10.0)
+        price_label = f"Цена товара, {price_currency}/шт."
+        price_per_m2 = st.number_input(price_label, value=7.5, step=0.1)
 
     st.divider()
 
     # =========================
-    # (Блок 2) Логистика: авто/ручной фрахт по портам
+    # Логистика + (НОВОЕ) выбор морской линии и прямой/непрямой
     # =========================
     st.subheader("Логистика")
 
@@ -222,20 +244,38 @@ with st.sidebar:
     elif transport == "Море (40фут.контейнер)":
         container_size = "40"
 
+    # НОВОЕ: Морская линия + галка прямого/непрямого (только для Индии и моря)
+    sea_line = None
+    is_direct = False
+    if is_sea and country == "Индия":
+        sea_line = st.selectbox("Морская линия", ["Fesco", "Silmar", "Akkon", "Arkas", "ExpertTrans"])
+        is_direct = st.checkbox("Прямое судно", value=True)  # если выключить — считаем "непрямое"
+
     use_auto_freight = False
     if is_sea and container_size:
-        use_auto_freight = st.checkbox("Фрахт: авто по портам", value=True)
+        use_auto_freight = st.checkbox("Фрахт: авто по портам/линиям", value=True)
 
     auto_val = 0.0
-    if is_sea and container_size:
+
+    # 1) Индия + море + 20фут: берём дефолт из таблицы линий
+    if is_sea and country == "Индия" and container_size == "20" and sea_line:
+        route_key = "direct" if is_direct else "indirect"
+        rate = INDIA_LINE_DEFAULTS_20.get(sea_line, {}).get(route_key, None)
+        auto_val = float(rate) if rate is not None else 0.0
+
+    # 2) Иначе: fallback на портовые дефолты (как было)
+    if auto_val == 0.0 and is_sea and container_size:
         auto_val = FREIGHT_DEFAULTS.get((country, port_loading, port_discharge, container_size), 0.0)
 
     if is_sea and container_size and use_auto_freight:
         freight_usd = auto_val
         st.number_input("Фрахт, USD (авто)", value=float(freight_usd), disabled=True)
-        if auto_val == 0.0:
-            st.warning("Для этого направления нет дефолтной ставки — введи вручную (сними галочку).")
+
+        # предупреждение, если по выбранной линии нет ставки (например Akkon прямой)
+        if freight_usd == 0.0:
+            st.warning("Для этого выбора нет дефолтной ставки — введи вручную (сними галочку).")
     else:
+        # оставляем как было: ручной ввод
         freight_usd = st.number_input("Фрахт, USD", value=4500.0, step=50.0)
 
     insurance_usd = st.number_input("Страхование, USD", value=0.0, step=10.0)
