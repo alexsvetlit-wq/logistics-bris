@@ -4,7 +4,7 @@ import streamlit as st
 # Config
 # ----------------------------
 st.set_page_config(
-    page_title="BRIS Logistics калькулятор",
+    page_title="Logistics калькулятор",
     layout="wide",
     page_icon="assets/bris_logo.png"
 )
@@ -16,7 +16,7 @@ col1, col2 = st.columns([1, 5])
 with col1:
     st.image("assets/bris_logo.png", width=120)
 with col2:
-    st.title("BRIS Logistics калькулятор")
+    st.title("Logistics калькулятор")
     st.caption("Черновик v0: логистика + таможня + себестоимость единицы товара")
 
 # ----------------------------
@@ -29,15 +29,15 @@ PORTS_BY_COUNTRY = {
 
 # Товары / HS / пошлина
 PRODUCT_PRESETS = {
-    "Керамогранит (водопоглощение <0.5) — глазурованный": {
+    "Керамогранит глазур.(<0.5%)": {
         "hs_code": "69072100",
         "duty_pct": 7.5,
     },
-    "Керамогранит (водопоглощение <0.5) — неглазурованный": {
+    "Керамогранит неглазур. (<0.5%)": {
         "hs_code": "69072200",
         "duty_pct": 12.0,
     },
-    "Сантехника (унитазы/проч.) — глазурованная": {
+    "Сантехника (унитазы/проч.) глазур.": {
         "hs_code": "6910900000",
         "duty_pct": 10.0,
     },
@@ -46,8 +46,8 @@ PRODUCT_PRESETS = {
 INCOTERMS = ["EXW", "FOB", "CIF", "DAP"]
 
 TRANSPORTS = [
-    "Море (20фут. контейнер)",
-    "Море (40фут. контейнер)",
+    "Море (20фут.контейнер)",
+    "Море (40фут.контейнер)",
     "ЖД",
     "Авто",
 ]
