@@ -1,5 +1,38 @@
 import streamlit as st
 
+# =========================
+# 1) Справочники (правила)
+# =========================
+PRODUCT_TYPES = ["Керамогранит", "Сантехника"]
+
+FINISH_BY_TYPE = {
+    "Керамогранит": ["Глазурованный", "Неглазурованный"],
+    "Сантехника": ["Глазурованная"],
+}
+
+# HS коды (рабочая логика v0)
+HS_BY_RULE = {
+    ("Керамогранит", "Глазурованный"): "69072100",
+    ("Керамогранит", "Неглазурованный"): "69072200",
+    ("Сантехника", "Глазурованная"): "6910900000",
+}
+
+# Пошлины (как ты зафиксировал)
+DUTY_PCT_BY_RULE = {
+    ("Керамогранит", "Глазурованный"): 7.5,
+    ("Керамогранит", "Неглазурованный"): 12.0,
+    ("Сантехника", "Глазурованная"): 10.0,
+}
+
+# Порты отгрузки (базовые)
+PORTS_BY_COUNTRY = {
+    "Китай": ["Qingdao", "Shanghai", "Ningbo", "Xiamen", "Shenzhen (Yantian)", "Guangzhou (Nansha)", "Tianjin"],
+    "Индия": ["Mundra", "Nhava Sheva (JNPT)", "Chennai", "Kandla", "Pipavav"],
+}
+
+# =========================
+# 2) Page config + header
+# =========================
 st.set_page_config(
     page_title="BRIS Logistics калькулятор",
     layout="wide",
@@ -14,40 +47,30 @@ with col2:
     st.caption("Черновик v0: логистика + таможня + себестоимость единицы товара")
 
 
-# --- Sidebar (ввод параметров) ---
+# =========================
+# 3) Sidebar (ввод параметров)
+# =========================
 with st.sidebar:
     st.header("Ввод данных")
 
     country = st.selectbox("Страна", ["Китай", "Индия"])
+    port = st.selectbox("Порт отгрузки", PORTS_BY_COUNTRY[country])
+
     incoterms = st.selectbox("Инкотермс", ["EXW", "FOB", "CIF", "DAP"])
-
-    # Тип доставки + порт отгрузки (рядом)
-    tcol1, tcol2 = st.columns(2)
-
-    with tcol1:
-        transport = st.selectbox("Тип доставки", ["Море (контейнер)", "ЖД", "Авто"])
-
-    with tcol2:
-        port_of_loading = None
-        if transport == "Море (контейнер)":
-            if country == "Индия":
-                port_of_loading = st.selectbox("Порт отгрузки", ["Mundra"])
-            elif country == "Китай":
-                port_of_loading = st.selectbox(
-                    "Порт отгрузки",
-                    [
-                        "Shanghai",
-                        "Ningbo",
-                        "Qingdao",
-                        "Shenzhen (Yantian)",
-                        "Guangzhou (Nansha)"
-                    ]
-                )
-        else:
-            # чтобы колонка не "прыгала" при переключении
-            st.caption(" ")
-
+    transport = st.selectbox("Тип доставки", ["Море (контейнер)", "ЖД", "Авто"])
     currency_rate = st.number_input("Курс USD→RUB", min_value=0.0, value=95.0, step=0.1)
+
+    st.divider()
+    st.subheader("Товар / классификация")
+
+    product_type = st.selectbox("Тип товара", PRODUCT_TYPES)
+    finish = st.selectbox("Поверхность / исполнение", FINISH_BY_TYPE[product_type])
+
+    hs_code = HS_BY_RULE[(product_type, finish)]
+    duty_pct_auto = DUTY_PCT_BY_RULE[(product_type, finish)]
+
+    st.text_input("Код ТН ВЭД (HS Code)", value=hs_code, disabled=True)
+    st.caption(f"Пошлина: **{duty_pct_auto}%** (авто по классификации)")
 
     st.divider()
     st.subheader("Товар / партия")
@@ -56,19 +79,42 @@ with st.sidebar:
 
     st.divider()
     st.subheader("Логистика")
-    freight_usd = st.number_input("Фрахт/доставка, USD (на всю партию)", min_value=0.0, value=4500.0, step=50.0)
+
+    # Фрахт показываем только для "Море (контейнер)"
+    if transport == "Море (контейнер)":
+        freight_usd = st.number_input(
+            "Фрахт (море), USD (на всю партию)",
+            min_value=0.0,
+            value=4500.0,
+            step=50.0
+        )
+    else:
+        freight_usd = st.number_input(
+            "Доставка (не море), USD (на всю партию)",
+            min_value=0.0,
+            value=0.0,
+            step=50.0
+        )
+
     insurance_usd = st.number_input("Страхование, USD", min_value=0.0, value=0.0, step=10.0)
     local_rub = st.number_input("Локальные расходы РФ, RUB", min_value=0.0, value=300000.0, step=10000.0)
 
     st.divider()
     st.subheader("Таможня (упрощённо)")
-    duty_pct = st.number_input("Пошлина, %", min_value=0.0, value=10.0, step=0.5)
-    vat_pct = st.number_input("НДС, %", min_value=0.0, value=20.0, step=0.5)
+
+    # пошлина: авто (не редактируется)
+    duty_pct = duty_pct_auto
+
+    # НДС фиксируем 22% (как ты сказал)
+    vat_pct = 22.0
+    st.number_input("НДС, % (фикс.)", min_value=0.0, value=vat_pct, step=0.5, disabled=True)
 
     calc = st.button("Рассчитать", type="primary")
 
 
-# --- Расчёт ---
+# =========================
+# 4) Расчёт (модель)
+# =========================
 def calc_model(
     qty_m2: float,
     product_price_usd_per_m2: float,
@@ -120,6 +166,10 @@ if calc:
         vat_pct=vat_pct,
     )
 
+    st.subheader("Итоги расчёта")
+    st.caption(f"Страна: **{country}** · Порт: **{port}** · Инкотермс: **{incoterms}** · Доставка: **{transport}**")
+    st.caption(f"Товар: **{product_type} / {finish}** · HS: **{hs_code}** · Пошлина: **{duty_pct}%** · НДС: **{vat_pct}%**")
+
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Товар, USD", f"{res['goods_usd']:,.2f}")
     c2.metric("Тамож. стоимость, USD", f"{res['customs_value_usd']:,.2f}")
@@ -131,6 +181,6 @@ if calc:
     c5.metric("Итого затраты, RUB", f"{res['total_rub']:,.0f}")
     c6.metric("Себестоимость, RUB/м²", f"{res['cost_rub_per_m2']:,.2f}")
 
-    st.info("Это упрощённая модель v0. Дальше добавим раздельные сценарии Китай/Индия, контейнер/м², брокера, СВХ, ЖД-плечо и т.д.")
+    st.info("Это упрощённая модель v0. Дальше добавим автозаполнение из инвойса и более детальную структуру логистики (но это будет следующим шагом).")
 else:
     st.write("Заполни параметры слева и нажми **Рассчитать**.")
