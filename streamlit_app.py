@@ -21,6 +21,54 @@ with col2:
 VAT_PCT_FIXED = 22.0
 
 # =========================
+# (Блок 1) Дефолтные ставки фрахта по портам
+# =========================
+
+FREIGHT_DEFAULTS = {
+    # Индия
+    ("Индия", "Mundra", "Новороссийск", "20"): 4500.0,
+    ("Индия", "Mundra", "Санкт-Петербург", "20"): 5200.0,
+    ("Индия", "Mundra", "Владивосток", "20"): 6800.0,
+    ("Индия", "Nhava Sheva", "Новороссийск", "20"): 4600.0,
+    ("Индия", "Nhava Sheva", "Санкт-Петербург", "20"): 5300.0,
+    ("Индия", "Nhava Sheva", "Владивосток", "20"): 6900.0,
+
+    ("Индия", "Mundra", "Новороссийск", "40"): 6200.0,
+    ("Индия", "Mundra", "Санкт-Петербург", "40"): 7100.0,
+    ("Индия", "Mundra", "Владивосток", "40"): 9300.0,
+    ("Индия", "Nhava Sheva", "Новороссийск", "40"): 6400.0,
+    ("Индия", "Nhava Sheva", "Санкт-Петербург", "40"): 7200.0,
+    ("Индия", "Nhava Sheva", "Владивосток", "40"): 9500.0,
+
+    # Китай
+    ("Китай", "Qingdao", "Новороссийск", "20"): 4200.0,
+    ("Китай", "Qingdao", "Санкт-Петербург", "20"): 4800.0,
+    ("Китай", "Qingdao", "Владивосток", "20"): 2600.0,
+    ("Китай", "Shanghai", "Новороссийск", "20"): 4300.0,
+    ("Китай", "Shanghai", "Санкт-Петербург", "20"): 4900.0,
+    ("Китай", "Shanghai", "Владивосток", "20"): 2700.0,
+    ("Китай", "Ningbo", "Новороссийск", "20"): 4350.0,
+    ("Китай", "Ningbo", "Санкт-Петербург", "20"): 4950.0,
+    ("Китай", "Ningbo", "Владивосток", "20"): 2750.0,
+    ("Китай", "Foshan", "Новороссийск", "20"): 4400.0,
+    ("Китай", "Foshan", "Санкт-Петербург", "20"): 5000.0,
+    ("Китай", "Foshan", "Владивосток", "20"): 2800.0,
+
+    ("Китай", "Qingdao", "Новороссийск", "40"): 5800.0,
+    ("Китай", "Qingdao", "Санкт-Петербург", "40"): 6500.0,
+    ("Китай", "Qingdao", "Владивосток", "40"): 3400.0,
+    ("Китай", "Shanghai", "Новороссийск", "40"): 5900.0,
+    ("Китай", "Shanghai", "Санкт-Петербург", "40"): 6600.0,
+    ("Китай", "Shanghai", "Владивосток", "40"): 3500.0,
+    ("Китай", "Ningbo", "Новороссийск", "40"): 5950.0,
+    ("Китай", "Ningbo", "Санкт-Петербург", "40"): 6650.0,
+    ("Китай", "Ningbo", "Владивосток", "40"): 3550.0,
+    ("Китай", "Foshan", "Новороссийск", "40"): 6000.0,
+    ("Китай", "Foshan", "Санкт-Петербург", "40"): 6700.0,
+    ("Китай", "Foshan", "Владивосток", "40"): 3600.0,
+}
+
+# =========================
 # Утилиты
 # =========================
 
@@ -155,20 +203,41 @@ with st.sidebar:
 
     st.text_input("НДС, % (фикс)", value=str(VAT_PCT_FIXED), disabled=True)
 
-    # ====== ДОБАВЛЕНО: единица измерения (шт / м²) ======
-    unit = st.selectbox("Ед. измерения", ["м²", "шт"], index=0)
+    qty_m2 = st.number_input("Кол-во, м²", value=1200.0, step=10.0)
 
-    qty_label = f"Кол-во, {unit}"
-    qty_m2 = st.number_input(qty_label, value=1200.0, step=10.0)
-
-    price_label = f"Цена товара, {price_currency}/{unit}"
+    price_label = f"Цена товара, {price_currency}/м²"
     price_per_m2 = st.number_input(price_label, value=7.5, step=0.1)
 
     st.divider()
 
-    # --- Логистика ---
+    # =========================
+    # (Блок 2) Логистика: авто/ручной фрахт по портам
+    # =========================
     st.subheader("Логистика")
-    freight_usd = st.number_input("Фрахт, USD", value=4500.0, step=50.0)
+
+    is_sea = transport.startswith("Море")
+    container_size = None
+    if transport == "Море (20фут.контейнер)":
+        container_size = "20"
+    elif transport == "Море (40фут.контейнер)":
+        container_size = "40"
+
+    use_auto_freight = False
+    if is_sea and container_size:
+        use_auto_freight = st.checkbox("Фрахт: авто по портам", value=True)
+
+    auto_val = 0.0
+    if is_sea and container_size:
+        auto_val = FREIGHT_DEFAULTS.get((country, port_loading, port_discharge, container_size), 0.0)
+
+    if is_sea and container_size and use_auto_freight:
+        freight_usd = auto_val
+        st.number_input("Фрахт, USD (авто)", value=float(freight_usd), disabled=True)
+        if auto_val == 0.0:
+            st.warning("Для этого направления нет дефолтной ставки — введи вручную (сними галочку).")
+    else:
+        freight_usd = st.number_input("Фрахт, USD", value=4500.0, step=50.0)
+
     insurance_usd = st.number_input("Страхование, USD", value=0.0, step=10.0)
     local_rub = st.number_input("Локальные расходы РФ, RUB", value=300000.0, step=10000.0)
 
@@ -204,7 +273,7 @@ if calc:
     st.divider()
     c5, c6 = st.columns(2)
     c5.metric("Итого затраты, RUB", f"{res['total_rub']:,.0f}")
-    c6.metric(f"Себестоимость, RUB/{unit}", f"{res['cost_rub_m2']:,.2f}")
+    c6.metric("Себестоимость, RUB/м²", f"{res['cost_rub_m2']:,.2f}")
 
 else:
     st.write("Заполни параметры слева и нажми **Рассчитать**.")
