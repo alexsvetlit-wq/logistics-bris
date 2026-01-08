@@ -1,9 +1,18 @@
 import streamlit as st
 
-st.set_page_config(page_title="BRIS Logistics калькулятор", layout="wide")
+st.set_page_config(
+    page_title="BRIS Logistics калькулятор",
+    layout="wide",
+    page_icon="assets/bris_logo.png"
+)
 
-st.title("BRIS Logistics калькулятор")
-st.caption("Черновик v0: логистика + таможня + себестоимость единицы товара")
+col1, col2 = st.columns([1, 5])
+with col1:
+    st.image("assets/bris_logo.png", width=120)
+with col2:
+    st.title("BRIS Logistics калькулятор")
+    st.caption("Черновик v0: логистика + таможня + себестоимость единицы товара")
+
 
 # --- Sidebar (ввод параметров) ---
 with st.sidebar:
