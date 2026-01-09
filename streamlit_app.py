@@ -276,9 +276,9 @@ with st.sidebar:
             st.warning("Для этого выбора нет дефолтной ставки — введи вручную (сними галочку).")
     else:
         # оставляем как было: ручной ввод
-        freight_usd = st.number_input("Фрахт, USD", value=4500.0, step=50.0)
+        freight_usd = st.number_input("Фрахт, USD/конт.", value=4500.0, step=50.0)
 
-    insurance_usd = st.number_input("Страхование, USD", value=0.0, step=10.0)
+    insurance_usd = st.number_input("DTHC портовые сборы, USD/конт.", value=0.0, step=10.0)
     local_rub = st.number_input("Локальные расходы РФ, RUB", value=300000.0, step=10000.0)
 
     calc = st.button("Рассчитать", type="primary")
