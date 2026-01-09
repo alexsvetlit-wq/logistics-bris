@@ -287,7 +287,7 @@ with st.sidebar:
 
     if is_sea and container_size and use_auto_freight:
         freight_usd = auto_val
-        st.number_input("Фрахт, USD (авто)", value=float(freight_usd), disabled=True)
+        st.number_input("Фрахт, USD/ктк. (автозаполн.)", value=float(freight_usd), disabled=True)
 
         # предупреждение, если по выбранной линии нет ставки (например Akkon прямой)
         if freight_usd == 0.0:
