@@ -173,7 +173,12 @@ def calc_model(
     vat_usd = (vat_rub / usd_rub) if usd_rub else 0.0  # для отображения в USD
 
     # 5) Итого затраты (RUB) — учитываем НДС в рублях
-    total_rub = (customs_value_usd + duty_usd) * usd_rub + vat_rub + local_rub+ (containers_qty * usd_rub)
+    total_rub = (
+    (customs_value_usd + duty_usd + vat_usd) * usd_rub
+    + local_rub
+    + insurance_usd * containers_qty * usd_rub
+)
+
 
     # 6) Себестоимость за м² (RUB/м²)
     cost_rub_m2 = total_rub / qty_m2 if qty_m2 else 0
