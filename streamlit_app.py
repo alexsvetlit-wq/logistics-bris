@@ -387,7 +387,7 @@ if calc:
     c1.metric("Товар, USD", f"{res['goods_usd']:,.2f}")
     c2.metric("Тамож. стоимость, USD", f"{res['customs_value_usd']:,.2f}")
     c3.metric("Пошлина, USD", f"{res['duty_usd']:,.2f}")
-    c4.metric("НДС 22%, USD", f"{res['vat_usd']:,.2f}")
+    c4.metric("НДС 22%+тамож.сбор, USD", f"{res['vat_usd']:,.2f}")
 
     st.divider()
     c5, c6 = st.columns(2)
