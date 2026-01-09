@@ -271,7 +271,7 @@ with st.sidebar:
 
     use_auto_freight = False
     if is_sea and container_size:
-        use_auto_freight = st.checkbox("Фрахт: авто по портам/линиям", value=True)
+        use_auto_freight = st.checkbox("Фрахт: автозапол. по портам/линиям", value=True)
 
     auto_val = 0.0
 
