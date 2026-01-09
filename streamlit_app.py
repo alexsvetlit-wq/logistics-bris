@@ -153,7 +153,21 @@ with st.sidebar:
     st.header("Ввод данных")
 
     supplier = st.text_input("Фабрика / поставщик (как в инвойсе)")
-
+# --- Инвойс (общая сумма, ни с чем не связана) ---
+inv_c1, inv_c2 = st.columns([2, 1])
+with inv_c1:
+    invoice_total = st.number_input(
+        "Общая стоимость товара по инвойсу",
+        min_value=0.0,
+        value=0.0,
+        step=100.0,
+    )
+with inv_c2:
+    invoice_currency = st.selectbox(
+        "Валюта",
+        ["USD", "CNY", "INR", "RUB", "EUR"],
+        index=0
+    )
     country = st.selectbox("Страна", ["Индия", "Китай"], index=0)
     incoterms = st.selectbox("Инкотермс", ["EXW", "FOB", "CIF", "DAP"], index=1)
 
