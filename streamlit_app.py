@@ -107,6 +107,29 @@ def infer_hs_and_duty(product_type: str, finish: str):
     return "", 0.0
 
 
+# =========================
+# (НОВОЕ) Ставка 2026 (фикс) по диапазонам таможенной стоимости (RUB)
+# =========================
+def vat_fee_2026_rub(customs_value_rub: float) -> float:
+    if customs_value_rub <= 200_000:
+        return 1_231.0
+    if customs_value_rub <= 450_000:
+        return 2_462.0
+    if customs_value_rub <= 1_200_000:
+        return 4_924.0
+    if customs_value_rub <= 2_700_000:
+        return 13_541.0
+    if customs_value_rub <= 4_200_000:
+        return 18_465.0
+    if customs_value_rub <= 5_500_000:
+        return 24_620.0
+    if customs_value_rub <= 7_000_000:
+        return 49_240.0
+    if customs_value_rub <= 10_000_000:
+        return 49_240.0
+    return 73_860.0
+
+
 def calc_model(
     qty_m2,
     price_per_m2,
@@ -120,19 +143,39 @@ def calc_model(
     duty_pct,
     vat_pct,
     incoterms,
+    invoice_total,
+    invoice_currency,
+    containers_qty,
 ):
+    # 1) Товар, USD (как было — по количеству и цене)
     goods_amount = qty_m2 * price_per_m2
     goods_usd = convert_to_usd(goods_amount, price_currency, usd_cny, usd_inr)
 
-    if incoterms in ["EXW", "FOB"]:
-        customs_value_usd = goods_usd + freight_usd + insurance_usd
+    # 2) Таможенная стоимость, USD (НОВАЯ ФОРМУЛА):
+    # Тамож.стоимость = стоимость по инвойсу общая + (Фрахт × количество контейнеров)
+    # (инвойс переводим в USD, если валюта USD/CNY/INR; RUB переводим по курсу; EUR оставляем как есть)
+    if invoice_currency == "RUB":
+        invoice_usd = (invoice_total / usd_rub) if usd_rub else 0.0
     else:
-        customs_value_usd = goods_usd
+        invoice_usd = convert_to_usd(invoice_total, invoice_currency, usd_cny, usd_inr)
 
+    customs_value_usd = invoice_usd + (freight_usd * float(containers_qty))
+
+    # 3) Пошлина (как было)
     duty_usd = customs_value_usd * duty_pct / 100
-    vat_usd = (customs_value_usd + duty_usd) * vat_pct / 100
 
-    total_rub = (customs_value_usd + duty_usd + vat_usd) * usd_rub + local_rub
+    # 4) НДС 22% + Ставка 2026 (НОВАЯ ФОРМУЛА):
+    # НДС_RUB = (Тамож.стоимость_USD + Пошлина_USD) × курс × 22% + ставка_2026(RUB)
+    customs_value_rub = customs_value_usd * usd_rub
+    vat_fee_rub = vat_fee_2026_rub(customs_value_rub)
+
+    vat_rub = (customs_value_usd + duty_usd) * usd_rub * (vat_pct / 100) + vat_fee_rub
+    vat_usd = (vat_rub / usd_rub) if usd_rub else 0.0  # для отображения в USD
+
+    # 5) Итого затраты (RUB) — учитываем НДС в рублях
+    total_rub = (customs_value_usd + duty_usd) * usd_rub + vat_rub + local_rub
+
+    # 6) Себестоимость за м² (RUB/м²)
     cost_rub_m2 = total_rub / qty_m2 if qty_m2 else 0
 
     return {
@@ -330,6 +373,9 @@ if calc:
         duty_pct,
         VAT_PCT_FIXED,
         incoterms,
+        invoice_total,
+        invoice_currency,
+        containers_qty,
     )
 
     c1, c2, c3, c4 = st.columns(4)
