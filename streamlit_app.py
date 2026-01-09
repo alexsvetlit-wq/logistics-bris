@@ -180,6 +180,16 @@ with st.sidebar:
         ["Море (20фут.контейнер)", "Море (40фут.контейнер)", "ЖД", "Авто"],
     )
 
+    # =========================
+    # ВСТАВКА: количество контейнеров (под "Тип доставки")
+    # =========================
+    containers_qty = st.number_input(
+        "Количество контейнеров",
+        min_value=1,
+        value=1,
+        step=1
+    )
+
     st.subheader("Порты")
     c1, c2 = st.columns(2)
 
@@ -271,7 +281,7 @@ with st.sidebar:
 
     use_auto_freight = False
     if is_sea and container_size:
-        use_auto_freight = st.checkbox("Фрахт: автозапол. по портам/линиям", value=True)
+        use_auto_freight = st.checkbox("Фрахт: авто по портам/линиям", value=True)
 
     auto_val = 0.0
 
@@ -287,7 +297,7 @@ with st.sidebar:
 
     if is_sea and container_size and use_auto_freight:
         freight_usd = auto_val
-        st.number_input("Фрахт, USD/ктк. (автозаполн.)", value=float(freight_usd), disabled=True)
+        st.number_input("Фрахт, USD (авто)", value=float(freight_usd), disabled=True)
 
         # предупреждение, если по выбранной линии нет ставки (например Akkon прямой)
         if freight_usd == 0.0:
