@@ -97,7 +97,7 @@ with st.sidebar:
     inv_c1, inv_c2 = st.columns([2, 1])
     with inv_c1:
         invoice_total = st.number_input(
-            "Общая стоимость товара по инвойсу",
+            "Стоимость товара по инвойсу",
             min_value=0.0,
             value=0.0,
             step=100.0,
