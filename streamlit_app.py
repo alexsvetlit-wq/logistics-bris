@@ -550,86 +550,125 @@ if calc:
       
 
 <style>
-  @page {{ size: A4; margin: 8mm; }}
+  @page {{
+    size: A4 landscape;
+    margin: 8mm;
+  }}
 
-  body {{
-    font-family: Arial, sans-serif;
-    color:#111;
+  html, body {{
+    padding: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111;
     font-size: 10px;
-    line-height: 1.3;
+    line-height: 1.15;
   }}
 
-  .header {{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    margin-bottom: 6px;
+  .top {{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
   }}
 
-  .logo {{ height:26px; }}
+  .logo {{
+    height: 22px;
+  }}
 
   .title {{
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
-    margin:0;
+    margin: 0;
+    padding: 0;
   }}
 
   .subtitle {{
-    margin:0;
-    color:#444;
-    font-size: 9.5px;
+    font-size: 9px;
+    margin-top: 1px;
+    color: #444;
   }}
 
   .grid {{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
   }}
 
-  .card {{
-    border:1px solid #ddd;
-    border-radius:6px;
-    padding:6px 8px;
+  .left {{
+    flex: 0 0 64%;
   }}
 
-  .card h3 {{
-    margin:0 0 6px 0;
-    font-size: 10.5px;
-    font-weight:700;
+  .right {{
+    flex: 0 0 36%;
   }}
 
-  .t {{
-    width:100%;
+  .box {{
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin-bottom: 8px;
+  }}
+
+  .box h3 {{
+    font-size: 10px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+    padding: 0;
+  }}
+
+  table.t {{
+    width: 100%;
     border-collapse: collapse;
   }}
 
-  .t th, .t td {{
-    border-bottom:1px solid #eee;
-    padding:4px 5px;
-    font-size: 10px;
-    line-height: 1.3;
+  table.t td {{
+    border-top: 1px solid #ededed;
+    padding: 3px 0;
     vertical-align: top;
   }}
 
-  .t th {{
-    text-align:left;
-    color:#333;
-    font-weight:700;
+  table.t tr:first-child td {{
+    border-top: none;
   }}
 
-  .sum td {{
-    border-top: 2px solid #ccc;
-    font-weight:700;
+  table.t td:first-child {{
+    color: #222;
+    padding-right: 10px;
+    width: 62%;
+  }}
+
+  table.t td:last-child {{
+    text-align: right;
+    white-space: nowrap;
+    width: 38%;
+  }}
+
+  .totals td:first-child {{
+    width: 70%;
+  }}
+  .totals td:last-child {{
+    width: 30%;
+  }}
+
+  .sum {{
+    font-weight: 700;
+    border-top: 1px solid #d0d0d0 !important;
+    padding-top: 5px !important;
   }}
 
   .footer {{
-    margin-top: 6px;
-    font-size: 9px;
-    color:#777;
-    text-align:center;
+    position: fixed;
+    bottom: 6mm;
+    left: 8mm;
+    right: 8mm;
+    text-align: center;
+    font-size: 8px;
+    color: #666;
   }}
 
-  .card, table, tr {{
+  /* запрет разрывов внутри блоков */
+  .box {{
+    break-inside: avoid;
     page-break-inside: avoid;
   }}
 </style>
@@ -637,41 +676,44 @@ if calc:
 
     </head>
     <body>
-      <div class="header">
-        <img class="logo" src="assets/bris_logo.png" />
-        <div>
-          <p class="title">BRIS Logistics — расчёт себестоимости</p>
-          <p class="subtitle">{country} • {incoterms} • {transport} • Контейнеров: {containers_qty}</p>
-        </div>
-      </div>
+  <div class="top">
+    <img class="logo" src="assets/bris_logo.png" />
+    <div>
+      <div class="title">BRIS Logistics — расчёт себестоимости</div>
+      <div class="subtitle">{country} • {incoterms} • {transport} • Контейнеров: {containers_qty}</div>
+    </div>
+  </div>
 
-      <div class="grid">
-        <div class="card">
-          <h3>Вводные данные</h3>
-          <table class="t"><tbody>{_rows_left_html}</tbody></table>
-        </div>
-
-        <div class="card">
-          <h3>Итоги</h3>
-          <table class="t"><tbody>{_rows_totals_html}</tbody></table>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:10px;">
-        <h3>Локальные расходы РФ (детализация)</h3>
+  <div class="grid">
+    <div class="left">
+      <div class="box">
+        <h3>Вводные данные</h3>
         <table class="t">
-          <thead><tr><th>Статья</th><th style="text-align:right">Значение</th></tr></thead>
-          <tbody>
-            {_rows_local_html}
-            <tr class="sum"><td><b>Итого локальные (в расчёте)</b></td><td style="text-align:right"><b>{_fmt_int(local_rub)} ₽</b></td></tr>
-          </tbody>
+          {_rows_left_html}
         </table>
       </div>
 
-      <div class="footer">
-        BRIS Ceramic • Документ сформирован автоматически из калькулятора.
+      <div class="box">
+        <h3>Итоги</h3>
+        <table class="t totals">
+          {_rows_totals_html}
+        </table>
       </div>
-    </body>
+    </div>
+
+    <div class="right">
+      <div class="box">
+        <h3>Локальные расходы РФ (детализация)</h3>
+        <table class="t">
+          {_rows_local_html}
+          <tr><td class="sum">Итого локальные расходы РФ (в расчёте)</td><td class="sum">{_fmt_int(local_rub)} ₽</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">BRIS Ceramic — внутренний расчёт. Сгенерировано из калькулятора.</div>
+</body>
     </html>
     """
 
