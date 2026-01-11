@@ -548,89 +548,92 @@ if calc:
     <head>
       <meta charset="utf-8" />
       
-<style>
-  @page {{ size: A4; margin: 8mm; }}
 
-  body {{
+<style>
+  @page { size: A4; margin: 8mm; }
+
+  body {
     font-family: Arial, sans-serif;
     color:#111;
-    font-size: 9.5px;
-    line-height: 1.25;
-  }}
+    font-size: 10px;
+    line-height: 1.3;
+  }
 
-  .header {{
+  .header {
     display:flex;
     align-items:center;
     gap:8px;
-    margin-bottom: 4px;
-  }}
+    margin-bottom: 6px;
+  }
 
-  .logo {{ height:30px; }}
+  .logo { height:26px; }
 
-  .title {{
-    font-size: 13px;
-    font-weight: 800;
+  .title {
+    font-size: 12px;
+    font-weight: 700;
     margin:0;
-  }}
+  }
 
-  .subtitle {{
+  .subtitle {
     margin:0;
     color:#444;
-    font-size: 9px;
-  }}
+    font-size: 9.5px;
+  }
 
-  .grid {{
+  .grid {
     display:grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }}
+    gap: 8px;
+  }
 
-  .card {{
+  .card {
     border:1px solid #ddd;
     border-radius:6px;
     padding:6px 8px;
-  }}
+  }
 
-  .card h3 {{
-    margin:0 0 4px 0;
+  .card h3 {
+    margin:0 0 6px 0;
     font-size: 10.5px;
-  }}
+    font-weight:700;
+  }
 
-  .t {{
+  .t {
     width:100%;
     border-collapse: collapse;
-  }}
+  }
 
-  .t th, .t td {{
+  .t th, .t td {
     border-bottom:1px solid #eee;
-    padding:3px 4px;
-    font-size: 9.5px;
+    padding:4px 5px;
+    font-size: 10px;
+    line-height: 1.3;
     vertical-align: top;
-    line-height: 1.25;
-  }}
+  }
 
-  .t th {{
+  .t th {
     text-align:left;
     color:#333;
     font-weight:700;
-  }}
+  }
 
-  .sum td {{
-    border-top: 2px solid #ddd;
+  .sum td {
+    border-top: 2px solid #ccc;
     font-weight:700;
-  }}
+  }
 
-  .footer {{
-    margin-top: 4px;
-    font-size: 8px;
+  .footer {
+    margin-top: 6px;
+    font-size: 9px;
     color:#777;
     text-align:center;
-  }}
+  }
 
-  .card, table, tr {{
+  .card, table, tr {
     page-break-inside: avoid;
-  }}
+  }
 </style>
+
 
     </head>
     <body>
