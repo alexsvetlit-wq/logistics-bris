@@ -578,20 +578,26 @@ if calc:
     _rows_totals_html = "".join(
         f"<tr><td>{k}</td><td style='text-align:right'>{_fmt_money(v, 2)} {u}</td></tr>"
         for k, v, u in _print_totals
-    )
+    )    # --- значения для печатной формы (новые блоки) ---
+    _containers = float(containers_qty or 0)
+    _usd_rub = float(usd_rub or 0) or 1.0
+    _qty_base = float(qty_m2 or 0) or 1.0  # базовая единица расчёта (пока оставляем м²)
 
+    exp_service_total_usd = float(exp_service_rub or 0) * _containers
+    exp_commission_total_usd = (float(exp_commission_pct or 0) / 100.0) * _containers * float(freight_usd or 0)
+    exp_factory_pay_total_usd = (float(exp_factory_pay_rub or 0) / 100.0) * float(invoice_usd or 0)
 
-    # --- значения для печатной формы (новые блоки) ---
+    exp_service_rub_s = f"{_fmt_money(exp_service_total_usd, 2)} USD" if exp_service_total_usd else "—"
+    exp_commission_pct_s = f"{_fmt_money(exp_commission_total_usd, 2)} USD" if exp_commission_total_usd else "—"
+    exp_factory_pay_rub_s = f"{_fmt_money(exp_factory_pay_total_usd, 2)} USD" if exp_factory_pay_total_usd else "—"
 
-    exp_service_rub_s = (f"{exp_service_rub:,.2f} ₽").replace(",", " ")
+    _extra_total_usd = exp_service_total_usd + exp_commission_total_usd + exp_factory_pay_total_usd
+    cost_all_rub_per_unit = float(cost_rub_m2 or 0) + (_extra_total_usd * _usd_rub / _qty_base if _qty_base else 0.0)
+    cost_all_usd_per_unit = cost_all_rub_per_unit / _usd_rub if _usd_rub else 0.0
 
-    exp_commission_pct_s = (f"{exp_commission_pct:,.2f} %").replace(",", " ")
+    cost_all_usd_m2_s = f"{_fmt_money(cost_all_usd_per_unit, 2)} USD"
+    cost_all_rub_m2_s = f"{_fmt_money(cost_all_rub_per_unit, 2)} ₽"
 
-    exp_factory_pay_rub_s = (f"{exp_factory_pay_rub:,.2f} ₽").replace(",", " ")
-
-    cost_all_usd_m2_s = (f"{cost_all_usd_m2_input:,.2f} USD/м²").replace(",", " ")
-
-    cost_all_rub_m2_s = (f"{cost_all_rub_m2_input:,.2f} ₽").replace(",", " ")
 
 
     _html_print = f"""
