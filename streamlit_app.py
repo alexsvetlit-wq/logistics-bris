@@ -372,7 +372,7 @@ with st.sidebar:
         step=100.0
     )
     exp_commission_pct = st.number_input(
-        "Агентская комиссия от подбора O/F (Ocean Freight) (10% от O/F/ктк),USD",
+        "Агентская комиссия от подбора фрахта O/F (Ocean Freight) (10% от O/F/ктк),USD",
         value=10.0,
         step=0.5
     )
