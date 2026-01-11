@@ -464,7 +464,26 @@ if calc:
         st.divider()
         c5, c6 = st.columns(2)
         c5.metric("Итого стоимость товара в НВРСК , RUB", f"{res['total_rub']:,.0f}")
-        c6.metric("Себестоимость, RUB/м²", f"{res['cost_rub_m2']:,.2f}")
+        c6.metric("
+        <div class="print-card">
+            <div class="print-title">Вознаграждение технического импортера:</div>
+            <div class="print-row">
+                <span>Услуга по экспедированию / оформлению, 100 USD / контейнер.</span>
+                <span>{{ importer_service_rub }} ₽</span>
+            </div>
+            <hr/>
+            <div class="print-row">
+                <span>Агентская комиссия от стоимости морского фрахта 10% / контейнер</span>
+                <span>{{ agent_fee_rub }} ₽</span>
+            </div>
+            <hr/>
+            <div class="print-row">
+                <span>Прямая оплата на фабрику за клиента 2% от стоимости инвойса</span>
+                <span>{{ direct_factory_payment_rub }} ₽</span>
+            </div>
+        </div>
+
+Себестоимость, RUB/м²", f"{res['cost_rub_m2']:,.2f}")
     
 
     # =========================
@@ -526,7 +545,26 @@ if calc:
         ("НДС 22%+тамож.сбор, USD", res["vat_usd"], "USD"),
         ("Локальные расходы в РФ, всего", local_costs_rub_input, "₽"),
         ("Итого стоимость товара в НВРСК, RUB", res["total_rub"], "₽"),
-        ("Себестоимость, RUB/м²", res["cost_rub_m2"], "₽"),
+        ("
+        <div class="print-card">
+            <div class="print-title">Вознаграждение технического импортера:</div>
+            <div class="print-row">
+                <span>Услуга по экспедированию / оформлению, 100 USD / контейнер.</span>
+                <span>{{ importer_service_rub }} ₽</span>
+            </div>
+            <hr/>
+            <div class="print-row">
+                <span>Агентская комиссия от стоимости морского фрахта 10% / контейнер</span>
+                <span>{{ agent_fee_rub }} ₽</span>
+            </div>
+            <hr/>
+            <div class="print-row">
+                <span>Прямая оплата на фабрику за клиента 2% от стоимости инвойса</span>
+                <span>{{ direct_factory_payment_rub }} ₽</span>
+            </div>
+        </div>
+
+Себестоимость, RUB/м²", res["cost_rub_m2"], "₽"),
     ]
 
     _rows_left_html = "".join(
