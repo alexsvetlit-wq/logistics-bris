@@ -1,8 +1,7 @@
 import streamlit as st
 
 # =========================
-# BRIS Logistics калькулятор (v0+)
-# =========================
+# Logistics калькулятор  =========================
 
 st.set_page_config(
     page_title="BRIS Logistics калькулятор",
