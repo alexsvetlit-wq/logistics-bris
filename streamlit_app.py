@@ -504,7 +504,7 @@ if calc:
         ("Цена", f"{_fmt_money(price_per_m2, 2)} {price_currency}/{unit}"),
         ("Фрахт", f"{_fmt_money(freight_usd, 2)} USD/конт."),
         ("DTHC портовые сборы", f"{_fmt_money(insurance_usd, 2)} USD/конт."),
-        ("Локальные расходы РФ (в расчёте)", f"{_fmt_int(local_rub)} ₽"),
+        ("Локальные расходы РФ всего:", f"{_fmt_int(local_rub)} ₽"),
     ]
 
     # Детализация локальных расходов (если заполнена)
@@ -713,7 +713,7 @@ if calc:
         <h3>Локальные расходы РФ (детализация)</h3>
         <table class="t">
           {_rows_local_html}
-          <tr><td class="sum">Итого локальные расходы РФ (в расчёте)</td><td class="sum">{_fmt_int(local_rub)} ₽</td></tr>
+          <tr><td class="sum">Итого локальные расходы РФ (по запросу клиента)</td><td class="sum">{_fmt_int(local_rub)} ₽</td></tr>
         </table>
       </div>
     </div>
