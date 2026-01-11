@@ -367,18 +367,18 @@ with st.sidebar:
     # =========================
     st.markdown("### Вознаграждение экспедитора и технического импортера")
     exp_service_rub = st.number_input(
-        "Услуга по экспедированию / оформлению, RUB",
-        value=0.0,
-        step=1000.0
+        "Услуга по экспедированию / оформлению (100USD/ктк),USD",
+        value=100.0,
+        step=100.0
     )
     exp_commission_pct = st.number_input(
-        "% комиссии",
-        value=0.0,
+        "Агентская комиссия от подбора O/F (Ocean Freight) (10% от O/F/ктк),USD",
+        value=10.0,
         step=0.5
     )
     exp_factory_pay_rub = st.number_input(
-        "Оплата на фабрику, RUB",
-        value=0.0,
+        "Оплата на фабрику за клиента (2-3% от total invoce),USD",
+        value=2.0,
         step=1000.0
     )
 
