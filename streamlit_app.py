@@ -355,7 +355,80 @@ with st.sidebar:
         freight_usd = st.number_input("Фрахт, USD/конт.", value=4500.0, step=50.0)
 
     insurance_usd = st.number_input("DTHC портовые сборы, USD/конт.", value=0.0, step=10.0)
-    local_rub = st.number_input("Локальные расходы РФ, RUB", value=300000.0, step=10000.0)
+    local_costs_rub_input = st.number_input("Локальные расходы РФ, RUB", value=300000.0, step=1000.0)
+# =========================
+# (Блок) Детализация локальных расходов РФ
+# =========================
+
+st.subheader("Локальные расходы РФ (детализация)")
+
+col_lr_1, col_lr_2 = st.columns([4, 1])
+
+with col_lr_1:
+    lr_ktt_out = st.number_input(
+        "Вывоз ктк из порта на СВХ в т.ч сдача в депо, RUB/1 ктк",
+        value=24000.0, step=500.0
+    )
+
+    lr_restack_cross = st.number_input(
+        "Перетарка на СВХ кросс-докинг (из ктк в авто), RUB/1 фура",
+        value=9000.0, step=250.0
+    )
+
+    lr_prr_mech = st.number_input(
+        "ПРР механизированная (из ктк -склад- авто), RUB/паллет",
+        value=500.0, step=250.0
+    )
+
+    lr_prr_manual = st.number_input(
+        "ПРР ручная (из ктк авто/склад) за 1 тн без паллеты, RUB/тонна",
+        value=800.0, step=50.0
+    )
+
+    lr_restack_ktt = st.number_input(
+        "Паллетированние комплекс(вкл.поддон+стрейч+пп лента), RUB/паллет",
+        value=1300.0, step=50.0
+    )
+
+    lr_restack_terminal = st.number_input(
+        "Перетарка на СВХ (с ктквоз снять/поставить), RUB/ктк лифт",
+        value=1500.0, step=50.0
+    )
+
+    lr_storage = st.number_input(
+        "Хранение на СВХ (1 под/сутки начиная с 10 дня), RUB/паллетодень",
+        value=30.0, step=5.0
+    )
+
+    lr_delivery_rf = st.number_input(
+        "Доставка по РФ до склада клиента (авто 20 тонн), RUB/авто",
+        value=0.0, step=1000.0
+    )
+
+# --- Сумма локальных расходов РФ (детализация) ---
+local_costs_rub_calc = (
+    lr_ktt_out
+    + lr_prr_mech
+    + lr_prr_manual
+    + lr_restack_ktt
+    + lr_restack_cross
+    + lr_restack_terminal
+    + lr_storage
+    + lr_delivery_rf
+)
+
+with col_lr_2:
+    st.metric(
+        label="Сумма детализации, RUB",
+        value=f"{local_costs_rub_calc:,.0f} ₽".replace(",", " ")
+    )
+
+# --- Что используем в расчётах ---
+local_costs_rub = local_costs_rub_calc if local_costs_rub_calc > 0 else local_costs_rub_input
+
+st.caption(
+    f"В расчёте используется: {'детализация' if local_costs_rub_calc > 0 else 'ручной ввод'}"
+)
 
     calc = st.button("Рассчитать", type="primary")
 
