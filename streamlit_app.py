@@ -295,6 +295,7 @@ with st.sidebar:
     # ВСТАВКА: выбор ед. измерения (шт / м²) — БОЛЬШЕ НИЧЕГО НЕ МЕНЯЕМ
     # =========================
     unit = st.selectbox("Ед. измерения", ["м²", "шт."], index=0)
+unit_label = "м²" if unit == "м²" else "шт."
 
     if unit == "м²":
         qty_m2 = st.number_input("Кол-во, м²", value=1200.0, step=10.0)
@@ -387,12 +388,12 @@ with st.sidebar:
     # =========================
     st.markdown("### Себестоимость с учетом всех расходов")
     cost_all_usd_m2_input = st.number_input(
-        "Себестоимость, USD/м² (с учетом всех расходов)",
+        f"Себестоимость, USD/{unit_label} (с учетом всех расходов)",
         value=0.0,
         step=0.1
     )
     cost_all_rub_m2_input = st.number_input(
-        "Себестоимость, RUB/м² (с учетом всех расходов)",
+        f"Себестоимость, RUB/{unit_label} (с учетом всех расходов)",
         value=0.0,
         step=10.0
     )
@@ -499,7 +500,7 @@ if calc:
         st.divider()
         c5, c6 = st.columns(2)
         c5.metric("Итого стоимость товара в НВРСК , RUB", f"{res['total_rub']:,.0f}")
-        c6.metric("Себестоимость, RUB/м²", f"{res['cost_rub_m2']:,.2f}")
+        c6.metric(f"Себестоимость, RUB/{unit_label}", f"{res['cost_rub_m2']:,.2f}")
     
 
     # =========================
@@ -561,7 +562,7 @@ if calc:
         ("НДС 22%+тамож.сбор, USD", res["vat_usd"], "USD"),
         ("Локальные расходы в РФ, всего", local_costs_rub_input, "₽"),
         ("Итого стоимость товара в НВРСК, RUB", res["total_rub"], "₽"),
-        ("Себестоимость, RUB/м²", res["cost_rub_m2"], "₽"),
+        (f"Себестоимость, RUB/{unit_label}", res["cost_rub_m2"], "₽"),
     ]
 
     _rows_left_html = "".join(
@@ -588,7 +589,7 @@ if calc:
 
     exp_factory_pay_rub_s = (f"{exp_factory_pay_rub:,.2f} ₽").replace(",", " ")
 
-    cost_all_usd_m2_s = (f"{cost_all_usd_m2_input:,.2f} USD/м²").replace(",", " ")
+    cost_all_usd_m2_s = (f"{cost_all_usd_m2_input:,.2f} USD/{unit_label}").replace(",", " ")
 
     cost_all_rub_m2_s = (f"{cost_all_rub_m2_input:,.2f} ₽").replace(",", " ")
 
@@ -780,7 +781,7 @@ if calc:
         <h3>Себестоимость с учетом всех расходов</h3>
         <table class="t totals">
           <tr>
-            <td>Себестоимость, USD/м²</td>
+            <td>Себестоимость, USD/{unit_label}</td>
             <td style="text-align:right">—</td>
           </tr>
           <tr>
