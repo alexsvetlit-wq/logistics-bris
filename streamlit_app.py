@@ -1,14 +1,5 @@
 import streamlit as st
 import streamlit.components.v1 as components
-import io
-from datetime import datetime
-
-from openpyxl import Workbook
-from openpyxl.utils import get_column_letter
-
-from docx import Document
-from docx.shared import Pt
-
 
 
 # =========================
@@ -616,126 +607,41 @@ if calc:
         components.html(_html_print, height=900, scrolling=True)
         st.caption("Далее: Ctrl+P → Save as PDF / Печать.")
 
-
     # =========================
-    # (Блок) Сохранить форму (Excel / Word)
+    # Экспорт формы (Excel / CSV) — без внешних библиотек
     # =========================
-    def _safe_filename(s: str) -> str:
-        s = (s or "").strip()
-        if not s:
-            return "BRIS_Logistics"
-        for ch in ['\\', '/', ':', '*', '?', '"', '<', '>', '|']:
-            s = s.replace(ch, "_")
+    def _csv_cell(v):
+        s = str(v)
+        s = s.replace(";", ",").replace("\n", " ").replace("\r", " ")
         return s
 
-    def _build_excel_bytes(rows_left, totals, local_detail, local_total_rub) -> bytes:
-        wb = Workbook()
+    _csv_rows = []
+    _csv_rows.append(["Вводные данные", ""])
+    for k, v in _print_rows_left:
+        _csv_rows.append([k, v])
 
-        ws1 = wb.active
-        ws1.title = "Вводные"
-        ws1.append(["Параметр", "Значение"])
-        for k, v in rows_left:
-            ws1.append([k, v])
+    _csv_rows.append(["", ""])
+    _csv_rows.append(["Итоги", ""])
+    for k, v, u in _print_totals:
+        _csv_rows.append([k, f"{_fmt_money(v, 2)} {u}"])
 
-        ws2 = wb.create_sheet("Итоги")
-        ws2.append(["Показатель", "Значение"])
-        for k, v, u in totals:
-            ws2.append([k, f"{_fmt_money(v, 2)} {u}".strip()])
+    _csv_rows.append(["", ""])
+    _csv_rows.append(["Локальные расходы РФ (детализация)", ""])
+    for k, v, u in _print_local_detail:
+        _csv_rows.append([k, f"{_fmt_money(v, 2)} {u}"])
 
-        ws3 = wb.create_sheet("Локальные")
-        ws3.append(["Статья", "Значение"])
-        for k, v, u in local_detail:
-            ws3.append([k, f"{_fmt_money(v, 2)} {u}".strip()])
-        ws3.append(["Итого локальные (в расчёте)", f"{_fmt_int(local_total_rub)} ₽"])
+    _csv_rows.append(["Итого локальные (в расчёте)", f"{_fmt_int(local_rub)} ₽"])
 
-        # авто-ширина колонок
-        for ws in (ws1, ws2, ws3):
-            for col_idx in range(1, 3):
-                col_letter = get_column_letter(col_idx)
-                max_len = 0
-                for cell in ws[col_letter]:
-                    if cell.value is None:
-                        continue
-                    max_len = max(max_len, len(str(cell.value)))
-                ws.column_dimensions[col_letter].width = min(max_len + 2, 60)
+    _csv_text = "\n".join(";".join(_csv_cell(c) for c in row) for row in _csv_rows)
 
-        bio = io.BytesIO()
-        wb.save(bio)
-        return bio.getvalue()
+    st.download_button(
+        "Скачать форму (Excel / CSV)",
+        data=_csv_text.encode("utf-8"),
+        file_name="BRIS_Logistics_Print_Form.csv",
+        mime="text/csv",
+        use_container_width=True
+    )
 
-    def _build_word_bytes(title: str, subtitle: str, rows_left, totals, local_detail, local_total_rub) -> bytes:
-        doc = Document()
-        doc.add_heading(title, level=1)
-        doc.add_paragraph(subtitle)
-        doc.add_paragraph(f"Дата расчёта: {datetime.now().strftime('%d.%m.%Y %H:%M')}")
-
-        doc.add_heading("Вводные данные", level=2)
-        t1 = doc.add_table(rows=1, cols=2)
-        t1.rows[0].cells[0].text = "Параметр"
-        t1.rows[0].cells[1].text = "Значение"
-        for k, v in rows_left:
-            r = t1.add_row().cells
-            r[0].text = str(k)
-            r[1].text = str(v)
-
-        doc.add_heading("Итоги", level=2)
-        t2 = doc.add_table(rows=1, cols=2)
-        t2.rows[0].cells[0].text = "Показатель"
-        t2.rows[0].cells[1].text = "Значение"
-        for k, v, u in totals:
-            r = t2.add_row().cells
-            r[0].text = str(k)
-            r[1].text = f"{_fmt_money(v, 2)} {u}".strip()
-
-        doc.add_heading("Локальные расходы РФ (детализация)", level=2)
-        t3 = doc.add_table(rows=1, cols=2)
-        t3.rows[0].cells[0].text = "Статья"
-        t3.rows[0].cells[1].text = "Значение"
-        for k, v, u in local_detail:
-            r = t3.add_row().cells
-            r[0].text = str(k)
-            r[1].text = f"{_fmt_money(v, 2)} {u}".strip()
-        r = t3.add_row().cells
-        r[0].text = "Итого локальные (в расчёте)"
-        r[1].text = f"{_fmt_int(local_total_rub)} ₽"
-
-        # чуть уменьшим шрифт в таблицах
-        for table in (t1, t2, t3):
-            for row in table.rows:
-                for cell in row.cells:
-                    for p in cell.paragraphs:
-                        for run in p.runs:
-                            run.font.size = Pt(10)
-
-        bio = io.BytesIO()
-        doc.save(bio)
-        return bio.getvalue()
-
-    _base_name = _safe_filename(supplier)
-    _stamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
-    _title_doc = "BRIS Logistics — расчёт себестоимости"
-    _subtitle_doc = f"{country} • {incoterms} • {transport} • Контейнеров: {containers_qty}"
-
-    _xlsx_bytes = _build_excel_bytes(_print_rows_left, _print_totals, _print_local_detail, local_rub)
-    _docx_bytes = _build_word_bytes(_title_doc, _subtitle_doc, _print_rows_left, _print_totals, _print_local_detail, local_rub)
-
-    b1, b2 = st.columns(2)
-    with b1:
-        st.download_button(
-            "Скачать форму в Excel (.xlsx)",
-            data=_xlsx_bytes,
-            file_name=f"{_base_name}_BRIS_Logistics_{_stamp}.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True
-        )
-    with b2:
-        st.download_button(
-            "Скачать форму в Word (.docx)",
-            data=_docx_bytes,
-            file_name=f"{_base_name}_BRIS_Logistics_{_stamp}.docx",
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            use_container_width=True
-        )
 
 
 else:
