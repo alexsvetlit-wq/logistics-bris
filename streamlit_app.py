@@ -604,8 +604,27 @@ if calc:
     """
 
     with st.expander("Открыть форму для печати (A4)", expanded=False):
-        components.html(_html_print, height=900, scrolling=True)
-        st.caption("Далее: Ctrl+P → Save as PDF / Печать.")
+    components.html(_html_print, height=900, scrolling=True)
+
+    # Печать только формы (без интерфейса Streamlit/сайдбара)
+    if st.button("Открыть печать (без сайдбара)"):
+        _html_print_safe = _html_print.replace("`", "\`")
+        components.html(
+            f"""
+            <script>
+              const html = `{_html_print_safe}`;
+              const w = window.open("", "_blank");
+              w.document.open();
+              w.document.write(html);
+              w.document.close();
+              w.focus();
+              setTimeout(() => w.print(), 300);
+            </script>
+            """,
+            height=0,
+        )
+
+    st.caption("Нажми кнопку выше → откроется чистый лист A4. Там уже Ctrl+P / Save as PDF.")
 
     # =========================
     # Экспорт формы (Excel / CSV) — без внешних библиотек
