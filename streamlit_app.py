@@ -355,16 +355,14 @@ with st.sidebar:
         freight_usd = st.number_input("Фрахт, USD/конт.", value=4500.0, step=50.0)
 
     insurance_usd = st.number_input("DTHC портовые сборы, USD/конт.", value=0.0, step=10.0)
-    local_costs_rub_input = st.number_input("Локальные расходы РФ, RUB", value=300000.0, step=1000.0)
+    local_costs_rub_input = st.number_input("Локальные расходы РФ, RUB", value=300000.0, step=1000.0, key="local_costs_rub_input")
     # =========================
     # (Блок) Детализация локальных расходов РФ
     # =========================
     
     st.subheader("Локальные расходы РФ (детализация)")
-    
-    col_lr_1, col_lr_2 = st.columns([4, 1])
-    
-    with col_lr_1:
+    # (упрощено) все поля в одной колонке
+    with st.container():
         lr_ktt_out = st.number_input(
             "Вывоз ктк из порта на СВХ в т.ч сдача в депо, RUB/1 ктк",
             value=24000.0, step=500.0
@@ -417,13 +415,14 @@ with st.sidebar:
         + lr_delivery_rf
     )
     
-    with col_lr_2:
-        st.metric(
-            label="Сумма детализации, RUB",
-            value=f"{local_costs_rub_calc:,.0f} ₽".replace(",", " ")
-        )
     
-    # --- Что используем в расчётах ---
+    st.caption(f"Сумма детализации: {local_costs_rub_calc:,.0f} ₽".replace(",", " "))
+
+    # Синхронизируем верхнее поле "Локальные расходы РФ, RUB" с детализацией (если заполнена)
+    if local_costs_rub_calc > 0:
+        st.session_state["local_costs_rub_input"] = local_costs_rub_calc
+
+# --- Что используем в расчётах ---
     local_costs_rub = local_costs_rub_calc if local_costs_rub_calc > 0 else local_costs_rub_input
     
     st.caption(
