@@ -454,16 +454,18 @@ if calc:
         containers_qty,
     )
 
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Товар, USD", f"{res['goods_usd']:,.2f}")
-    c2.metric("Тамож. стоимость, USD", f"{res['customs_value_usd']:,.2f}")
-    c3.metric("Пошлина, USD", f"{res['duty_usd']:,.2f}")
-    c4.metric("НДС 22%+тамож.сбор, USD", f"{res['vat_usd']:,.2f}")
-
-    st.divider()
-    c5, c6 = st.columns(2)
-    c5.metric("Итого стоимость товара в НВРСК , RUB", f"{res['total_rub']:,.0f}")
-    c6.metric("Себестоимость, RUB/м²", f"{res['cost_rub_m2']:,.2f}")
+    with st.expander("Сводка расчёта", expanded=True):
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Товар, USD", f"{res['goods_usd']:,.2f}")
+        c2.metric("Тамож. стоимость, USD", f"{res['customs_value_usd']:,.2f}")
+        c3.metric("Пошлина, USD", f"{res['duty_usd']:,.2f}")
+        c4.metric("НДС 22%+тамож.сбор, USD", f"{res['vat_usd']:,.2f}")
+    
+        st.divider()
+        c5, c6 = st.columns(2)
+        c5.metric("Итого стоимость товара в НВРСК , RUB", f"{res['total_rub']:,.0f}")
+        c6.metric("Себестоимость, RUB/м²", f"{res['cost_rub_m2']:,.2f}")
+    
 
     # =========================
     # (Блок) Печать / PDF (форма)
