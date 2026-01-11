@@ -710,10 +710,10 @@ if calc:
       </div>
 
       <div class="box">
-        <h3> Прямые Локальные расходы РФ (детализация)</h3>
+        <h3> Расценки на прямые локальные расходы в РФ (актуализация на дату расчета)</h3>
         <table class="t">
           {_rows_local_html}
-          <tr><td class="sum">Итого локальные расходы РФ (по запросу клиента)</td><td class="sum">{_fmt_int(local_rub)} ₽</td></tr>
+          <tr><td class="sum"> Итого локальных расходов </td><td class="sum">{_fmt_int(local_rub)} ₽</td></tr>
         </table>
       </div>
     </div>
@@ -747,7 +747,7 @@ if calc:
         _csv_rows.append([k, f"{_fmt_money(v, 2)} {u}"])
 
     _csv_rows.append(["", ""])
-    _csv_rows.append(["777Локальные расходы РФ (детализация)", ""])
+    _csv_rows.append(["Локальные расходы РФ (детализация)", ""])
     for k, v, u in _print_local_detail:
         _csv_rows.append([k, f"{_fmt_money(v, 2)} {u}"])
 
