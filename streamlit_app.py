@@ -712,8 +712,7 @@ if calc:
         <h3> Расценки на прямые локальные расходы в РФ (актуализация на дату расчета)</h3>
         <table class="t">
           {_rows_local_html}
-          <tr><td class="sum"> Итого локальных расходов </td><td class="sum">{_fmt_int(local_rub)} ₽</td></tr>
-        </table>
+                  </table>
       </div>
     </div>
   </div>
