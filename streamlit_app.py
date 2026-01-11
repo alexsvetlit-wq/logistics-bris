@@ -4,7 +4,7 @@ import streamlit as st
 # Logistics калькулятор  =========================
 
 st.set_page_config(
-    page_title="BRIS Logistics калькулятор",
+    page_title="Logistics калькулятор",
     layout="wide",
     page_icon="assets/bris_logo.png"
 )
@@ -15,8 +15,6 @@ with col1:
     st.image("assets/bris_logo.png", width=120)
 with col2:
     st.title("BRIS Logistics калькулятор")
-    st.caption("Черновик v0+: логистика + таможня + себестоимость единицы товара")
-
 VAT_PCT_FIXED = 22.0
 
 # =========================
