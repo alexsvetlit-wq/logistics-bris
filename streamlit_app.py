@@ -430,8 +430,7 @@ st.caption(
     f"В расчёте используется: {'детализация' if local_costs_rub_calc > 0 else 'ручной ввод'}"
 )
 
-    calc = st.button("Рассчитать", type="primary")
-
+calc = st.button("Рассчитать", type="primary")
 
 # =========================
 # Результат
