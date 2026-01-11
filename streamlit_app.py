@@ -751,7 +751,7 @@ if calc:
     for k, v, u in _print_local_detail:
         _csv_rows.append([k, f"{_fmt_money(v, 2)} {u}"])
 
-    _csv_rows.append(["Итого локальные (в расчёте)", f"{_fmt_int(local_rub)} ₽"])
+    _csv_rows.append(["Итого локальные ( не включенные в расчёт)", f"{_fmt_int(local_rub)} ₽"])
 
     _csv_text = "\n".join(";".join(_csv_cell(c) for c in row) for row in _csv_rows)
 
