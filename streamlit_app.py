@@ -464,26 +464,7 @@ if calc:
         st.divider()
         c5, c6 = st.columns(2)
         c5.metric("Итого стоимость товара в НВРСК , RUB", f"{res['total_rub']:,.0f}")
-        c6.metric("
-        <div class="print-card">
-            <div class="print-title">Вознаграждение технического импортера:</div>
-            <div class="print-row">
-                <span>Услуга по экспедированию / оформлению, 100 USD / контейнер.</span>
-                <span>{{ importer_service_rub }} ₽</span>
-            </div>
-            <hr/>
-            <div class="print-row">
-                <span>Агентская комиссия от стоимости морского фрахта 10% / контейнер</span>
-                <span>{{ agent_fee_rub }} ₽</span>
-            </div>
-            <hr/>
-            <div class="print-row">
-                <span>Прямая оплата на фабрику за клиента 2% от стоимости инвойса</span>
-                <span>{{ direct_factory_payment_rub }} ₽</span>
-            </div>
-        </div>
-
-Себестоимость, RUB/м²", f"{res['cost_rub_m2']:,.2f}")
+        c6.metric("Себестоимость, RUB/м²", f"{res['cost_rub_m2']:,.2f}")
     
 
     # =========================
@@ -545,26 +526,7 @@ if calc:
         ("НДС 22%+тамож.сбор, USD", res["vat_usd"], "USD"),
         ("Локальные расходы в РФ, всего", local_costs_rub_input, "₽"),
         ("Итого стоимость товара в НВРСК, RUB", res["total_rub"], "₽"),
-        ("
-        <div class="print-card">
-            <div class="print-title">Вознаграждение технического импортера:</div>
-            <div class="print-row">
-                <span>Услуга по экспедированию / оформлению, 100 USD / контейнер.</span>
-                <span>{{ importer_service_rub }} ₽</span>
-            </div>
-            <hr/>
-            <div class="print-row">
-                <span>Агентская комиссия от стоимости морского фрахта 10% / контейнер</span>
-                <span>{{ agent_fee_rub }} ₽</span>
-            </div>
-            <hr/>
-            <div class="print-row">
-                <span>Прямая оплата на фабрику за клиента 2% от стоимости инвойса</span>
-                <span>{{ direct_factory_payment_rub }} ₽</span>
-            </div>
-        </div>
-
-Себестоимость, RUB/м²", res["cost_rub_m2"], "₽"),
+        ("Себестоимость, RUB/м²", res["cost_rub_m2"], "₽"),
     ]
 
     _rows_left_html = "".join(
@@ -744,6 +706,38 @@ if calc:
         <h3>Итоги</h3>
         <table class="t totals">
           {_rows_totals_html}
+        </table>
+      </div>
+
+      <div class="box">
+        <h3>Вознаграждение экспедитора и технического импортера</h3>
+        <table class="t">
+          <tr>
+            <td>Услуга по экспедированию / оформлению</td>
+            <td style="text-align:right">—</td>
+          </tr>
+          <tr>
+            <td>% комиссии</td>
+            <td style="text-align:right">—</td>
+          </tr>
+          <tr>
+            <td>Оплата на фабрику</td>
+            <td style="text-align:right">—</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="box">
+        <h3>Себестоимость с учетом всех расходов</h3>
+        <table class="t totals">
+          <tr>
+            <td>Себестоимость, USD/м²</td>
+            <td style="text-align:right">—</td>
+          </tr>
+          <tr>
+            <td>Себестоимость, RUB/м²</td>
+            <td style="text-align:right">—</td>
+          </tr>
         </table>
       </div>
 
