@@ -604,33 +604,7 @@ if calc:
     """
 
     with st.expander("Открыть форму для печати (A4)", expanded=False):
-        components.html(_html_print, height=1200, scrolling=False)
-
-        # Полноформатная печать без интерфейса Streamlit (открывается в новом окне)
-        _html_print_base64 = _html_print.encode("utf-8")
-        components.html(
-            f"""
-            <div style='margin-top:8px;'>
-              <button id="bris_print_btn" style="padding:10px 14px; border-radius:10px; border:1px solid #ddd; cursor:pointer;">
-                Открыть полноформатный принт (A4) и печатать
-              </button>
-            </div>
-            <script>
-              const btn = document.getElementById('bris_print_btn');
-              btn.addEventListener('click', () => {
-                const html = {repr(_html_print)};
-                const w = window.open('', '_blank');
-                if (!w) { alert('Браузер заблокировал всплывающее окно. Разреши pop-up для этого сайта.'); return; }
-                w.document.open();
-                w.document.write(html);
-                w.document.close();
-                // дождёмся отрисовки, затем печать
-                w.setTimeout(() => { w.focus(); w.print(); }, 400);
-              });
-            </script>
-            """,
-            height=90,
-        )
+        components.html(_html_print, height=900, scrolling=True)
         st.caption("Далее: Ctrl+P → Save as PDF / Печать.")
 
     # =========================
