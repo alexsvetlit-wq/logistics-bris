@@ -363,6 +363,41 @@ with st.sidebar:
     )
 
     # =========================
+    # (Блок ввода) Вознаграждение экспедитора и технического импортера (для печатной формы)
+    # =========================
+    st.markdown("### Вознаграждение экспедитора и технического импортера")
+    exp_service_rub = st.number_input(
+        "Услуга по экспедированию / оформлению, RUB",
+        value=0.0,
+        step=1000.0
+    )
+    exp_commission_pct = st.number_input(
+        "% комиссии",
+        value=0.0,
+        step=0.5
+    )
+    exp_factory_pay_rub = st.number_input(
+        "Оплата на фабрику, RUB",
+        value=0.0,
+        step=1000.0
+    )
+
+    # =========================
+    # (Блок ввода) Себестоимость с учетом всех расходов (для печатной формы)
+    # =========================
+    st.markdown("### Себестоимость с учетом всех расходов")
+    cost_all_usd_m2_input = st.number_input(
+        "Себестоимость, USD/м² (с учетом всех расходов)",
+        value=0.0,
+        step=0.1
+    )
+    cost_all_rub_m2_input = st.number_input(
+        "Себестоимость, RUB/м² (с учетом всех расходов)",
+        value=0.0,
+        step=10.0
+    )
+
+    # =========================
     # (Блок) Детализация локальных расходов РФ
     # =========================
     st.subheader("Локальные расходы РФ (детализация)")
@@ -543,6 +578,20 @@ if calc:
         f"<tr><td>{k}</td><td style='text-align:right'>{_fmt_money(v, 2)} {u}</td></tr>"
         for k, v, u in _print_totals
     )
+
+
+    # --- значения для печатной формы (новые блоки) ---
+
+    exp_service_rub_s = (f"{exp_service_rub:,.2f} ₽").replace(",", " ")
+
+    exp_commission_pct_s = (f"{exp_commission_pct:,.2f} %").replace(",", " ")
+
+    exp_factory_pay_rub_s = (f"{exp_factory_pay_rub:,.2f} ₽").replace(",", " ")
+
+    cost_all_usd_m2_s = (f"{cost_all_usd_m2_input:,.2f} USD/м²").replace(",", " ")
+
+    cost_all_rub_m2_s = (f"{cost_all_rub_m2_input:,.2f} ₽").replace(",", " ")
+
 
     _html_print = f"""
     <!doctype html>
