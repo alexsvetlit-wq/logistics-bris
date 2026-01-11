@@ -493,7 +493,7 @@ if calc:
         ("Контейнеров", str(containers_qty)),
         ("Порт отгрузки", port_loading),
         ("Порт выгрузки", port_discharge),
-        ("Курс ЦБ+2% USD→RUB", _fmt_money(currency_rate, 2)),
+        ("Курс USD→RUB", _fmt_money(currency_rate, 2)),
         ("Инвойс (итого)", f"{_fmt_money(invoice_total, 2)} {invoice_currency}"),
         ("Товар", product_type),
         ("Поверхность", finish),
@@ -524,8 +524,8 @@ if calc:
         ("Тамож. стоимость, USD", res["customs_value_usd"], "USD"),
         ("Пошлина, USD", res["duty_usd"], "USD"),
         ("НДС 22%+тамож.сбор, USD", res["vat_usd"], "USD"),
-        ("Итого стоимость товара в НВРСК, RUB", res["total_rub"], "₽"),
         ("Локальные расходы в РФ, всего", local_costs_rub_input, "₽"),
+        ("Итого стоимость товара в НВРСК, RUB", res["total_rub"], "₽"),
         ("Себестоимость, RUB/м²", res["cost_rub_m2"], "₽"),
     ]
 
@@ -710,7 +710,7 @@ if calc:
       </div>
 
       <div class="box">
-        <h3> Расценки на локальные расходы в РФ (для включения в расчет выше)</h3>
+        <h3> Расценки на прямые локальные расходы в РФ (актуализация на дату расчета)</h3>
         <table class="t">
           {_rows_local_html}
                   </table>
