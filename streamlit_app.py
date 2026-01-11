@@ -422,11 +422,11 @@ with st.sidebar:
     st.caption(f"Сумма детализации: {local_costs_rub_calc:,.0f} ₽".replace(",", " "))
 
     # --- Что используем в расчётах ---
-    local_costs_rub = local_costs_rub_calc if local_costs_rub_calc > 0 else local_costs_rub_input
+    local_costs_rub = local_costs_rub_input  # вручную (НЕ зависит от детализации ниже)
     local_rub = local_costs_rub  # совместимость с calc_model(..., local_rub, ...)
 
     st.caption(
-        f"В расчёте используется: {'детализация' if local_costs_rub_calc > 0 else 'ручной ввод'}"
+        "В расчёте используется: ручной ввод"
     )
 
     calc = st.button("Рассчитать", type="primary")
