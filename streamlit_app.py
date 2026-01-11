@@ -701,9 +701,7 @@ if calc:
           {_rows_totals_html}
         </table>
       </div>
-    </div>
 
-    <div class="right">
       <div class="box">
         <h3>Локальные расходы РФ (детализация)</h3>
         <table class="t">
