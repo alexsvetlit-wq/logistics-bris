@@ -547,22 +547,91 @@ if calc:
     <html>
     <head>
       <meta charset="utf-8" />
-      <style>
-        @page {{ size: A4; margin: 14mm; }}
-        body {{ font-family: Arial, sans-serif; color:#111; }}
-        .header {{ display:flex; align-items:center; gap:14px; margin-bottom: 10px; }}
-        .logo {{ height:46px; }}
-        .title {{ font-size: 18px; font-weight: 800; margin:0; }}
-        .subtitle {{ margin:2px 0 0 0; color:#444; font-size: 12px; }}
-        .grid {{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }}
-        .card {{ border:1px solid #ddd; border-radius:10px; padding:10px 12px; }}
-        .card h3 {{ margin:0 0 8px 0; font-size: 13px; }}
-        .t {{ width:100%; border-collapse: collapse; }}
-        .t th, .t td {{ border-bottom:1px solid #eee; padding:6px 6px; font-size: 12px; vertical-align: top; }}
-        .t th {{ text-align:left; color:#333; font-weight:700; }}
-        .sum td {{ border-top: 2px solid #ddd; }}
-        .footer {{ margin-top: 10px; font-size: 10px; color:#777; }}
-      </style>
+      
+<style>
+  @page { size: A4; margin: 8mm; }
+
+  body {
+    font-family: Arial, sans-serif;
+    color:#111;
+    font-size: 9.5px;
+    line-height: 1.25;
+  }
+
+  .header {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom: 4px;
+  }
+
+  .logo { height:30px; }
+
+  .title {
+    font-size: 13px;
+    font-weight: 800;
+    margin:0;
+  }
+
+  .subtitle {
+    margin:0;
+    color:#444;
+    font-size: 9px;
+  }
+
+  .grid {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .card {
+    border:1px solid #ddd;
+    border-radius:6px;
+    padding:6px 8px;
+  }
+
+  .card h3 {
+    margin:0 0 4px 0;
+    font-size: 10.5px;
+  }
+
+  .t {
+    width:100%;
+    border-collapse: collapse;
+  }
+
+  .t th, .t td {
+    border-bottom:1px solid #eee;
+    padding:3px 4px;
+    font-size: 9.5px;
+    vertical-align: top;
+    line-height: 1.25;
+  }
+
+  .t th {
+    text-align:left;
+    color:#333;
+    font-weight:700;
+  }
+
+  .sum td {
+    border-top: 2px solid #ddd;
+    font-weight:700;
+  }
+
+  .footer {
+    margin-top: 4px;
+    font-size: 8px;
+    color:#777;
+    text-align:center;
+  }
+
+  .card, table, tr {
+    page-break-inside: avoid;
+  }
+</style>
+
     </head>
     <body>
       <div class="header">
@@ -604,7 +673,7 @@ if calc:
     """
 
     with st.expander("Открыть форму для печати (A4)", expanded=False):
-        components.html(_html_print, height=900, scrolling=True)
+        components.html(_html_print, height=1400)
         st.caption("Далее: Ctrl+P → Save as PDF / Печать.")
 
     # =========================
