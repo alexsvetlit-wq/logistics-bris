@@ -263,7 +263,7 @@ with st.sidebar:
         price_currency = st.selectbox("Валюта цены товара", ["CNY", "USD"], index=0)
 
     elif country == "Индия":
-        usd_inr = st.number_input("Курс USD→INR", value=83.0, step=0.1)
+        usd_inr = st.number_input("Курс ЦБ+2% конвертация USD→INR", value=83.0, step=0.1)
         price_currency = st.selectbox("Валюта цены товара", ["USD", "INR"], index=0)
 
     st.divider()
