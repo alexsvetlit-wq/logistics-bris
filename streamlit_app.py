@@ -604,7 +604,8 @@ if calc:
     """
 
     with st.expander("Открыть форму для печати (A4)", expanded=False):
-    components.html(_html_print, height=900, scrolling=True)
+        components.html(_html_print, height=900, scrolling=True)
+        st.caption("Далее: Ctrl+P → Save as PDF / Печать.")
 
     # Печать только формы (без интерфейса Streamlit/сайдбара)
     if st.button("Открыть печать (без сайдбара)"):
