@@ -562,8 +562,15 @@ if calc:
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     color: #111;
-    font-size: 10px;
-    line-height: 1.15;
+    font-size: 12px;
+    line-height: 1.2;
+  }}
+
+  /* Увеличиваем превью в iframe (не влияет на печать) */
+  @media screen {{
+    body {{
+      zoom: 1.25;
+    }}
   }}
 
   .top {{
