@@ -253,13 +253,13 @@ with st.sidebar:
         )
 
     # --- Курсы валют ---
-    currency_rate = st.number_input("Курс USD→RUB", value=95.0, step=0.1)
+    currency_rate = st.number_input("Курс ЦБ+2% конвертация USD→RUB", value=95.0, step=0.1)
 
     usd_cny = 0.0
     usd_inr = 0.0
 
     if country == "Китай":
-        usd_cny = st.number_input("Курс USD→CNY (RMB)", value=7.20, step=0.01)
+        usd_cny = st.number_input("Курс ЦБ+2% конвертация USD→CNY (RMB)", value=7.20, step=0.01)
         price_currency = st.selectbox("Валюта цены товара", ["CNY", "USD"], index=0)
 
     elif country == "Индия":
