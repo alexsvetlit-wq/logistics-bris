@@ -1,12 +1,11 @@
 import streamlit as st
-import streamlit.components.v1 as components
-
 
 # =========================
-# Logistics калькулятор  =========================
+# BRIS Logistics калькулятор (v0+)
+# =========================
 
 st.set_page_config(
-    page_title="Logistics калькулятор",
+    page_title="BRIS Logistics калькулятор",
     layout="wide",
     page_icon="assets/bris_logo.png"
 )
@@ -17,6 +16,8 @@ with col1:
     st.image("assets/bris_logo.png", width=120)
 with col2:
     st.title("BRIS Logistics калькулятор")
+    st.caption("Черновик v0+: логистика + таможня + себестоимость единицы товара")
+
 VAT_PCT_FIXED = 22.0
 
 # =========================
@@ -354,59 +355,56 @@ with st.sidebar:
         freight_usd = st.number_input("Фрахт, USD/конт.", value=4500.0, step=50.0)
 
     insurance_usd = st.number_input("DTHC портовые сборы, USD/конт.", value=0.0, step=10.0)
-
-    # Поле "как раньше" (ручной ввод, если детализацию не используем)
-    local_costs_rub_input = st.number_input(
-        "Локальные расходы РФ, RUB",
-        value=300000.0,
-        step=1000.0
-    )
-
+    local_costs_rub_input = st.number_input("Локальные расходы РФ, RUB", value=300000.0, step=1000.0)
     # =========================
     # (Блок) Детализация локальных расходов РФ
     # =========================
+    
     st.subheader("Локальные расходы РФ (детализация)")
-
-    lr_ktt_out = st.number_input(
-        "Вывоз ктк из порта на СВХ в т.ч сдача в депо, RUB/1 ктк",
-        value=24000.0, step=500.0
-    )
-
-    lr_restack_cross = st.number_input(
-        "Перетарка на СВХ кросс-докинг (из ктк в авто), RUB/1 фура",
-        value=9000.0, step=250.0
-    )
-
-    lr_prr_mech = st.number_input(
-        "ПРР механизированная (из ктк -склад- авто), RUB/паллет",
-        value=500.0, step=250.0
-    )
-
-    lr_prr_manual = st.number_input(
-        "ПРР ручная (из ктк авто/склад) за 1 тн без паллеты, RUB/тонна",
-        value=800.0, step=50.0
-    )
-
-    lr_restack_ktt = st.number_input(
-        "Паллетированние комплекс(вкл.поддон+стрейч+пп лента), RUB/паллет",
-        value=1300.0, step=50.0
-    )
-
-    lr_restack_terminal = st.number_input(
-        "Перетарка на СВХ (с ктквоз снять/поставить), RUB/ктк лифт",
-        value=1500.0, step=50.0
-    )
-
-    lr_storage = st.number_input(
-        "Хранение на СВХ (1 под/сутки начиная с 10 дня), RUB/паллетодень",
-        value=30.0, step=5.0
-    )
-
-    lr_delivery_rf = st.number_input(
-        "Доставка по РФ до склада клиента (авто 20 тонн), RUB/авто",
-        value=0.0, step=1000.0
-    )
-
+    
+    col_lr_1, col_lr_2 = st.columns([4, 1])
+    
+    with col_lr_1:
+        lr_ktt_out = st.number_input(
+            "Вывоз ктк из порта на СВХ в т.ч сдача в депо, RUB/1 ктк",
+            value=24000.0, step=500.0
+        )
+    
+        lr_restack_cross = st.number_input(
+            "Перетарка на СВХ кросс-докинг (из ктк в авто), RUB/1 фура",
+            value=9000.0, step=250.0
+        )
+    
+        lr_prr_mech = st.number_input(
+            "ПРР механизированная (из ктк -склад- авто), RUB/паллет",
+            value=500.0, step=250.0
+        )
+    
+        lr_prr_manual = st.number_input(
+            "ПРР ручная (из ктк авто/склад) за 1 тн без паллеты, RUB/тонна",
+            value=800.0, step=50.0
+        )
+    
+        lr_restack_ktt = st.number_input(
+            "Паллетированние комплекс(вкл.поддон+стрейч+пп лента), RUB/паллет",
+            value=1300.0, step=50.0
+        )
+    
+        lr_restack_terminal = st.number_input(
+            "Перетарка на СВХ (с ктквоз снять/поставить), RUB/ктк лифт",
+            value=1500.0, step=50.0
+        )
+    
+        lr_storage = st.number_input(
+            "Хранение на СВХ (1 под/сутки начиная с 10 дня), RUB/паллетодень",
+            value=30.0, step=5.0
+        )
+    
+        lr_delivery_rf = st.number_input(
+            "Доставка по РФ до склада клиента (авто 20 тонн), RUB/авто",
+            value=0.0, step=1000.0
+        )
+    
     # --- Сумма локальных расходов РФ (детализация) ---
     local_costs_rub_calc = (
         lr_ktt_out
@@ -418,18 +416,22 @@ with st.sidebar:
         + lr_storage
         + lr_delivery_rf
     )
-
-    st.caption(f"Сумма детализации: {local_costs_rub_calc:,.0f} ₽".replace(",", " "))
-
+    
+    with col_lr_2:
+        st.metric(
+            label="Сумма детализации, RUB",
+            value=f"{local_costs_rub_calc:,.0f} ₽".replace(",", " ")
+        )
+    
     # --- Что используем в расчётах ---
     local_costs_rub = local_costs_rub_calc if local_costs_rub_calc > 0 else local_costs_rub_input
-    local_rub = local_costs_rub  # совместимость с calc_model(..., local_rub, ...)
-
+    
     st.caption(
         f"В расчёте используется: {'детализация' if local_costs_rub_calc > 0 else 'ручной ввод'}"
     )
+    local_rub = local_costs_rub  # alias for calc_model compatibility
 
-    calc = st.button("Рассчитать", type="primary")
+calc = st.button("Рассчитать", type="primary")
 
 # =========================
 # Результат
@@ -464,185 +466,6 @@ if calc:
     c5, c6 = st.columns(2)
     c5.metric("Итого стоимость товара в НВРСК , RUB", f"{res['total_rub']:,.0f}")
     c6.metric("Себестоимость, RUB/м²", f"{res['cost_rub_m2']:,.2f}")
-
-    # =========================
-    # (Блок) Печать / PDF (форма)
-    # =========================
-    st.subheader("Печать / PDF")
-
-    def _fmt_money(x, digits=2):
-        try:
-            return f"{float(x):,.{digits}f}".replace(",", " ")
-        except Exception:
-            return str(x)
-
-    def _fmt_int(x):
-        try:
-            return f"{float(x):,.0f}".replace(",", " ")
-        except Exception:
-            return str(x)
-
-    # Данные (ввод)
-    _print_rows_left = [
-        ("Фабрика / поставщик", supplier if supplier else "—"),
-        ("Страна", country),
-        ("Инкотермс", incoterms),
-        ("Тип доставки", transport),
-        ("Контейнеров", str(containers_qty)),
-        ("Порт отгрузки", port_loading),
-        ("Порт выгрузки", port_discharge),
-        ("Курс USD→RUB", _fmt_money(currency_rate, 2)),
-        ("Инвойс (итого)", f"{_fmt_money(invoice_total, 2)} {invoice_currency}"),
-        ("Товар", product_type),
-        ("Поверхность", finish),
-        ("Код ТН ВЭД", hs_code),
-        ("Пошлина, %", _fmt_money(duty_pct, 2)),
-        ("НДС, %", _fmt_money(VAT_PCT_FIXED, 2)),
-        ("Кол-во", f"{_fmt_money(qty_m2, 2)} {unit}"),
-        ("Цена", f"{_fmt_money(price_per_m2, 2)} {price_currency}/{unit}"),
-        ("Фрахт", f"{_fmt_money(freight_usd, 2)} USD/конт."),
-        ("DTHC портовые сборы", f"{_fmt_money(insurance_usd, 2)} USD/конт."),
-        ("Локальные расходы РФ (в расчёте)", f"{_fmt_int(local_rub)} ₽"),
-    ]
-
-    # Детализация локальных расходов (если заполнена)
-    _print_local_detail = [
-        ("Вывоз КТК из порта на СВХ (в т.ч. депо)", lr_ktt_out, "₽"),
-        ("Перетарка СВХ кросс-докинг (КТК → авто)", lr_restack_cross, "₽"),
-        ("ПРР механизированная", lr_prr_mech, "₽"),
-        ("ПРР ручная", lr_prr_manual, "₽"),
-        ("Паллетирование комплекс", lr_restack_ktt, "₽"),
-        ("Перетарка на СВХ (лифт)", lr_restack_terminal, "₽"),
-        ("Хранение на СВХ", lr_storage, "₽"),
-        ("Доставка по РФ до склада клиента", lr_delivery_rf, "₽"),
-    ]
-
-    # Итоги (результат)
-    _print_totals = [
-        ("Товар, USD", res["goods_usd"], "USD"),
-        ("Тамож. стоимость, USD", res["customs_value_usd"], "USD"),
-        ("Пошлина, USD", res["duty_usd"], "USD"),
-        ("НДС 22%+тамож.сбор, USD", res["vat_usd"], "USD"),
-        ("Итого стоимость товара в НВРСК, RUB", res["total_rub"], "₽"),
-        ("Себестоимость, RUB/м²", res["cost_rub_m2"], "₽"),
-    ]
-
-    _rows_left_html = "".join(
-        f"<tr><td>{k}</td><td style='text-align:right'>{v}</td></tr>"
-        for k, v in _print_rows_left
-    )
-
-    _rows_local_html = "".join(
-        f"<tr><td>{k}</td><td style='text-align:right'>{_fmt_money(v, 2)} {u}</td></tr>"
-        for k, v, u in _print_local_detail
-    )
-
-    _rows_totals_html = "".join(
-        f"<tr><td>{k}</td><td style='text-align:right'>{_fmt_money(v, 2)} {u}</td></tr>"
-        for k, v, u in _print_totals
-    )
-
-    _html_print = f"""
-    <!doctype html>
-    <html>
-    <head>
-      <meta charset="utf-8" />
-      <style>
-        @page {{ size: A4; margin: 14mm; }}
-        body {{ font-family: Arial, sans-serif; color:#111; }}
-        .header {{ display:flex; align-items:center; gap:14px; margin-bottom: 10px; }}
-        .logo {{ height:46px; }}
-        .title {{ font-size: 18px; font-weight: 800; margin:0; }}
-        .subtitle {{ margin:2px 0 0 0; color:#444; font-size: 12px; }}
-        .grid {{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }}
-        .card {{ border:1px solid #ddd; border-radius:10px; padding:10px 12px; }}
-        .card h3 {{ margin:0 0 8px 0; font-size: 13px; }}
-        .t {{ width:100%; border-collapse: collapse; }}
-        .t th, .t td {{ border-bottom:1px solid #eee; padding:6px 6px; font-size: 12px; vertical-align: top; }}
-        .t th {{ text-align:left; color:#333; font-weight:700; }}
-        .sum td {{ border-top: 2px solid #ddd; }}
-        .footer {{ margin-top: 10px; font-size: 10px; color:#777; }}
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <img class="logo" src="assets/bris_logo.png" />
-        <div>
-          <p class="title">BRIS Logistics — расчёт себестоимости</p>
-          <p class="subtitle">{country} • {incoterms} • {transport} • Контейнеров: {containers_qty}</p>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <h3>Вводные данные</h3>
-          <table class="t"><tbody>{_rows_left_html}</tbody></table>
-        </div>
-
-        <div class="card">
-          <h3>Итоги</h3>
-          <table class="t"><tbody>{_rows_totals_html}</tbody></table>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:10px;">
-        <h3>Локальные расходы РФ (детализация)</h3>
-        <table class="t">
-          <thead><tr><th>Статья</th><th style="text-align:right">Значение</th></tr></thead>
-          <tbody>
-            {_rows_local_html}
-            <tr class="sum"><td><b>Итого локальные (в расчёте)</b></td><td style="text-align:right"><b>{_fmt_int(local_rub)} ₽</b></td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="footer">
-        BRIS Ceramic • Документ сформирован автоматически из калькулятора.
-      </div>
-    </body>
-    </html>
-    """
-
-    with st.expander("Открыть форму для печати (A4)", expanded=False):
-        components.html(_html_print, height=900, scrolling=True)
-        st.caption("Далее: Ctrl+P → Save as PDF / Печать.")
-
-    # =========================
-    # Экспорт формы (Excel / CSV) — без внешних библиотек
-    # =========================
-    def _csv_cell(v):
-        s = str(v)
-        s = s.replace(";", ",").replace("\n", " ").replace("\r", " ")
-        return s
-
-    _csv_rows = []
-    _csv_rows.append(["Вводные данные", ""])
-    for k, v in _print_rows_left:
-        _csv_rows.append([k, v])
-
-    _csv_rows.append(["", ""])
-    _csv_rows.append(["Итоги", ""])
-    for k, v, u in _print_totals:
-        _csv_rows.append([k, f"{_fmt_money(v, 2)} {u}"])
-
-    _csv_rows.append(["", ""])
-    _csv_rows.append(["Локальные расходы РФ (детализация)", ""])
-    for k, v, u in _print_local_detail:
-        _csv_rows.append([k, f"{_fmt_money(v, 2)} {u}"])
-
-    _csv_rows.append(["Итого локальные (в расчёте)", f"{_fmt_int(local_rub)} ₽"])
-
-    _csv_text = "\n".join(";".join(_csv_cell(c) for c in row) for row in _csv_rows)
-
-    st.download_button(
-        "Скачать форму (Excel / CSV)",
-        data=_csv_text.encode("utf-8"),
-        file_name="BRIS_Logistics_Print_Form.csv",
-        mime="text/csv",
-        use_container_width=True
-    )
-
-
 
 else:
     st.write("Заполни параметры слева и нажми **Рассчитать**.")
