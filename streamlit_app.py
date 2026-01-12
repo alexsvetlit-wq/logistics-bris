@@ -1,6 +1,44 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
+# --- Sidebar collapse/expand helper ---
+st.markdown(
+    '''
+    <style>
+      /* button style */
+      .sidebar-toggle {
+        position: fixed;
+        left: 6px;
+        bottom: 12px;
+        z-index: 9999;
+        background: #f3f4f6;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 6px 8px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+    </style>
+    <script>
+      function toggleSidebar() {
+        const sidebar = window.parent.document.querySelector('section[data-testid="stSidebar"]');
+        if (!sidebar) return;
+        const collapsed = sidebar.style.width === '0px';
+        if (collapsed) {
+          sidebar.style.width = '';
+          sidebar.style.minWidth = '';
+          sidebar.style.display = '';
+        } else {
+          sidebar.style.width = '0px';
+          sidebar.style.minWidth = '0px';
+          sidebar.style.display = 'none';
+        }
+      }
+    </script>
+    ''',
+    unsafe_allow_html=True
+)
+
 
 # =========================
 # Logistics калькулятор  =========================
@@ -240,6 +278,13 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
     st.header("Ввод данных")
+    st.markdown(
+        '''
+        <div class="sidebar-toggle" onclick="toggleSidebar()">«</div>
+        ''',
+        unsafe_allow_html=True
+    )
+
 
 
     supplier = st.text_input("Фабрика / поставщик (как в инвойсе)")
