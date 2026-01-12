@@ -2,7 +2,6 @@
 <style>
 .print-two-cols {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   column-gap: 120px; /* MAX gap between blocks */
   width: 100%;
 }
@@ -17,6 +16,31 @@
 </style>
 
 import streamlit as st
+
+import streamlit as st
+
+st.markdown(
+    """
+    <style>
+    .print-two-cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 140px;
+        width: 100%;
+    }
+    .print-left {
+        text-align: left;
+        justify-self: start;
+    }
+    .print-right {
+        text-align: right;
+        justify-self: end;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 import streamlit.components.v1 as components
 
 
