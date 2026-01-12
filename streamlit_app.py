@@ -1,95 +1,54 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# --- Sidebar collapse/expand buttons (fixed + sidebar bottom) ---
-st.markdown(
+# --- Fixed sidebar helper button (scroll sidebar to top) ---
+components.html(
     '''
-    <style>
-      .sidebar-toggle-fixed {
-        position: fixed;
-        left: 8px;
-        bottom: 12px;
-        z-index: 9999;
-        background: #f3f4f6;
-        border: 1px solid #d1d5db;
-        border-radius: 10px;
-        padding: 6px 10px;
-        cursor: pointer;
-        font-size: 16px;
-        user-select: none;
-      }
-      .sidebar-toggle-fixed:hover { filter: brightness(0.98); }
-      .sidebar-toggle-bottom {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        padding-top: 6px;
-      }
-      .sidebar-toggle-bottom button{
-        width: 100%;
-        border-radius: 10px;
-        border: 1px solid #d1d5db;
-        background: #f3f4f6;
-        padding: 6px 10px;
-        cursor: pointer;
-        font-size: 16px;
-      }
-    </style>
     <script>
-      function _getSidebarEl(){
-        return window.parent.document.querySelector('section[data-testid="stSidebar"]');
-      }
-      function _isCollapsed(sidebar){
-        return sidebar && (sidebar.style.display === 'none' || sidebar.style.width === '0px');
-      }
-      function _setToggleIcon(){
-        const sidebar = _getSidebarEl();
-        const btn = window.parent.document.getElementById('sidebarToggleFixed');
-        if(!btn) return;
-        btn.textContent = _isCollapsed(sidebar) ? '»' : '«';
-      }
-      function toggleSidebar(){
-        // Prefer Streamlit native collapse control (stable)
+      (function(){
         const doc = window.parent?.document || document;
-        const ctl = doc.querySelector('button[data-testid="collapsedControl"]');
-        if (ctl) { ctl.click(); return; }
 
-        // Fallback (older Streamlit DOM)
-        const alt = doc.querySelector('button[aria-label="Close sidebar"], button[aria-label="Open sidebar"]');
-        if (alt) { alt.click(); return; }
-
-        // Last-resort fallback: direct style manipulation
-        const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
-        if (!sidebar) return;
-        const collapsed = (sidebar.style.display === 'none' || sidebar.style.width === '0px');
-        if (collapsed) {
-          sidebar.style.display = '';
-          sidebar.style.width = '';
-          sidebar.style.minWidth = '';
-        } else {
-          sidebar.style.width = '0px';
-          sidebar.style.minWidth = '0px';
-          sidebar.style.display = 'none';
-        }
-      }
-      // expose for other components
-      try { window.toggleSidebar = toggleSidebar; } catch(e) {}
-      try { window.parent.toggleSidebar = toggleSidebar; } catch(e) {}
-      try { window.top.toggleSidebar = toggleSidebar; } catch(e) {}
-      // listen for toggle requests from other frames
-      try {
-        window.addEventListener('message', (ev) => {
-          if (ev && ev.data === 'toggleSidebar') {
-            try { toggleSidebar(); } catch(e) {}
+        function ensureBtn(){
+          // create (or reuse) fixed button
+          let btn = doc.getElementById('brisSidebarScrollTopBtn');
+          if(!btn){
+            btn = doc.createElement('div');
+            btn.id = 'brisSidebarScrollTopBtn';
+            btn.textContent = '«';
+            btn.style.position = 'fixed';
+            btn.style.left = '8px';
+            btn.style.bottom = '12px';
+            btn.style.zIndex = '999999';
+            btn.style.width = '48px';
+            btn.style.height = '48px';
+            btn.style.display = 'flex';
+            btn.style.alignItems = 'center';
+            btn.style.justifyContent = 'center';
+            btn.style.background = '#f3f4f6';
+            btn.style.border = '2px solid #d1d5db';
+            btn.style.borderRadius = '14px';
+            btn.style.cursor = 'pointer';
+            btn.style.fontSize = '20px';
+            btn.style.userSelect = 'none';
+            btn.addEventListener('click', () => {
+              try{
+                const sc = doc.querySelector('div[data-testid="stSidebarContent"]');
+                if(sc){ sc.scrollTo({top:0, behavior:'smooth'}); return; }
+                const sb = doc.querySelector('section[data-testid="stSidebar"]');
+                if(sb){ sb.scrollTo({top:0, behavior:'smooth'}); }
+              }catch(e){}
+            });
+            doc.body.appendChild(btn);
           }
-        });
-      } catch(e) {}
-      // init icon
-      setTimeout(_setToggleIcon, 300);
+        }
+
+        // init + keep alive (Streamlit may re-render DOM)
+        ensureBtn();
+        setInterval(ensureBtn, 1500);
+      })();
     </script>
-    <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="try{(window.parent||window.top||window).postMessage(\'toggleSidebar\',\'*\');}catch(e){}">«</div>
     ''',
-    unsafe_allow_html=True
+    height=0,
 )
 
 
@@ -614,7 +573,7 @@ with st.sidebar:
     st.markdown(
         '''
         <div style="position:relative; width:100%; height:36px; margin-top:8px;">
-          <div onclick="try{(window.parent||window.top||window).postMessage(\'toggleSidebar\',\'*\');}catch(e){}"
+          <div onclick="try{(window.parent||window.top||window).postMessage(\'scrollSidebarTop\',\'*\');}catch(e){}"
                style="
                  position:absolute;
                  right:6px;
