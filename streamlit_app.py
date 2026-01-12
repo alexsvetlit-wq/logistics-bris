@@ -72,22 +72,37 @@ st.markdown(
           sidebar.style.display = 'none';
         }
       }
+function scrollSidebarTop(){
+        const doc = window.parent?.document || document;
+        // Streamlit sidebar scroll container
+        const sc = doc.querySelector('div[data-testid="stSidebarContent"]');
+        if (sc) { sc.scrollTo({top: 0, behavior: 'smooth'}); return; }
+        // fallback: try sidebar itself
+        const sb = doc.querySelector('section[data-testid="stSidebar"]');
+        if (sb) { sb.scrollTo({top: 0, behavior: 'smooth'}); return; }
+      }
       // expose for other components
       try { window.toggleSidebar = toggleSidebar; } catch(e) {}
+      try { window.scrollSidebarTop = scrollSidebarTop; } catch(e) {}
       try { window.parent.toggleSidebar = toggleSidebar; } catch(e) {}
+      try { window.parent.scrollSidebarTop = scrollSidebarTop; } catch(e) {}
       try { window.top.toggleSidebar = toggleSidebar; } catch(e) {}
+      try { window.top.scrollSidebarTop = scrollSidebarTop; } catch(e) {}
       // listen for toggle requests from other frames
       try {
         window.addEventListener('message', (ev) => {
           if (ev && ev.data === 'toggleSidebar') {
             try { toggleSidebar(); } catch(e) {}
           }
+          if (ev && ev.data === 'scrollSidebarTop') {
+            try { scrollSidebarTop(); } catch(e) {}
+          }
         });
       } catch(e) {}
       // init icon
       setTimeout(_setToggleIcon, 300);
     </script>
-    <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="try{(window.parent||window.top||window).parent.document.querySelector('section[data-testid="stSidebar"]').scrollTo({top:0,behavior:'smooth'});}catch(e){}">«</div>
+    <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="try{(window.parent||window.top||window).postMessage(\'scrollSidebarTop\',\'*\');}catch(e){}">«</div>
     ''',
     unsafe_allow_html=True
 )
@@ -614,7 +629,7 @@ with st.sidebar:
     st.markdown(
         '''
         <div style="position:relative; width:100%; height:36px; margin-top:8px;">
-          <div onclick="try{(window.parent||window.top||window).parent.document.querySelector('section[data-testid="stSidebar"]').scrollTo({top:0,behavior:'smooth'});}catch(e){}"
+          <div onclick="try{(window.parent||window.top||window).postMessage(\'scrollSidebarTop\',\'*\');}catch(e){}"
                style="
                  position:absolute;
                  right:6px;
