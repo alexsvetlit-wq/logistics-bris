@@ -556,31 +556,29 @@ if calc:
     # =========================
     st.subheader("Печать / PDF")
 
-    
+    # --- Параметры печатной формы (включить/отключить блоки) ---
+    print_show_rewards = st.checkbox(
+        "Печатать блок: Вознаграждения (экспедитор/декларант/тех.импортер)",
+        value=True,
+        key="print_show_rewards",
+    )
+    print_show_cost_all = st.checkbox(
+        "Печатать блок: Себестоимость с учетом всех расходов",
+        value=True,
+        key="print_show_cost_all",
+    )
 
-# --- Параметры печатной формы (включить/отключить блоки) ---
-print_show_rewards = st.checkbox(
-    "Печатать блок: Вознаграждения (экспедитор/декларант/тех.импортер)",
-    value=True,
-    key="print_show_rewards",
-)
-print_show_cost_all = st.checkbox(
-    "Печатать блок: Себестоимость с учетом всех расходов",
-    value=True,
-    key="print_show_cost_all",
-)
-
-def _fmt_money(x, digits=2):
+    def _fmt_money(x, digits=2):
         try:
             return f"{float(x):,.{digits}f}".replace(",", " ")
         except Exception:
             return str(x)
 
-def _fmt_int(x):
-    try:
-        return f"{int(round(x)):,}".replace(",", " ")
-    except Exception:
-        return "—"
+    def _fmt_int(x):
+        try:
+            return f"{int(round(x)):,}".replace(",", " ")
+        except Exception:
+            return "—"
 
     # Данные (ввод)
     _print_rows_left = [
@@ -604,7 +602,7 @@ def _fmt_int(x):
         ("DTHC портовые сборы", f"{_fmt_money(insurance_usd, 2)} USD/конт."),
     ]
 
-    # Детализация локальных расходов (если заполнена)
+    # Детализация локальных расходов
     _print_local_detail = [
         ("Вывоз КТК из порта на СВХ (в т.ч. депо)", lr_ktt_out, "₽"),
         ("Перетарка СВХ кросс-докинг (КТК → авто)", lr_restack_cross, "₽"),
@@ -642,160 +640,176 @@ def _fmt_int(x):
         for k, v, u in _print_totals
     )
 
+    # --- Доп.блоки (условно печатаем) ---
+    rewards_block_html = ""
+    if print_show_rewards:
+        rewards_block_html = f"""
+      <div class="box">
+        <h3>Вознаграждение экспедитора и технического импортера</h3>
+        <table class="t totals">
+          <tr>
+            <td>Услуга по экспедированию / оформлению (100USD/ктк), USD</td>
+            <td style="text-align:right">{_fmt_money(exp_service_rub, 2)} USD</td>
+          </tr>
+          <tr>
+            <td>Агентская комиссия от подбора фрахта O/F (Ocean Freight), %</td>
+            <td style="text-align:right">{_fmt_money(exp_commission_pct, 2)} %</td>
+          </tr>
+          <tr>
+            <td>Оплата на фабрику за клиента (USD)</td>
+            <td style="text-align:right">{_fmt_money(res.get("factory_pay_usd", 0.0), 2)} USD</td>
+          </tr>
+          <tr>
+            <td>Сумма вознаграждений (USD)</td>
+            <td style="text-align:right">{_fmt_money(res.get("fees_usd", 0.0), 2)} USD</td>
+          </tr>
+        </table>
+      </div>
+"""
 
-    # --- значения для печатной формы (новые блоки) ---
+    cost_all_block_html = ""
+    if print_show_cost_all:
+        cost_all_block_html = f"""
+      <div class="box">
+        <h3>Себестоимость с учетом всех расходов</h3>
+        <table class="t totals">
+          <tr>
+            <td>Себестоимость, USD/{unit_sym}</td>
+            <td style="text-align:right">{_fmt_money(res.get("cost_all_usd_m2", 0.0), 2)} USD/{unit_sym}</td>
+          </tr>
+          <tr>
+            <td>Себестоимость, RUB/{unit_sym}</td>
+            <td style="text-align:right">{_fmt_money(res.get("cost_all_rub_m2", 0.0), 2)} ₽/{unit_sym}</td>
+          </tr>
+        </table>
+      </div>
+"""
 
-    exp_service_rub_s = (f"{exp_service_rub:,.2f} ₽").replace(",", " ")
-
-    exp_commission_pct_s = (f"{exp_commission_pct:,.2f} %").replace(",", " ")
-
-    exp_factory_pay_rub_s = (f"{res.get('factory_pay_usd', 0.0):,.2f} USD").replace(",", " ")
-
-    cost_all_usd_m2_s = (f"{cost_all_usd_m2_input:,.2f} USD/м²").replace(",", " ")
-
-    cost_all_rub_m2_s = (f"{cost_all_rub_m2_input:,.2f} ₽").replace(",", " ")
-
-    # --- Управление вы
-    <!doctype html>
-    <html>
-    <head>
-      <meta charset="utf-8" />
-      
-
-<style>
-  @page {{
-    size: A4 landscape;
-    margin: 8mm;
-  }}
-
-  html, body {{
-    padding: 0;
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #111;
-    font-size: 12px;
-    line-height: 1.2;
-  }}
-
-  /* Увеличиваем превью в iframe (не влияет на печать) */
-  @media screen {{
-    body {{
-      zoom: 1.25;
+    _html_print = f"""<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    @page {{
+      size: A4 landscape;
+      margin: 8mm;
     }}
-  }}
 
-  .top {{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 4px;
-  }}
+    html, body {{
+      padding: 0;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #111;
+      font-size: 12px;
+      line-height: 1.2;
+    }}
 
-  .logo {{
-    height: 22px;
-  }}
+    @media screen {{
+      body {{
+        zoom: 1.25;
+      }}
+    }}
 
-  .title {{
-    font-size: 14px;
-    font-weight: 700;
-    margin: 0;
-    padding: 0;
-  }}
+    .top {{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }}
 
-  .subtitle {{
-    font-size: 9px;
-    margin-top: 1px;
-    color: #444;
-  }}
+    .logo {{
+      height: 22px;
+    }}
 
-  .grid {{
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-  }}
+    .title {{
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0;
+      padding: 0;
+    }}
 
-  .left {{
-    flex: 0 0 64%;
-  }}
+    .subtitle {{
+      font-size: 9px;
+      margin-top: 1px;
+      color: #444;
+    }}
 
-  .right {{
-    flex: 0 0 36%;
-  }}
+    .grid {{
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }}
 
-  .box {{
-    border: 1px solid #d9d9d9;
-    border-radius: 6px;
-    padding: 6px 8px;
-    margin-bottom: 8px;
-  }}
+    .left {{
+      flex: 0 0 64%;
+    }}
 
-  .box h3 {{
-    font-size: 10px;
-    font-weight: 700;
-    margin: 0 0 6px 0;
-    padding: 0;
-  }}
+    .right {{
+      flex: 0 0 36%;
+    }}
 
-  table.t {{
-    width: 100%;
-    border-collapse: collapse;
-  }}
+    .box {{
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      padding: 6px 8px;
+      margin-bottom: 8px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }}
 
-  table.t td {{
-    border-top: 1px solid #ededed;
-    padding: 3px 0;
-    vertical-align: top;
-  }}
+    .box h3 {{
+      font-size: 10px;
+      font-weight: 700;
+      margin: 0 0 6px 0;
+      padding: 0;
+    }}
 
-  table.t tr:first-child td {{
-    border-top: none;
-  }}
+    table.t {{
+      width: 100%;
+      border-collapse: collapse;
+    }}
 
-  table.t td:first-child {{
-    color: #222;
-    padding-right: 22px;
-    width: 75%;
-  }}
+    table.t td {{
+      border-top: 1px solid #ededed;
+      padding: 3px 0;
+      vertical-align: top;
+    }}
 
-  table.t td:last-child {{
-    text-align: right;
-    white-space: nowrap;
-    width: 25%;
-  }}
+    table.t tr:first-child td {{
+      border-top: none;
+    }}
 
-  .totals td:first-child {{
-    width: 78%;
-  }}
-  .totals td:last-child {{
-    width: 22%;
-  }}
+    table.t td:first-child {{
+      color: #222;
+      padding-right: 22px;
+      width: 75%;
+    }}
 
-  .sum {{
-    font-weight: 700;
-    border-top: 1px solid #d0d0d0 !important;
-    padding-top: 5px !important;
-  }}
+    table.t td:last-child {{
+      text-align: right;
+      white-space: nowrap;
+      width: 25%;
+    }}
 
-  .footer {{
-    position: fixed;
-    bottom: 6mm;
-    left: 8mm;
-    right: 8mm;
-    text-align: center;
-    font-size: 8px;
-    color: #666;
-  }}
+    .totals td:first-child {{
+      width: 78%;
+    }}
+    .totals td:last-child {{
+      width: 22%;
+    }}
 
-  /* запрет разрывов внутри блоков */
-  .box {{
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }}
-</style>
-
-
-    </head>
-    <body>
+    .footer {{
+      position: fixed;
+      bottom: 6mm;
+      left: 8mm;
+      right: 8mm;
+      text-align: center;
+      font-size: 8px;
+      color: #666;
+    }}
+  </style>
+</head>
+<body>
   <div class="top">
     <img class="logo" src="assets/bris_logo.png" />
     <div>
@@ -821,23 +835,18 @@ def _fmt_int(x):
       </div>
 
       {rewards_block_html}
-
       {cost_all_block_html}
 
       <div class="box">
-        <h3> Расценки на прямые локальные расходы в РФ (актуализация на дату расчета)</h3>
+        <h3>Расценки на прямые локальные расходы в РФ (актуализация на дату расчета)</h3>
         <table class="t">
           {_rows_local_html}
-                  </table>
+        </table>
       </div>
-    </div>
-  </div>
-
-  <div class="footer">BRIS Ceramic — внутренний расчёт. Сгенерировано из калькулятора.</div>
 
       <div class="box" style="margin-top:12px;">
         <h3>Примечание</h3>
-        <p style="font-size:12px; line-height:1.4;">
+        <p style="font-size:12px; line-height:1.4; margin:0;">
           Расчёт не включает возможные дополнительные сборы за таможенные операции в порту,
           такие как сканирование MIIC/IIC (мобильный/стационарный инспекционный комплекс) и другие
           виды контроля, таможенные проверки/осмотры, дополнительное взвешивание, а также
@@ -845,56 +854,15 @@ def _fmt_int(x):
           задержек по вывозу контейнера из порта.
         </p>
       </div>
-
-</body>
-    </html>
-    yle="text-align:right">{exp_factory_pay_rub_s}</td>
-          </tr>
-        </table>
-      </div>
-
-      <div class="box">
-        <h3>Себестоимость с учетом всех расходов</h3>
-        <table class="t totals">
-          <tr>
-            <td>Себестоимость, USD/{unit_sym}</td>
-            <td style="text-align:right">{_fmt_money(res.get("cost_all_usd_m2",0),2)} USD/{unit_sym}</td>
-          </tr>
-          <tr>
-            <td>Себестоимость, RUB/{unit_sym}</td>
-            <td style="text-align:right">{_fmt_money(res.get("cost_all_rub_m2",0),2)} ₽/{unit_sym}</td>
-          </tr>
-        </table>
-      </div>
-
-      <div class="box">
-        <h3> Расценки на прямые локальные расходы в РФ (актуализация на дату расчета)</h3>
-        <table class="t">
-          {_rows_local_html}
-                  </table>
-      </div>
     </div>
   </div>
 
   <div class="footer">BRIS Ceramic — внутренний расчёт. Сгенерировано из калькулятора.</div>
-
-      <div class="box" style="margin-top:12px;">
-        <h3>Примечание</h3>
-        <p style="font-size:12px; line-height:1.4;">
-          Расчёт не включает возможные дополнительные сборы за таможенные операции в порту,
-          такие как сканирование MIIC/IIC (мобильный/стационарный инспекционный комплекс) и другие
-          виды контроля, таможенные проверки/осмотры, дополнительное взвешивание, а также
-          последующие сборы за задержание, демередж и хранение контейнеров, возникающие из‑за
-          задержек по вывозу контейнера из порта.
-        </p>
-      </div>
-
 </body>
-    </html>
-    """
+</html>
+"""
 
     with st.expander("Открыть форму для печати (A4)", expanded=False):
         components.html(_html_print, height=1400)
         st.caption("Далее: Ctrl+P → Save as PDF / Печать.")
 
-    
