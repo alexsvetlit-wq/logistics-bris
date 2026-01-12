@@ -48,7 +48,46 @@ st.markdown(
         if(!btn) return;
         btn.textContent = _isCollapsed(sidebar) ? '»' : '«';
       }
-      function toggleSidebar(){
+      
+      function ensureBottomToggle(){
+        const doc = window.parent?.document || document;
+        const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+        if(!sidebar) return;
+        // make sidebar positioning context
+        try { sidebar.style.position = 'relative'; } catch(e){}
+        let btn = doc.getElementById('sidebarToggleBottom');
+        if(!btn){
+          btn = doc.createElement('div');
+          btn.id = 'sidebarToggleBottom';
+          btn.textContent = '«';
+          btn.style.position = 'absolute';
+          btn.style.right = '10px';
+          btn.style.bottom = '10px';
+          btn.style.width = '32px';
+          btn.style.height = '32px';
+          btn.style.display = 'flex';
+          btn.style.alignItems = 'center';
+          btn.style.justifyContent = 'center';
+          btn.style.background = '#f3f4f6';
+          btn.style.border = '1px solid #d1d5db';
+          btn.style.borderRadius = '8px';
+          btn.style.cursor = 'pointer';
+          btn.style.fontSize = '16px';
+          btn.style.userSelect = 'none';
+          btn.style.zIndex = '9999';
+          btn.addEventListener('click', () => { try { toggleSidebar(); } catch(e){} });
+          sidebar.appendChild(btn);
+        } else {
+          // if sidebar recreated, re-append
+          if(btn.parentElement !== sidebar){
+            try { sidebar.appendChild(btn); } catch(e){}
+          }
+        }
+        // sync icon
+        try { btn.textContent = _isCollapsed(sidebar) ? '»' : '«'; } catch(e){}
+      }
+
+function toggleSidebar(){
         // Prefer Streamlit native collapse control (stable)
         const doc = window.parent?.document || document;
         const ctl = doc.querySelector('button[data-testid="collapsedControl"]');
@@ -86,6 +125,8 @@ st.markdown(
       } catch(e) {}
       // init icon
       setTimeout(_setToggleIcon, 300);
+      setTimeout(ensureBottomToggle, 350);
+      setInterval(ensureBottomToggle, 1500);
     </script>
     <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="try{(window.parent||window.top||window).postMessage(\'toggleSidebar\',\'*\');}catch(e){}">«</div>
     ''',
@@ -606,35 +647,6 @@ with st.sidebar:
         "Печатать блок: Себестоимость с учетом всех расходов",
         value=True,
         key="print_show_cost_all",
-    )
-
-
-    
-    # Кнопка сворачивания панели (дублирует фиксированную, симметричная)
-    st.markdown(
-        '''
-        <div style="position:relative; width:100%; height:36px; margin-top:8px;">
-          <div onclick="try{(window.parent||window.top||window).postMessage(\'toggleSidebar\',\'*\');}catch(e){}"
-               style="
-                 position:absolute;
-                 right:6px;
-                 bottom:0;
-                 width:32px;
-                 height:32px;
-                 display:flex;
-                 align-items:center;
-                 justify-content:center;
-                 background:#f3f4f6;
-                 border:1px solid #d1d5db;
-                 border-radius:8px;
-                 cursor:pointer;
-                 font-size:16px;
-                 user-select:none;">
-            «
-          </div>
-        </div>
-        ''',
-        unsafe_allow_html=True
     )
 
     calc_bottom = st.button("Рассчитать", type="primary", key="calc_bottom")
