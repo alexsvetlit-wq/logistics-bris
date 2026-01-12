@@ -556,7 +556,21 @@ if calc:
     # =========================
     st.subheader("Печать / PDF")
 
-    def _fmt_money(x, digits=2):
+    
+
+# --- Параметры печатной формы (включить/отключить блоки) ---
+print_show_rewards = st.checkbox(
+    "Печатать блок: Вознаграждения (экспедитор/декларант/тех.импортер)",
+    value=True,
+    key="print_show_rewards",
+)
+print_show_cost_all = st.checkbox(
+    "Печатать блок: Себестоимость с учетом всех расходов",
+    value=True,
+    key="print_show_cost_all",
+)
+
+def _fmt_money(x, digits=2):
         try:
             return f"{float(x):,.{digits}f}".replace(",", " ")
         except Exception:
@@ -641,8 +655,7 @@ if calc:
 
     cost_all_rub_m2_s = (f"{cost_all_rub_m2_input:,.2f} ₽").replace(",", " ")
 
-
-    _html_print = f"""
+    # --- Управление вы
     <!doctype html>
     <html>
     <head>
@@ -807,20 +820,35 @@ if calc:
         </table>
       </div>
 
+      {rewards_block_html}
+
+      {cost_all_block_html}
+
       <div class="box">
-        <h3>Вознаграждение экспедитора, декларанта, технического импортера</h3>
+        <h3> Расценки на прямые локальные расходы в РФ (актуализация на дату расчета)</h3>
         <table class="t">
-          <tr>
-            <td>Услуга по экспедированию / оформлению, USD</td>
-            <td style="text-align:right">{_fmt_money(res.get("exp_service_usd",0),2)} USD</td>
-          </tr>
-          <tr>
-            <td>Агентская комиссия по подбору O/F (Ocean Freight), USD</td>
-            <td style="text-align:right">{_fmt_money(res.get("exp_commission_usd",0),2)} USD</td>
-          </tr>
-          <tr>
-            <td>Оплата на фабрику за клиента (% от стоимости инвойса),USD</td>
-            <td style="text-align:right">{exp_factory_pay_rub_s}</td>
+          {_rows_local_html}
+                  </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">BRIS Ceramic — внутренний расчёт. Сгенерировано из калькулятора.</div>
+
+      <div class="box" style="margin-top:12px;">
+        <h3>Примечание</h3>
+        <p style="font-size:12px; line-height:1.4;">
+          Расчёт не включает возможные дополнительные сборы за таможенные операции в порту,
+          такие как сканирование MIIC/IIC (мобильный/стационарный инспекционный комплекс) и другие
+          виды контроля, таможенные проверки/осмотры, дополнительное взвешивание, а также
+          последующие сборы за задержание, демередж и хранение контейнеров, возникающие из‑за
+          задержек по вывозу контейнера из порта.
+        </p>
+      </div>
+
+</body>
+    </html>
+    yle="text-align:right">{exp_factory_pay_rub_s}</td>
           </tr>
         </table>
       </div>
