@@ -618,15 +618,6 @@ if calc:
         for k, v in _print_rows_left
     )
 
-    _rows_left_labels_html = "".join(
-        f"<div class='iv-row'>{k}</div>"
-        for k, v in _print_rows_left
-    )
-    _rows_left_values_html = "".join(
-        f"<div class='iv-row'>{v}</div>"
-        for k, v in _print_rows_left
-    )
-
     _rows_local_html = "".join(
         f"<tr><td>{k}</td><td style='text-align:right'>{_fmt_money(v, 2)} {u}</td></tr>"
         for k, v, u in _print_local_detail
@@ -749,21 +740,21 @@ if calc:
 
   table.t td:first-child {{
     color: #222;
-    padding-right: 10px;
-    width: 62%;
+    padding-right: 22px;
+    width: 75%;
   }}
 
   table.t td:last-child {{
     text-align: right;
     white-space: nowrap;
-    width: 38%;
+    width: 25%;
   }}
 
   .totals td:first-child {{
-    width: 70%;
+    width: 78%;
   }}
   .totals td:last-child {{
-    width: 30%;
+    width: 22%;
   }}
 
   .sum {{
@@ -772,41 +763,7 @@ if calc:
     padding-top: 5px !important;
   }}
 
-  
-  /* Разделение "Вводные данные" на 2 слабовидимых блока: подписи и значения */
-  .iv-wrap{{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 28px;
-    width: 100%;
-  }}
-  .iv-box{{
-    border: 1px solid #efefef;
-    background: #fafafa;
-    border-radius: 6px;
-    padding: 8px 10px;
-  }}
-  .iv-box.values{{
-    background: #ffffff;
-  }}
-  .iv-row{{
-    padding: 3px 0;
-    border-top: 1px solid #f1f1f1;
-    white-space: nowrap;
-  }}
-  .iv-row:first-child{{
-    border-top: none;
-  }}
-  .iv-box.labels .iv-row{{
-    color: #222;
-    text-align: left;
-  }}
-  .iv-box.values .iv-row{{
-    color: #111;
-    text-align: right;
-  }}
-
-.footer {{
+  .footer {{
     position: fixed;
     bottom: 6mm;
     left: 8mm;
@@ -838,14 +795,9 @@ if calc:
     <div class="left">
       <div class="box">
         <h3>Вводные данные</h3>
-        <div class="iv-wrap">
-          <div class="iv-box labels">
-            {_rows_left_labels_html}
-          </div>
-          <div class="iv-box values">
-            {_rows_left_values_html}
-          </div>
-        </div>
+        <table class="t">
+          {_rows_left_html}
+        </table>
       </div>
 
       <div class="box">
