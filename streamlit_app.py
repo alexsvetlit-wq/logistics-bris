@@ -669,9 +669,9 @@ if calc:
     max-width: 100%;
   }}
 
-  .top h1 {
+  .top h1 {{
     white-space: nowrap;
-{
+{{
     font-size: 14px;
     margin: 0 0 2mm 0;
   }}
