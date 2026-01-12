@@ -87,7 +87,7 @@ st.markdown(
       // init icon
       setTimeout(_setToggleIcon, 300);
     </script>
-    <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="try{(window.parent||window.top||window).postMessage(\'toggleSidebar\',\'*\');}catch(e){}">«</div>
+    <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="try{(window.parent||window.top||window).parent.document.querySelector('section[data-testid="stSidebar"]').scrollTo({top:0,behavior:'smooth'});}catch(e){}">«</div>
     ''',
     unsafe_allow_html=True
 )
@@ -614,7 +614,7 @@ with st.sidebar:
     st.markdown(
         '''
         <div style="position:relative; width:100%; height:36px; margin-top:8px;">
-          <div onclick="try{(window.parent||window.top||window).postMessage(\'toggleSidebar\',\'*\');}catch(e){}"
+          <div onclick="try{(window.parent||window.top||window).parent.document.querySelector('section[data-testid="stSidebar"]').scrollTo({top:0,behavior:'smooth'});}catch(e){}"
                style="
                  position:absolute;
                  right:6px;
