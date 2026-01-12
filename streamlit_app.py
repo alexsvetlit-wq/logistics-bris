@@ -228,7 +228,19 @@ def calc_model(
 # =========================
 
 with st.sidebar:
+    st.markdown(
+        """
+        <button onclick="document.getElementById('print_section').scrollIntoView({behavior: 'smooth'});"
+                style="width:100%;padding:8px;margin-bottom:8px;
+                       border-radius:6px;border:1px solid #ddd;
+                       background:#f5f5f5;cursor:pointer;">
+            ⬇ Перейти к печати
+        </button>
+        """,
+        unsafe_allow_html=True,
+    )
     st.header("Ввод данных")
+
 
     supplier = st.text_input("Фабрика / поставщик (как в инвойсе)")
 
@@ -570,6 +582,7 @@ if calc:
     # =========================
     # (Блок) Печать / PDF (форма)
     # =========================
+    st.markdown('<div id="print_section"></div>', unsafe_allow_html=True)
     st.subheader("Печать / PDF")
 
     def _fmt_money(x, digits=2):
