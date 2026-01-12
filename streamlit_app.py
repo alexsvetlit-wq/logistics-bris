@@ -158,6 +158,9 @@ def calc_model(
     else:
         invoice_usd = convert_to_usd(invoice_total, invoice_currency, usd_cny, usd_inr)
 
+    # Оплата на фабрику за клиента (% от инвойса)
+    factory_pay_usd = invoice_usd * (factory_pay_pct / 100.0)
+
     customs_value_usd = invoice_usd + (freight_usd * float(containers_qty))
 
     # 3) Пошлина (как было)
@@ -187,6 +190,7 @@ def calc_model(
         "customs_value_usd": customs_value_usd,
         "duty_usd": duty_usd,
         "vat_usd": vat_usd,
+        "factory_pay_usd": factory_pay_usd,
         "total_rub": total_rub,
         "cost_rub_m2": cost_rub_m2,
     }
@@ -377,10 +381,10 @@ with st.sidebar:
         value=10.0,
         step=0.5
     )
-    exp_factory_pay_rub = st.number_input(
-        "Оплата на фабрику за клиента (2-3% от total invoce),USD",
+    factory_pay_pct = st.number_input(
+        "Оплата на фабрику за клиента (% от стоимости инвойса), %",
         value=2.0,
-        step=1000.0
+        step=0.1
     )
 
     # =========================
@@ -764,7 +768,7 @@ if calc:
         <table class="t">
           <tr>
             <td>Услуга по экспедированию / оформлению, USD</td>
-            <td style="text-align:right">—</td>
+            <td style="text-align:right">{_fmt_money(res.get("factory_pay_usd",0),2)} USD</td>
           </tr>
           <tr>
             <td>Агентская комиссия по подбору O/F (Ocean Freight), USD</td>
