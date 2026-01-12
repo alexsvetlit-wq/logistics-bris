@@ -496,6 +496,22 @@ with st.sidebar:
         "В расчёте используется: ручной ввод"
     )
 
+
+    # =========================
+    # Печать: какие блоки показывать в печатной форме
+    # =========================
+    st.subheader("Печать (настройки)")
+    print_show_rewards = st.checkbox(
+        "Печатать блок: Вознаграждения (экспедитор/декларант/тех.импортер)",
+        value=True,
+        key="print_show_rewards",
+    )
+    print_show_cost_all = st.checkbox(
+        "Печатать блок: Себестоимость с учетом всех расходов",
+        value=True,
+        key="print_show_cost_all",
+    )
+
     calc = st.button("Рассчитать", type="primary")
 
 # =========================
@@ -555,18 +571,6 @@ if calc:
     # (Блок) Печать / PDF (форма)
     # =========================
     st.subheader("Печать / PDF")
-
-    # --- Параметры печатной формы (включить/отключить блоки) ---
-    print_show_rewards = st.checkbox(
-        "Печатать блок: Вознаграждения (экспедитор/декларант/тех.импортер)",
-        value=True,
-        key="print_show_rewards",
-    )
-    print_show_cost_all = st.checkbox(
-        "Печатать блок: Себестоимость с учетом всех расходов",
-        value=True,
-        key="print_show_cost_all",
-    )
 
     def _fmt_money(x, digits=2):
         try:
