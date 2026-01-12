@@ -170,6 +170,9 @@ def calc_model(
     # Услуга по экспедированию / оформлению = 100 USD × количество контейнеров
     exp_service_usd = exp_service_rub * float(containers_qty)
 
+    # Сумма вознаграждений (USD)
+    fees_usd = exp_service_usd + exp_commission_usd + factory_pay_usd
+
     # 3) Пошлина (как было)
     duty_usd = customs_value_usd * duty_pct / 100
 
@@ -180,6 +183,12 @@ def calc_model(
 
     vat_rub = (customs_value_usd + duty_usd) * usd_rub * (vat_pct / 100) + vat_fee_rub
     vat_usd = (vat_rub / usd_rub) if usd_rub else 0.0  # для отображения в USD
+
+    # Итого затраты с учетом всех расходов (USD)
+    total_usd_all = (customs_value_usd + duty_usd + vat_usd) + (insurance_usd * containers_qty) + fees_usd
+
+    # Итого затраты с учетом всех расходов (RUB)
+    total_rub_all = (total_usd_all * usd_rub) + local_rub
 
     # 5) Итого затраты (RUB) — учитываем НДС в рублях
     total_rub = (
@@ -192,6 +201,10 @@ def calc_model(
     # 6) Себестоимость за м² (RUB/м²)
     cost_rub_m2 = total_rub / qty_m2 if qty_m2 else 0
 
+    # Себестоимость с учетом всех расходов
+    cost_all_usd_m2 = total_usd_all / qty_m2 if qty_m2 else 0
+    cost_all_rub_m2 = total_rub_all / qty_m2 if qty_m2 else 0
+
     return {
         "goods_usd": goods_usd,
         "customs_value_usd": customs_value_usd,
@@ -202,6 +215,11 @@ def calc_model(
         "exp_service_usd": exp_service_usd,
         "total_rub": total_rub,
         "cost_rub_m2": cost_rub_m2,
+        "fees_usd": fees_usd,
+        "total_usd_all": total_usd_all,
+        "total_rub_all": total_rub_all,
+        "cost_all_usd_m2": cost_all_usd_m2,
+        "cost_all_rub_m2": cost_all_rub_m2,
     }
 
 
@@ -812,11 +830,11 @@ if calc:
         <table class="t totals">
           <tr>
             <td>Себестоимость, USD/{unit_sym}</td>
-            <td style="text-align:right">—</td>
+            <td style="text-align:right">{_fmt_money(res.get("cost_all_usd_m2",0),2)} USD/{unit_sym}</td>
           </tr>
           <tr>
             <td>Себестоимость, RUB/{unit_sym}</td>
-            <td style="text-align:right">—</td>
+            <td style="text-align:right">{_fmt_money(res.get("cost_all_rub_m2",0),2)} ₽/{unit_sym}</td>
           </tr>
         </table>
       </div>
