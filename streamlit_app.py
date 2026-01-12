@@ -725,6 +725,18 @@ if calc:
   table.t td:last-child {{
     padding-left: 10px;
   }}
+
+
+  /* Разводим блоки подпись / значение сильнее */
+  table.t td:first-child {
+    width: 58%;
+    padding-right: 24px;
+  }
+
+  table.t td:last-child {
+    width: 42%;
+    padding-left: 24px;
+  }
 </style>
 
 
