@@ -49,9 +49,20 @@ st.markdown(
         btn.textContent = _isCollapsed(sidebar) ? '»' : '«';
       }
       function toggleSidebar(){
-        const sidebar = _getSidebarEl();
-        if(!sidebar) return;
-        if(_isCollapsed(sidebar)){
+        // Prefer Streamlit native collapse control (stable)
+        const doc = window.parent?.document || document;
+        const ctl = doc.querySelector('button[data-testid="collapsedControl"]');
+        if (ctl) { ctl.click(); return; }
+
+        // Fallback (older Streamlit DOM)
+        const alt = doc.querySelector('button[aria-label="Close sidebar"], button[aria-label="Open sidebar"]');
+        if (alt) { alt.click(); return; }
+
+        // Last-resort fallback: direct style manipulation
+        const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+        if (!sidebar) return;
+        const collapsed = (sidebar.style.display === 'none' || sidebar.style.width === '0px');
+        if (collapsed) {
           sidebar.style.display = '';
           sidebar.style.width = '';
           sidebar.style.minWidth = '';
@@ -60,7 +71,6 @@ st.markdown(
           sidebar.style.minWidth = '0px';
           sidebar.style.display = 'none';
         }
-        setTimeout(_setToggleIcon, 50);
       }
       // expose for other components
       try { window.toggleSidebar = toggleSidebar; } catch(e) {}
