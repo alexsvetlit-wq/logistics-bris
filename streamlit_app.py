@@ -504,6 +504,22 @@ if calc:
         exp_commission_pct,
     )
 
+    # =========================
+    # Контроль: товар (qty × price) vs инвойс — сравнение по целым USD
+    # =========================
+    goods_usd_int = int(res.get("goods_usd", 0))
+    # invoice_usd считаем заново для контроля (инвойс не участвует в расчёте товара)
+    if invoice_currency == "RUB":
+        invoice_usd_ctrl = int((invoice_total / currency_rate)) if currency_rate else 0
+    else:
+        invoice_usd_ctrl = int(convert_to_usd(invoice_total, invoice_currency, usd_cny, usd_inr))
+
+    if goods_usd_int != invoice_usd_ctrl:
+        st.warning(
+            f"⚠️ Контроль: расчёт товара {goods_usd_int} USD "
+            f"не совпадает с инвойсом {invoice_usd_ctrl} USD"
+        )
+
     with st.expander("Сводка расчёта", expanded=True):
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Товар, USD", f"{res['goods_usd']:,.2f}")
