@@ -167,6 +167,9 @@ def calc_model(
     # Агентская комиссия = % × фрахт × количество контейнеров
     exp_commission_usd = freight_usd * float(containers_qty) * (exp_commission_pct / 100.0)
 
+    # Услуга по экспедированию / оформлению = 100 USD × количество контейнеров
+    exp_service_usd = exp_service_rub * float(containers_qty)
+
     # 3) Пошлина (как было)
     duty_usd = customs_value_usd * duty_pct / 100
 
@@ -196,6 +199,7 @@ def calc_model(
         "vat_usd": vat_usd,
         "factory_pay_usd": factory_pay_usd,
         "exp_commission_usd": exp_commission_usd,
+        "exp_service_usd": exp_service_usd,
         "total_rub": total_rub,
         "cost_rub_m2": cost_rub_m2,
     }
@@ -774,7 +778,7 @@ if calc:
         <table class="t">
           <tr>
             <td>Услуга по экспедированию / оформлению, USD</td>
-            <td style="text-align:right">{_fmt_money(res.get("factory_pay_usd",0),2)} USD</td>
+            <td style="text-align:right">{_fmt_money(res.get("exp_service_usd",0),2)} USD</td>
           </tr>
           <tr>
             <td>Агентская комиссия по подбору O/F (Ocean Freight), USD</td>
