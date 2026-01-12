@@ -76,10 +76,18 @@ st.markdown(
       try { window.toggleSidebar = toggleSidebar; } catch(e) {}
       try { window.parent.toggleSidebar = toggleSidebar; } catch(e) {}
       try { window.top.toggleSidebar = toggleSidebar; } catch(e) {}
+      // listen for toggle requests from other frames
+      try {
+        window.addEventListener('message', (ev) => {
+          if (ev && ev.data === 'toggleSidebar') {
+            try { toggleSidebar(); } catch(e) {}
+          }
+        });
+      } catch(e) {}
       // init icon
       setTimeout(_setToggleIcon, 300);
     </script>
-    <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="var f=(window.toggleSidebar||window.parent.toggleSidebar||window.top.toggleSidebar); if(f){f();}">«</div>
+    <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="try{(window.parent||window.top||window).postMessage(\'toggleSidebar\',\'*\');}catch(e){}">«</div>
     ''',
     unsafe_allow_html=True
 )
@@ -606,7 +614,7 @@ with st.sidebar:
     st.markdown(
         '''
         <div style="position:relative; width:100%; height:36px; margin-top:8px;">
-          <div onclick="var f=(window.toggleSidebar||window.parent.toggleSidebar||window.top.toggleSidebar); if(f){f();}"
+          <div onclick="try{(window.parent||window.top||window).postMessage(\'toggleSidebar\',\'*\');}catch(e){}"
                style="
                  position:absolute;
                  right:6px;
