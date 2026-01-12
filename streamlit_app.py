@@ -660,8 +660,8 @@ if calc:
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     color: #111;
-    font-size: 13px;
-    line-height: 1.25;
+    font-size: 14.5px;
+    line-height: 1.35;
   }}
 
   .container {{
@@ -672,12 +672,12 @@ if calc:
   .top h1 {{
     white-space: nowrap;
 {{
-    font-size: 16px;
+    font-size: 17.5px;
     margin: 0 0 2mm 0;
   }}
 
   .top .subtitle {{
-    font-size: 12px;
+    font-size: 13.5px;
     margin-bottom: 3mm;
   }}
 
@@ -706,15 +706,25 @@ if calc:
   }}
 
   .note p {{
-    font-size: 11px;
-    line-height: 1.25;
+    font-size: 12px;
+    line-height: 1.35;
     margin: 4px 0 0 0;
   }}
 
   .footer {{
-    font-size: 10px;
+    font-size: 11px;
     margin-top: 4px;
   }}
+
+
+  /* Раздвигаем подписи и значения */
+  table.t td:first-child {
+    padding-right: 18px;
+  }
+
+  table.t td:last-child {
+    padding-left: 18px;
+  }
 </style>
 
 
