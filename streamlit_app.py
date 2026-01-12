@@ -652,7 +652,7 @@ if calc:
 <style>
   @page {{
     size: A4 landscape;
-    margin: 6mm;
+    margin: 8mm 10mm;
   }}
 
   html, body {{
@@ -685,7 +685,7 @@ if calc:
     width: 100%;
     border: 1px solid #d9d9d9;
     border-radius: 6px;
-    padding: 6px 8px;
+    padding: 4px 6px;
     margin-bottom: 6px;
     box-sizing: border-box;
   }}
@@ -696,7 +696,7 @@ if calc:
   }}
 
   table.t td {{
-    padding: 3px 4px;
+    padding: 2px 4px;
     vertical-align: top;
   }}
 
@@ -719,11 +719,11 @@ if calc:
 
   /* Раздвигаем подписи и значения */
   table.t td:first-child {{
-    padding-right: 18px;
+    padding-right: 10px;
   }}
 
   table.t td:last-child {{
-    padding-left: 18px;
+    padding-left: 10px;
   }}
 </style>
 
