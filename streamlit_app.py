@@ -578,12 +578,9 @@ def _fmt_money(x, digits=2):
 
 def _fmt_int(x):
     try:
-        return f"{int(round(x)):,}".replace(',', ' ')
+        return f"{int(round(x)):,}".replace(",", " ")
     except Exception:
         return "—"
-            return f"{float(x):,.0f}".replace(",", " ")
-        except Exception:
-            return str(x)
 
     # Данные (ввод)
     _print_rows_left = [
