@@ -576,8 +576,11 @@ def _fmt_money(x, digits=2):
         except Exception:
             return str(x)
 
-    def _fmt_int(x):
-        try:
+def _fmt_int(x):
+    try:
+        return f"{int(round(x)):,}".replace(',', ' ')
+    except Exception:
+        return "—"
             return f"{float(x):,.0f}".replace(",", " ")
         except Exception:
             return str(x)
