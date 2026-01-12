@@ -650,135 +650,71 @@ if calc:
       
 
 <style>
-  @page {{
+  @page {
     size: A4 landscape;
-    margin: 8mm;
-  }}
+    margin: 6mm;
+  }
 
-  html, body {{
+  html, body {
     padding: 0;
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     color: #111;
-    font-size: 12px;
-    line-height: 1.2;
-  }}
+    font-size: 11px;
+    line-height: 1.15;
+  }
 
-  /* Увеличиваем превью в iframe (не влияет на печать) */
-  @media screen {{
-    body {{
-      zoom: 1.25;
-    }}
-  }}
+  .container {
+    width: 100%;
+    max-width: 100%;
+  }
 
-  .top {{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 4px;
-  }}
-
-  .logo {{
-    height: 22px;
-  }}
-
-  .title {{
+  .top h1 {
     font-size: 14px;
-    font-weight: 700;
-    margin: 0;
-    padding: 0;
-  }}
+    margin: 0 0 2mm 0;
+  }
 
-  .subtitle {{
-    font-size: 9px;
-    margin-top: 1px;
-    color: #444;
-  }}
+  .top .subtitle {
+    font-size: 10px;
+    margin-bottom: 3mm;
+  }
 
-  .grid {{
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-  }}
-
-  .left {{
-    flex: 0 0 64%;
-  }}
-
-  .right {{
-    flex: 0 0 36%;
-  }}
-
-  .box {{
+  .box {
+    width: 100%;
     border: 1px solid #d9d9d9;
     border-radius: 6px;
     padding: 6px 8px;
-    margin-bottom: 8px;
-  }}
+    margin-bottom: 6px;
+    box-sizing: border-box;
+  }
 
-  .box h3 {{
-    font-size: 10px;
-    font-weight: 700;
-    margin: 0 0 6px 0;
-    padding: 0;
-  }}
-
-  table.t {{
+  table.t {
     width: 100%;
     border-collapse: collapse;
-  }}
+  }
 
-  table.t td {{
-    border-top: 1px solid #ededed;
-    padding: 3px 0;
+  table.t td {
+    padding: 3px 4px;
     vertical-align: top;
-  }}
+  }
 
-  table.t tr:first-child td {{
-    border-top: none;
-  }}
-
-  table.t td:first-child {{
-    color: #222;
-    padding-right: 10px;
-    width: 62%;
-  }}
-
-  table.t td:last-child {{
+  table.t td:last-child {
     text-align: right;
     white-space: nowrap;
-    width: 38%;
-  }}
+  }
 
-  .totals td:first-child {{
-    width: 70%;
-  }}
-  .totals td:last-child {{
-    width: 30%;
-  }}
+  .note p {
+    font-size: 9px;
+    line-height: 1.25;
+    margin: 4px 0 0 0;
+  }
 
-  .sum {{
-    font-weight: 700;
-    border-top: 1px solid #d0d0d0 !important;
-    padding-top: 5px !important;
-  }}
-
-  .footer {{
-    position: fixed;
-    bottom: 6mm;
-    left: 8mm;
-    right: 8mm;
-    text-align: center;
+  .footer {
     font-size: 8px;
-    color: #666;
-  }}
-
-  /* запрет разрывов внутри блоков */
-  .box {{
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }}
+    margin-top: 4px;
+  }
 </style>
+
 
 
     </head>
@@ -850,7 +786,7 @@ if calc:
 
   <div class="footer">BRIS Ceramic — внутренний расчёт. Сгенерировано из калькулятора.</div>
 
-      <div class="box" style="margin-top:12px;">
+      <div class="box note" style="margin-top:6px;">
         <h3>Примечание</h3>
         <p style="font-size:12px; line-height:1.4;">
           Расчёт не включает возможные дополнительные сборы за таможенные операции в порту,
