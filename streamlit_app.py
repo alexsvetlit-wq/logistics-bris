@@ -768,6 +768,30 @@ if calc:
     width: 100%;
     margin: 0 auto;
   }}
+
+
+  /* Разводим "Вводные данные" (подписи) и "значения вводных данных" (значения) */
+  table.t {{
+    width: 100%;
+    table-layout: fixed;
+  }}
+
+  table.t td {{
+    white-space: nowrap;        /* всё в одну строку */
+    overflow: hidden;           /* не ломаем верстку */
+    text-overflow: ellipsis;    /* если слишком длинно — многоточие */
+  }}
+
+  table.t td:first-child {{
+    width: 70%;
+    padding-right: 48px;        /* увеличенный зазор между блоками */
+  }}
+
+  table.t td:last-child {{
+    width: 30%;
+    padding-left: 48px;         /* увеличенный зазор между блоками */
+    text-align: right;
+  }}
 </style>
 
 
