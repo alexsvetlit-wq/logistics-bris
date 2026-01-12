@@ -52,6 +52,96 @@ components.html(
 )
 
 
+
+# --- Sidebar bottom collapse button (inside sidebar DOM) ---
+components.html(
+    '''
+    <script>
+      (function(){
+        const doc = window.parent?.document || document;
+
+        function findCollapseButton(){
+          // Most common Streamlit selectors (vary by version/theme)
+          const candidates = [
+            'button[data-testid="collapsedControl"]',                        // sometimes exists
+            'button[aria-label="Close sidebar"]',
+            'button[aria-label="Open sidebar"]',
+            'button[title="Close sidebar"]',
+            'button[title="Open sidebar"]',
+            '[data-testid="stSidebar"] button[aria-label="Close sidebar"]',
+            '[data-testid="stSidebar"] button[aria-label="Open sidebar"]',
+            '[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] button',
+            '[data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"]',
+            'button[data-testid="stSidebarCollapseButton"]',
+          ];
+          for (const sel of candidates){
+            const el = doc.querySelector(sel);
+            if (el) return el;
+          }
+          return null;
+        }
+
+        function toggleSidebar(){
+          const btn = findCollapseButton();
+          if (btn) { btn.click(); return; }
+
+          // Fallback: click first "sidebar" icon button in header area
+          const headerBtns = Array.from(doc.querySelectorAll('header button'));
+          const maybe = headerBtns.find(b=>{
+            const a = (b.getAttribute('aria-label')||'').toLowerCase();
+            const t = (b.getAttribute('title')||'').toLowerCase();
+            return a.includes('sidebar') || t.includes('sidebar');
+          });
+          if (maybe) { maybe.click(); }
+        }
+
+        function ensureSidebarBottomBtn(){
+          const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+          if(!sidebar) return;
+
+          // Streamlit places scrollable content in stSidebarContent; we attach to sidebar itself.
+          let host = sidebar;
+          // Make positioning context
+          try { host.style.position = 'relative'; } catch(e){}
+
+          let btn = doc.getElementById('brisSidebarCollapseBtn');
+          if(!btn){
+            btn = doc.createElement('div');
+            btn.id = 'brisSidebarCollapseBtn';
+            btn.textContent = '«';
+            btn.style.position = 'absolute';
+            btn.style.right = '10px';
+            btn.style.bottom = '10px';
+            btn.style.width = '48px';
+            btn.style.height = '48px';
+            btn.style.display = 'flex';
+            btn.style.alignItems = 'center';
+            btn.style.justifyContent = 'center';
+            btn.style.background = '#f3f4f6';
+            btn.style.border = '2px solid #d1d5db';
+            btn.style.borderRadius = '14px';
+            btn.style.cursor = 'pointer';
+            btn.style.fontSize = '20px';
+            btn.style.userSelect = 'none';
+            btn.style.zIndex = '999999';
+            btn.addEventListener('click', ()=>{ try{ toggleSidebar(); }catch(e){} });
+            host.appendChild(btn);
+          } else {
+            if (btn.parentElement !== host){
+              try { host.appendChild(btn); } catch(e){}
+            }
+          }
+        }
+
+        ensureSidebarBottomBtn();
+        // Streamlit rerenders; keep alive
+        setInterval(ensureSidebarBottomBtn, 1200);
+      })();
+    </script>
+    ''',
+    height=0,
+)
+
 # =========================
 # Logistics калькулятор  =========================
 
@@ -565,35 +655,6 @@ with st.sidebar:
         "Печатать блок: Себестоимость с учетом всех расходов",
         value=True,
         key="print_show_cost_all",
-    )
-
-
-    
-    # Кнопка сворачивания панели (дублирует фиксированную, симметричная)
-    st.markdown(
-        '''
-        <div style="position:relative; width:100%; height:36px; margin-top:8px;">
-          <div onclick="try{(window.parent||window.top||window).postMessage(\'scrollSidebarTop\',\'*\');}catch(e){}"
-               style="
-                 position:absolute;
-                 right:6px;
-                 bottom:0;
-                 width:32px;
-                 height:32px;
-                 display:flex;
-                 align-items:center;
-                 justify-content:center;
-                 background:#f3f4f6;
-                 border:1px solid #d1d5db;
-                 border-radius:8px;
-                 cursor:pointer;
-                 font-size:16px;
-                 user-select:none;">
-            «
-          </div>
-        </div>
-        ''',
-        unsafe_allow_html=True
     )
 
     calc_bottom = st.button("Рассчитать", type="primary", key="calc_bottom")
