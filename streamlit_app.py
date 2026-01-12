@@ -728,15 +728,15 @@ if calc:
 
 
   /* Разводим блоки подпись / значение сильнее */
-  table.t td:first-child {
+  table.t td:first-child {{
     width: 58%;
     padding-right: 24px;
-  }
+  }}
 
-  table.t td:last-child {
+  table.t td:last-child {{
     width: 42%;
     padding-left: 24px;
-  }
+  }}
 </style>
 
 
