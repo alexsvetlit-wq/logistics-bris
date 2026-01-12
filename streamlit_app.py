@@ -669,7 +669,9 @@ if calc:
     max-width: 100%;
   }}
 
-  .top h1 {{
+  .top h1 {
+    white-space: nowrap;
+{
     font-size: 14px;
     margin: 0 0 2mm 0;
   }}
@@ -720,7 +722,7 @@ if calc:
     </head>
     <body>
   <div class="top">
-    <img class="logo" src="assets/bris_logo.png" />
+    
     <div>
       <div class="title">BRIS Logistics — расчёт себестоимости</div>
       <div class="subtitle">{country} • {incoterms} • {transport} • Контейнеров: {containers_qty}</div>
