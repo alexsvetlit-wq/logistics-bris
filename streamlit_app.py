@@ -755,6 +755,19 @@ if calc:
     padding-left: 42px;
     text-align: right;
   }}
+
+
+  /* Центрирование всей печатной формы по горизонтали */
+  body {{
+    display: flex;
+    justify-content: center;
+  }}
+
+  .container {{
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+  }}
 </style>
 
 
