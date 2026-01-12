@@ -1,40 +1,71 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# --- Sidebar collapse/expand helper ---
+# --- Sidebar collapse/expand buttons (fixed + sidebar bottom) ---
 st.markdown(
     '''
     <style>
-      /* button style */
-      .sidebar-toggle {
+      .sidebar-toggle-fixed {
         position: fixed;
-        left: 6px;
+        left: 8px;
         bottom: 12px;
         z-index: 9999;
         background: #f3f4f6;
         border: 1px solid #d1d5db;
-        border-radius: 8px;
-        padding: 6px 8px;
+        border-radius: 10px;
+        padding: 6px 10px;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 16px;
+        user-select: none;
+      }
+      .sidebar-toggle-fixed:hover { filter: brightness(0.98); }
+      .sidebar-toggle-bottom {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding-top: 6px;
+      }
+      .sidebar-toggle-bottom button{
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        background: #f3f4f6;
+        padding: 6px 10px;
+        cursor: pointer;
+        font-size: 16px;
       }
     </style>
     <script>
-      function toggleSidebar() {
-        const sidebar = window.parent.document.querySelector('section[data-testid="stSidebar"]');
-        if (!sidebar) return;
-        const collapsed = sidebar.style.width === '0px';
-        if (collapsed) {
+      function _getSidebarEl(){
+        return window.parent.document.querySelector('section[data-testid="stSidebar"]');
+      }
+      function _isCollapsed(sidebar){
+        return sidebar && (sidebar.style.display === 'none' || sidebar.style.width === '0px');
+      }
+      function _setToggleIcon(){
+        const sidebar = _getSidebarEl();
+        const btn = window.parent.document.getElementById('sidebarToggleFixed');
+        if(!btn) return;
+        btn.textContent = _isCollapsed(sidebar) ? '»' : '«';
+      }
+      function toggleSidebar(){
+        const sidebar = _getSidebarEl();
+        if(!sidebar) return;
+        if(_isCollapsed(sidebar)){
+          sidebar.style.display = '';
           sidebar.style.width = '';
           sidebar.style.minWidth = '';
-          sidebar.style.display = '';
         } else {
           sidebar.style.width = '0px';
           sidebar.style.minWidth = '0px';
           sidebar.style.display = 'none';
         }
+        setTimeout(_setToggleIcon, 50);
       }
+      // init icon
+      setTimeout(_setToggleIcon, 300);
     </script>
+    <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="toggleSidebar()">«</div>
     ''',
     unsafe_allow_html=True
 )
@@ -266,24 +297,10 @@ def calc_model(
 # =========================
 
 with st.sidebar:
-    st.markdown(
-        """
-        <button onclick="document.getElementById('print_section').scrollIntoView({behavior: 'smooth'});"
-                style="width:100%;padding:8px;margin-bottom:8px;
-                       border-radius:6px;border:1px solid #ddd;
-                       background:#f5f5f5;cursor:pointer;">
-            ⬇ Перейти к печати
-        </button>
-        """,
-        unsafe_allow_html=True,
-    )
     st.header("Ввод данных")
-    st.markdown(
-        '''
-        <div class="sidebar-toggle" onclick="toggleSidebar()">«</div>
-        ''',
-        unsafe_allow_html=True
-    )
+
+    # Быстрая кнопка расчёта (дублирует нижнюю)
+    calc_top = st.button("Рассчитать", type="primary", key="calc_top")
 
 
 
@@ -569,7 +586,21 @@ with st.sidebar:
         key="print_show_cost_all",
     )
 
-    calc = st.button("Рассчитать", type="primary")
+
+    # Кнопка сворачивания панели (дублирует фиксированную снизу слева)
+    st.markdown(
+        '''
+        <div class="sidebar-toggle-bottom">
+          <button onclick="toggleSidebar()">«</button>
+        </div>
+        ''',
+        unsafe_allow_html=True
+    )
+
+    calc_bottom = st.button("Рассчитать", type="primary", key="calc_bottom")
+
+    # Триггер расчёта (верхняя или нижняя кнопка)
+    calc = bool(calc_top or calc_bottom)
 
 # =========================
 # Результат
@@ -627,7 +658,6 @@ if calc:
     # =========================
     # (Блок) Печать / PDF (форма)
     # =========================
-    st.markdown('<div id="print_section"></div>', unsafe_allow_html=True)
     st.subheader("Печать / PDF")
 
     def _fmt_money(x, digits=2):
