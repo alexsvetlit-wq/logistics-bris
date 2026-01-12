@@ -660,8 +660,8 @@ if calc:
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     color: #111;
-    font-size: 11px;
-    line-height: 1.15;
+    font-size: 13px;
+    line-height: 1.25;
   }}
 
   .container {{
@@ -672,12 +672,12 @@ if calc:
   .top h1 {{
     white-space: nowrap;
 {{
-    font-size: 14px;
+    font-size: 16px;
     margin: 0 0 2mm 0;
   }}
 
   .top .subtitle {{
-    font-size: 10px;
+    font-size: 12px;
     margin-bottom: 3mm;
   }}
 
@@ -706,13 +706,13 @@ if calc:
   }}
 
   .note p {{
-    font-size: 9px;
+    font-size: 11px;
     line-height: 1.25;
     margin: 4px 0 0 0;
   }}
 
   .footer {{
-    font-size: 8px;
+    font-size: 10px;
     margin-top: 4px;
   }}
 </style>
