@@ -650,69 +650,69 @@ if calc:
       
 
 <style>
-  @page {
+  @page {{
     size: A4 landscape;
     margin: 6mm;
-  }
+  }}
 
-  html, body {
+  html, body {{
     padding: 0;
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     color: #111;
     font-size: 11px;
     line-height: 1.15;
-  }
+  }}
 
-  .container {
+  .container {{
     width: 100%;
     max-width: 100%;
-  }
+  }}
 
-  .top h1 {
+  .top h1 {{
     font-size: 14px;
     margin: 0 0 2mm 0;
-  }
+  }}
 
-  .top .subtitle {
+  .top .subtitle {{
     font-size: 10px;
     margin-bottom: 3mm;
-  }
+  }}
 
-  .box {
+  .box {{
     width: 100%;
     border: 1px solid #d9d9d9;
     border-radius: 6px;
     padding: 6px 8px;
     margin-bottom: 6px;
     box-sizing: border-box;
-  }
+  }}
 
-  table.t {
+  table.t {{
     width: 100%;
     border-collapse: collapse;
-  }
+  }}
 
-  table.t td {
+  table.t td {{
     padding: 3px 4px;
     vertical-align: top;
-  }
+  }}
 
-  table.t td:last-child {
+  table.t td:last-child {{
     text-align: right;
     white-space: nowrap;
-  }
+  }}
 
-  .note p {
+  .note p {{
     font-size: 9px;
     line-height: 1.25;
     margin: 4px 0 0 0;
-  }
+  }}
 
-  .footer {
+  .footer {{
     font-size: 8px;
     margin-top: 4px;
-  }
+  }}
 </style>
 
 
