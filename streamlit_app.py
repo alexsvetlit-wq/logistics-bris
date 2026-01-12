@@ -587,11 +587,29 @@ with st.sidebar:
     )
 
 
-    # Кнопка сворачивания панели (дублирует фиксированную снизу слева)
+    
+    # Кнопка сворачивания панели (дублирует фиксированную, симметричная)
     st.markdown(
         '''
-        <div class="sidebar-toggle-bottom">
-          <button onclick="toggleSidebar()">«</button>
+        <div style="position:relative; width:100%; height:36px; margin-top:8px;">
+          <div onclick="toggleSidebar()"
+               style="
+                 position:absolute;
+                 right:6px;
+                 bottom:0;
+                 width:32px;
+                 height:32px;
+                 display:flex;
+                 align-items:center;
+                 justify-content:center;
+                 background:#f3f4f6;
+                 border:1px solid #d1d5db;
+                 border-radius:8px;
+                 cursor:pointer;
+                 font-size:16px;
+                 user-select:none;">
+            «
+          </div>
         </div>
         ''',
         unsafe_allow_html=True
