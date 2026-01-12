@@ -737,6 +737,24 @@ if calc:
     width: 42%;
     padding-left: 24px;
   }}
+
+
+  /* Максимальный отступ между названием и значением (без изменения шрифта) */
+  table.t {{
+    width: 100%;
+    table-layout: fixed;
+  }}
+
+  table.t td:first-child {{
+    width: 72%;
+    padding-right: 42px;
+  }}
+
+  table.t td:last-child {{
+    width: 28%;
+    padding-left: 42px;
+    text-align: right;
+  }}
 </style>
 
 
