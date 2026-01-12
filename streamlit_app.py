@@ -159,7 +159,7 @@ def calc_model(
         invoice_usd = convert_to_usd(invoice_total, invoice_currency, usd_cny, usd_inr)
 
     # Оплата на фабрику за клиента (% от инвойса)
-    factory_pay_usd = invoice_usd * (factory_pay_pct / 100.0)
+    factory_pay_usd = invoice_usd * (exp_factory_pay_rub / 100.0)
 
     customs_value_usd = invoice_usd + (freight_usd * float(containers_qty))
 
@@ -381,7 +381,7 @@ with st.sidebar:
         value=10.0,
         step=0.5
     )
-    factory_pay_pct = st.number_input(
+    exp_factory_pay_rub = st.number_input(
         "Оплата на фабрику за клиента (% от стоимости инвойса), %",
         value=2.0,
         step=0.1
@@ -591,7 +591,7 @@ if calc:
 
     exp_commission_pct_s = (f"{exp_commission_pct:,.2f} %").replace(",", " ")
 
-    exp_factory_pay_rub_s = (f"{exp_factory_pay_rub:,.2f} ₽").replace(",", " ")
+    exp_factory_pay_rub_s = (f"{res.get('factory_pay_usd', 0.0):,.2f} USD").replace(",", " ")
 
     cost_all_usd_m2_s = (f"{cost_all_usd_m2_input:,.2f} USD/м²").replace(",", " ")
 
@@ -776,7 +776,7 @@ if calc:
           </tr>
           <tr>
             <td>Оплата на фабрику за клиента (% от стоимости инвойса),USD</td>
-            <td style="text-align:right">—</td>
+            <td style="text-align:right">{exp_factory_pay_rub_s}</td>
           </tr>
         </table>
       </div>
