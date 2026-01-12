@@ -145,6 +145,7 @@ def calc_model(
     invoice_total,
     invoice_currency,
     containers_qty,
+    exp_commission_pct,
 ):
     # 1) Товар, USD (как было — по количеству и цене)
     goods_amount = qty_m2 * price_per_m2
@@ -162,6 +163,9 @@ def calc_model(
     factory_pay_usd = invoice_usd * (exp_factory_pay_rub / 100.0)
 
     customs_value_usd = invoice_usd + (freight_usd * float(containers_qty))
+
+    # Агентская комиссия = % × фрахт × количество контейнеров
+    exp_commission_usd = freight_usd * float(containers_qty) * (exp_commission_pct / 100.0)
 
     # 3) Пошлина (как было)
     duty_usd = customs_value_usd * duty_pct / 100
@@ -191,6 +195,7 @@ def calc_model(
         "duty_usd": duty_usd,
         "vat_usd": vat_usd,
         "factory_pay_usd": factory_pay_usd,
+        "exp_commission_usd": exp_commission_usd,
         "total_rub": total_rub,
         "cost_rub_m2": cost_rub_m2,
     }
@@ -492,6 +497,7 @@ if calc:
         invoice_total,
         invoice_currency,
         containers_qty,
+        exp_commission_pct,
     )
 
     with st.expander("Сводка расчёта", expanded=True):
@@ -772,7 +778,7 @@ if calc:
           </tr>
           <tr>
             <td>Агентская комиссия по подбору O/F (Ocean Freight), USD</td>
-            <td style="text-align:right">—</td>
+            <td style="text-align:right">{_fmt_money(res.get("exp_commission_usd",0),2)} USD</td>
           </tr>
           <tr>
             <td>Оплата на фабрику за клиента (% от стоимости инвойса),USD</td>
