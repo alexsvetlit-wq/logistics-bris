@@ -62,10 +62,14 @@ st.markdown(
         }
         setTimeout(_setToggleIcon, 50);
       }
+      // expose for other components
+      try { window.toggleSidebar = toggleSidebar; } catch(e) {}
+      try { window.parent.toggleSidebar = toggleSidebar; } catch(e) {}
+      try { window.top.toggleSidebar = toggleSidebar; } catch(e) {}
       // init icon
       setTimeout(_setToggleIcon, 300);
     </script>
-    <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="toggleSidebar()">«</div>
+    <div id="sidebarToggleFixed" class="sidebar-toggle-fixed" onclick="var f=(window.toggleSidebar||window.parent.toggleSidebar||window.top.toggleSidebar); if(f){f();}">«</div>
     ''',
     unsafe_allow_html=True
 )
@@ -592,7 +596,7 @@ with st.sidebar:
     st.markdown(
         '''
         <div style="position:relative; width:100%; height:36px; margin-top:8px;">
-          <div onclick="toggleSidebar()"
+          <div onclick="var f=(window.toggleSidebar||window.parent.toggleSidebar||window.top.toggleSidebar); if(f){f();}"
                style="
                  position:absolute;
                  right:6px;
