@@ -652,7 +652,7 @@ if calc:
 <style>
   @page {{
     size: A4 landscape;
-    margin: 8mm 10mm;
+    margin: 8mm;
   }}
 
   html, body {{
@@ -660,34 +660,67 @@ if calc:
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     color: #111;
-    font-size: 14.5px;
-    line-height: 1.35;
+    font-size: 12px;
+    line-height: 1.2;
   }}
 
-  .container {{
-    width: 100%;
-    max-width: 100%;
+  /* Увеличиваем превью в iframe (не влияет на печать) */
+  @media screen {{
+    body {{
+      zoom: 1.25;
+    }}
   }}
 
-  .top h1 {{
-    white-space: nowrap;
-{{
-    font-size: 17.5px;
-    margin: 0 0 2mm 0;
+  .top {{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
   }}
 
-  .top .subtitle {{
-    font-size: 13.5px;
-    margin-bottom: 3mm;
+  .logo {{
+    height: 22px;
+  }}
+
+  .title {{
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+  }}
+
+  .subtitle {{
+    font-size: 9px;
+    margin-top: 1px;
+    color: #444;
+  }}
+
+  .grid {{
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }}
+
+  .left {{
+    flex: 0 0 64%;
+  }}
+
+  .right {{
+    flex: 0 0 36%;
   }}
 
   .box {{
-    width: 100%;
     border: 1px solid #d9d9d9;
     border-radius: 6px;
-    padding: 4px 6px;
-    margin-bottom: 6px;
-    box-sizing: border-box;
+    padding: 6px 8px;
+    margin-bottom: 8px;
+  }}
+
+  .box h3 {{
+    font-size: 10px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+    padding: 0;
   }}
 
   table.t {{
@@ -696,122 +729,62 @@ if calc:
   }}
 
   table.t td {{
-    padding: 2px 4px;
+    border-top: 1px solid #ededed;
+    padding: 3px 0;
     vertical-align: top;
+  }}
+
+  table.t tr:first-child td {{
+    border-top: none;
+  }}
+
+  table.t td:first-child {{
+    color: #222;
+    padding-right: 10px;
+    width: 62%;
   }}
 
   table.t td:last-child {{
     text-align: right;
     white-space: nowrap;
+    width: 38%;
   }}
 
-  .note p {{
-    font-size: 12px;
-    line-height: 1.35;
-    margin: 4px 0 0 0;
+  .totals td:first-child {{
+    width: 70%;
+  }}
+  .totals td:last-child {{
+    width: 30%;
+  }}
+
+  .sum {{
+    font-weight: 700;
+    border-top: 1px solid #d0d0d0 !important;
+    padding-top: 5px !important;
   }}
 
   .footer {{
-    font-size: 11px;
-    margin-top: 4px;
+    position: fixed;
+    bottom: 6mm;
+    left: 8mm;
+    right: 8mm;
+    text-align: center;
+    font-size: 8px;
+    color: #666;
   }}
 
-
-  /* Раздвигаем подписи и значения */
-  table.t td:first-child {{
-    padding-right: 10px;
-  }}
-
-  table.t td:last-child {{
-    padding-left: 10px;
-  }}
-
-
-  /* Разводим блоки подпись / значение сильнее */
-  table.t td:first-child {{
-    width: 58%;
-    padding-right: 24px;
-  }}
-
-  table.t td:last-child {{
-    width: 42%;
-    padding-left: 24px;
-  }}
-
-
-  /* Максимальный отступ между названием и значением (без изменения шрифта) */
-  table.t {{
-    width: 100%;
-    table-layout: fixed;
-  }}
-
-  table.t td:first-child {{
-    width: 72%;
-    padding-right: 42px;
-  }}
-
-  table.t td:last-child {{
-    width: 28%;
-    padding-left: 42px;
-    text-align: right;
-  }}
-
-
-  /* Центрирование всей печатной формы по горизонтали */
-  body {{
-    display: flex;
-    justify-content: center;
-  }}
-
-  .container {{
-    max-width: 1000px;
-    width: 100%;
-    margin: 0 auto;
-  }}
-
-
-  /* Разводим "Вводные данные" (подписи) и "значения вводных данных" (значения) */
-  table.t {{
-    width: 100%;
-    table-layout: fixed;
-  }}
-
-  table.t td {{
-    white-space: nowrap;        /* всё в одну строку */
-    overflow: hidden;           /* не ломаем верстку */
-    text-overflow: ellipsis;    /* если слишком длинно — многоточие */
-  }}
-
-  table.t td:first-child {{
-    width: 70%;
-    padding-right: 48px;        /* увеличенный зазор между блоками */
-  }}
-
-  table.t td:last-child {{
-    width: 30%;
-    padding-left: 48px;         /* увеличенный зазор между блоками */
-    text-align: right;
-  }}
-
-  /* Разнести подписи и значения к краям (максимально) */
-  table.t td:first-child {{
-    width: 50%;
-    padding-right: 90px;
-    text-align: left;
-  }}
-  table.t td:last-child {{
-    width: 50%;
-    padding-left: 90px;
-    text-align: right;
+  /* запрет разрывов внутри блоков */
+  .box {{
+    break-inside: avoid;
+    page-break-inside: avoid;
   }}
 </style>
-
 
 
     </head>
     <body>
   <div class="top">
-    
+    <img class="logo" src="assets/bris_logo.png" />
     <div>
       <div class="title">BRIS Logistics — расчёт себестоимости</div>
       <div class="subtitle">{country} • {incoterms} • {transport} • Контейнеров: {containers_qty}</div>
@@ -877,7 +850,7 @@ if calc:
 
   <div class="footer">BRIS Ceramic — внутренний расчёт. Сгенерировано из калькулятора.</div>
 
-      <div class="box note" style="margin-top:6px;">
+      <div class="box" style="margin-top:12px;">
         <h3>Примечание</h3>
         <p style="font-size:12px; line-height:1.4;">
           Расчёт не включает возможные дополнительные сборы за таможенные операции в порту,
