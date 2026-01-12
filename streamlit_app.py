@@ -869,42 +869,4 @@ if calc:
         components.html(_html_print, height=1400)
         st.caption("Далее: Ctrl+P → Save as PDF / Печать.")
 
-    # =========================
-    # Экспорт формы (Excel / CSV) — без внешних библиотек
-    # =========================
-    def _csv_cell(v):
-        s = str(v)
-        s = s.replace(";", ",").replace("\n", " ").replace("\r", " ")
-        return s
-
-    _csv_rows = []
-    _csv_rows.append(["Вводные данные", ""])
-    for k, v in _print_rows_left:
-        _csv_rows.append([k, v])
-
-    _csv_rows.append(["", ""])
-    _csv_rows.append(["Итоги", ""])
-    for k, v, u in _print_totals:
-        _csv_rows.append([k, f"{_fmt_money(v, 2)} {u}"])
-
-    _csv_rows.append(["", ""])
-    _csv_rows.append(["Локальные расходы РФ (детализация)", ""])
-    for k, v, u in _print_local_detail:
-        _csv_rows.append([k, f"{_fmt_money(v, 2)} {u}"])
-
-    _csv_rows.append(["Итого локальные ( не включенные в расчёт)", f"{_fmt_int(local_rub)} ₽"])
-
-    _csv_text = "\n".join(";".join(_csv_cell(c) for c in row) for row in _csv_rows)
-
-    st.download_button(
-        "Скачать форму (Excel / CSV)",
-        data=_csv_text.encode("utf-8"),
-        file_name="BRIS_Logistics_Print_Form.csv",
-        mime="text/csv",
-        use_container_width=True
-    )
-
-
-
-else:
-    st.write("Заполни параметры слева и нажми **Рассчитать**.")
+    
