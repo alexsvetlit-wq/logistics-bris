@@ -774,37 +774,37 @@ if calc:
 
   
   /* Разделение "Вводные данные" на 2 слабовидимых блока: подписи и значения */
-  .iv-wrap{
+  .iv-wrap{{
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 28px;
     width: 100%;
-  }
-  .iv-box{
+  }}
+  .iv-box{{
     border: 1px solid #efefef;
     background: #fafafa;
     border-radius: 6px;
     padding: 8px 10px;
-  }
-  .iv-box.values{
+  }}
+  .iv-box.values{{
     background: #ffffff;
-  }
-  .iv-row{
+  }}
+  .iv-row{{
     padding: 3px 0;
     border-top: 1px solid #f1f1f1;
     white-space: nowrap;
-  }
-  .iv-row:first-child{
+  }}
+  .iv-row:first-child{{
     border-top: none;
-  }
-  .iv-box.labels .iv-row{
+  }}
+  .iv-box.labels .iv-row{{
     color: #222;
     text-align: left;
-  }
-  .iv-box.values .iv-row{
+  }}
+  .iv-box.values .iv-row{{
     color: #111;
     text-align: right;
-  }
+  }}
 
 .footer {{
     position: fixed;
