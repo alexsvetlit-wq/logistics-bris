@@ -718,13 +718,13 @@ if calc:
 
 
   /* Раздвигаем подписи и значения */
-  table.t td:first-child {
+  table.t td:first-child {{
     padding-right: 18px;
-  }
+  }}
 
-  table.t td:last-child {
+  table.t td:last-child {{
     padding-left: 18px;
-  }
+  }}
 </style>
 
 
