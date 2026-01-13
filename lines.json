@@ -9,8 +9,9 @@
         "email": "ivan.petrov@fesco.test"
       }
     },
+
     "Silmar": {
-      "site": "",
+      "site": "https://silmarshipping.example",
       "cloud": "",
       "manager": {
         "name": "",
@@ -18,8 +19,9 @@
         "email": ""
       }
     },
+
     "Akkon": {
-      "site": "",
+      "site": "https://akkonlines.example",
       "cloud": "",
       "manager": {
         "name": "",
@@ -27,8 +29,9 @@
         "email": ""
       }
     },
+
     "Arkas": {
-      "site": "",
+      "site": "https://www.arkas.com.tr",
       "cloud": "",
       "manager": {
         "name": "",
@@ -36,8 +39,9 @@
         "email": ""
       }
     },
+
     "ExpertTrans": {
-      "site": "",
+      "site": "https://expert-trans.example",
       "cloud": "",
       "manager": {
         "name": "",
@@ -45,5 +49,19 @@
         "email": ""
       }
     }
+
+    /* 
+    👉 ДОБАВЛЯЕШЬ НОВУЮ ЛИНИЮ ТОЛЬКО ЗДЕСЬ:
+
+    ,"HUB Shipping": {
+      "site": "https://hub-shipping.com",
+      "cloud": "https://drive.google.com/drive/folders/hub-demo",
+      "manager": {
+        "name": "Мария Иванова",
+        "phone": "+7 903 555-66-77",
+        "email": "m.ivanova@hub.test"
+      }
+    }
+    */
   }
 }
