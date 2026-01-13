@@ -284,12 +284,9 @@ def load_sea_line_info():
 
     return SEA_LINE_INFO_DEFAULT
 
+SEA_LINE_INFO = load_sea_line_info()
 
-def get_sea_line_info():
-    """Читает lines.json каждый запуск/перерисовку (без кэша)."""
-    return load_sea_line_info()
 
-SEA_LINE_INFO = get_sea_line_info()
 # =========================
 # Утилиты
 # =========================
@@ -572,8 +569,6 @@ with st.sidebar:
     sea_line = None
     is_direct = False
     if is_sea and country == "Индия":
-        # Обновляем список линий из lines.json на каждом rerun
-        SEA_LINE_INFO = get_sea_line_info()
         line_c1, line_c2 = st.columns([6, 1])
         with line_c1:
             sea_line = st.selectbox("Морская линия", sorted(list(SEA_LINE_INFO.keys())))
@@ -745,6 +740,46 @@ with st.sidebar:
 # (НОВОЕ) Инфо по выбранной морской линии (кнопка ℹ️)
 # Примечание: используем @st.dialog (совместимо с версиями Streamlit, где st.dialog — декоратор)
 # =========================
+@st.dialog("Сводная таблица морских линий")
+def _show_sea_lines_summary():
+    """
+    Показывает общую таблицу по всем морским линиям (ставки/сроки/тип судна),
+    собранную из lines.json.
+    """
+    rows = []
+    for line_name, info in (SEA_LINE_INFO or {}).items():
+        routes = info.get("main_routes_and_rates") or []
+        if not isinstance(routes, list):
+            routes = []
+        if routes:
+            for r in routes:
+                rows.append({
+                    "Линия": line_name,
+                    "Маршрут": r.get("route", ""),
+                    "Контейнер": r.get("container", ""),
+                    "Ставка, USD": r.get("rate_usd", ""),
+                    "Тип судна": r.get("vessel_type", ""),
+                    "Срок, дни": r.get("transit_time_days", ""),
+                    "Примечание": r.get("notes", ""),
+                })
+        else:
+            # строка-заглушка, чтобы линия всё равно была видна
+            rows.append({
+                "Линия": line_name,
+                "Маршрут": "",
+                "Контейнер": "",
+                "Ставка, USD": "",
+                "Тип судна": "",
+                "Срок, дни": "",
+                "Примечание": "",
+            })
+
+    if rows:
+        st.dataframe(rows, use_container_width=True, hide_index=True)
+    else:
+        st.info("Нет данных для отображения.")
+
+
 @st.dialog("Инфо: морская линия")
 def _show_sea_line_dialog(_sea_line: str):
     info = SEA_LINE_INFO.get(_sea_line, {})
@@ -752,6 +787,9 @@ def _show_sea_line_dialog(_sea_line: str):
 
     site = (info.get("site") or "").strip()
     cloud = (info.get("cloud") or "").strip()
+
+    if st.button("📊 Сводная таблица ставок и сроков", use_container_width=True):
+        _show_sea_lines_summary()
 
     if site:
         st.link_button("🌐 Открыть сайт линии", site)
@@ -782,9 +820,46 @@ def _show_sea_line_dialog(_sea_line: str):
         st.markdown(f"[Позвонить](tel:{tel})")
 
 
+    # =========================
+    # Дополнительные контакты (если есть)
+    # =========================
+    extra = info.get("additional_contacts") or []
+    if isinstance(extra, list) and len(extra) > 0:
+        st.divider()
+        st.markdown("#### Доп. контакты")
+        for c in extra:
+            cname = (c.get("name") or "").strip() or "—"
+            cphone = (c.get("phone") or "").strip()
+            cemail = (c.get("email") or "").strip()
+            st.write(f"**{cname}**")
+            if cphone:
+                st.write(f"📞 {cphone}")
+            if cemail:
+                st.write(f"✉️ {cemail}")
+                st.markdown(f"[Написать письмо](mailto:{cemail})")
+            st.write("")
+
+    # =========================
+    # Основные направления и ставки (если есть)
+    # =========================
+    rates = info.get("main_routes_and_rates") or []
+    if isinstance(rates, list) and len(rates) > 0:
+        st.divider()
+        st.markdown("#### Основные направления и ставки")
+        rows = []
+        for r in rates:
+            rows.append({
+                "Маршрут": r.get("route", ""),
+                "Контейнер": r.get("container", ""),
+                "Ставка, USD": r.get("rate_usd", ""),
+                "Тип судна": r.get("vessel_type", ""),
+                "Срок, дни": r.get("transit_time_days", ""),
+                "Примечание": r.get("notes", ""),
+            })
+        st.dataframe(rows, use_container_width=True, hide_index=True)
+
+
 if open_line_info and (sea_line is not None):
-    # Обновляем данные из lines.json прямо перед показом окна
-    SEA_LINE_INFO = get_sea_line_info()
     _show_sea_line_dialog(sea_line)
 
 # =========================
