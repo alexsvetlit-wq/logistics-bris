@@ -1,5 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import json
+import os
 
 # --- Fixed sidebar helper button (scroll sidebar to top) ---
 components.html(
@@ -242,33 +244,48 @@ INDIA_LINE_DEFAULTS_20 = {
 # (НОВОЕ) Справочник контактов по морским линиям (сайт/облако/менеджер)
 # Не влияет на расчёты. Используется только для кнопки ℹ️ рядом с выбором линии.
 # =========================
-SEA_LINE_INFO = {
+
+# =========================
+# (НОВОЕ) Справочник контактов по морским линиям (сайт/облако/менеджер)
+# Данные подгружаются из файла lines.json (если он есть рядом с приложением).
+# Это НЕ влияет на расчёты. Используется только для кнопки ℹ️ рядом с выбором линии.
+# =========================
+SEA_LINE_INFO_DEFAULT = {
     "Fesco": {
         "site": "https://www.fesco.ru",
         "cloud": "",  # ссылка на облако с документами/контактами (опционально)
         "manager": {"name": "", "phone": "", "email": ""},
     },
-    "Silmar": {
-        "site": "",
-        "cloud": "",
-        "manager": {"name": "", "phone": "", "email": ""},
-    },
-    "Akkon": {
-        "site": "",
-        "cloud": "",
-        "manager": {"name": "", "phone": "", "email": ""},
-    },
-    "Arkas": {
-        "site": "",
-        "cloud": "",
-        "manager": {"name": "", "phone": "", "email": ""},
-    },
-    "ExpertTrans": {
-        "site": "",
-        "cloud": "",
-        "manager": {"name": "", "phone": "", "email": ""},
-    },
+    "Silmar": {"site": "", "cloud": "", "manager": {"name": "", "phone": "", "email": ""}},
+    "Akkon": {"site": "", "cloud": "", "manager": {"name": "", "phone": "", "email": ""}},
+    "Arkas": {"site": "", "cloud": "", "manager": {"name": "", "phone": "", "email": ""}},
+    "ExpertTrans": {"site": "", "cloud": "", "manager": {"name": "", "phone": "", "email": ""}},
 }
+
+def load_sea_line_info():
+    # Файл должен лежать рядом с streamlit_app.py
+    # Формат 1 (простой): { "Fesco": {...}, "Arkas": {...} }
+    # Формат 2 (обёртка): { "SEA_LINE_INFO": { ... } }
+    path = "lines.json"
+    try:
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            if isinstance(data, dict) and "SEA_LINE_INFO" in data and isinstance(data["SEA_LINE_INFO"], dict):
+                data = data["SEA_LINE_INFO"]
+
+            if isinstance(data, dict):
+                merged = dict(SEA_LINE_INFO_DEFAULT)
+                merged.update(data)  # переопределяем только то, что есть в JSON
+                return merged
+    except Exception:
+        pass
+
+    return SEA_LINE_INFO_DEFAULT
+
+SEA_LINE_INFO = load_sea_line_info()
+
 
 # =========================
 # Утилиты
