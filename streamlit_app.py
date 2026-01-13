@@ -237,15 +237,13 @@ INDIA_LINE_DEFAULTS_20 = {
     "ExpertTrans": {"direct": 2550.0, "indirect": 2400.0},
 }
 
-
 # =========================
-# (НОВОЕ) Справочник контактов по морским линиям (сайт/облако/менеджер)
-# Не влияет на расчёты. Используется только для popover рядом с выбором линии.
+# (НОВОЕ) Контакты по морским линиям (инфо-блок, не влияет на расчёты)
 # =========================
 SEA_LINE_INFO = {
     "Fesco": {
         "site": "https://www.fesco.ru",
-        "cloud": "",  # ссылка на облако с документами/контактами (опционально)
+        "cloud": "",
         "manager": {"name": "", "phone": "", "email": ""},
     },
     "Silmar": {"site": "", "cloud": "", "manager": {"name": "", "phone": "", "email": ""}},
@@ -534,66 +532,26 @@ with st.sidebar:
     sea_line = None
     is_direct = False
     if is_sea and country == "Индия":
-        line_c1, line_c2 = st.columns([6, 2])
-
-        with line_c1:
-
-            sea_line = st.selectbox("Морская линия", ["Fesco", "Silmar", "Akkon", "Arkas", "ExpertTrans"])
-
-        with line_c2:
-
-            with st.popover("Контакты/доки", use_container_width=True):
-
-                _info = SEA_LINE_INFO.get(sea_line, {})
-
-                _mgr = (_info.get("manager") or {})
-
-                _site = (_info.get("site") or "").strip()
-
-                _cloud = (_info.get("cloud") or "").strip()
-
-                if _site:
-
-                    st.link_button("🌐 Сайт линии", _site)
-
-                else:
-
-                    st.caption("🌐 Сайт линии: —")
-
-                if _cloud:
-
-                    st.link_button("☁️ Облако", _cloud)
-
-                else:
-
-                    st.caption("☁️ Облако: —")
-
-                st.divider()
-
-                st.caption("Менеджер")
-
-                _name = (_mgr.get("name") or "").strip() or "—"
-
-                _phone = (_mgr.get("phone") or "").strip() or "—"
-
-                _email = (_mgr.get("email") or "").strip() or "—"
-
-                st.write(f"**{_name}**")
-
-                st.write(f"📞 {_phone}")
-
-                st.write(f"✉️ {_email}")
-
-                if _email != "—":
-
-                    st.markdown(f"[Написать письмо](mailto:{_email})")
-
-                if _phone != "—":
-
-                    _tel = _phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
-
-                    st.markdown(f"[Позвонить](tel:{_tel})")
-is_direct = st.checkbox("Прямое судно", value=True)  # если выключить — считаем "непрямое"
+        sea_line = st.selectbox("Морская линия", ["Fesco", "Silmar", "Akkon", "Arkas", "ExpertTrans"])
+info = SEA_LINE_INFO.get(sea_line, {})
+with st.expander("Доп. инфо по линии", expanded=False):
+    site = (info.get("site") or "").strip()
+    cloud = (info.get("cloud") or "").strip()
+    mgr = info.get("manager") or {}
+    if site:
+        st.link_button("🌐 Сайт линии", site)
+    else:
+        st.caption("🌐 Сайт линии: —")
+    if cloud:
+        st.link_button("☁️ Документы / контакты", cloud)
+    else:
+        st.caption("☁️ Документы / контакты: —")
+    st.divider()
+    st.caption("Менеджер")
+    st.write(f"**{mgr.get('name','—')}**")
+    st.write(f"📞 {mgr.get('phone','—')}")
+    st.write(f"✉️ {mgr.get('email','—')}")
+        is_direct = st.checkbox("Прямое судно", value=True)  # если выключить — считаем "непрямое"
 
     use_auto_freight = False
     if is_sea and container_size:
