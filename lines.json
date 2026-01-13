@@ -12,7 +12,8 @@
         {
           "name": "Elena Aleksandrovna Menzhulova",
           "email": "EMenzhulova@fesco.com",
-          "phone": ""
+          "phone": "8-800-23-444-99 ext. 25051; +7 988 340-07-92",
+          "role": "Chief Expert, Sales"
         },
         {
           "name": "Marina Sergeevna Belak",
@@ -45,7 +46,8 @@
           "transit_time_days": "10–14",
           "notes": "короткое транзитное время"
         }
-      ]
+      ],
+      "agent_for": ""
     },
     "Silmar": {
       "site": "https://www.silmar.ru",
@@ -54,16 +56,38 @@
         "name": "Maria Sobchenko",
         "phone": "+7 8617 30 50 40 ext. 243; +7 928 451 89 26",
         "email": "m.sobchenko@silmar.spb.ru"
-      }
+      },
+      "agent_for": ""
     },
     "Akkon": {
-      "site": "",
+      "site": "https://akkonlines.com",
       "cloud": "",
       "manager": {
         "name": "",
         "phone": "",
         "email": ""
-      }
+      },
+      "additional_contacts": [
+        {
+          "name": "Vasiliy Zhivilo",
+          "role": "Import Sales Specialist",
+          "email": "Vasiliy.Zhivilo@akkonlines.com",
+          "phone": "+7 8617 601 901; +7 977 373 67 07",
+          "address": "127550, Moscow, 19 Pryanishnikova str., Office 217",
+          "site": "https://www.akkonlines.com"
+        }
+      ],
+      "sales_email": "salesimport.ru@akkonlines.com",
+      "booking_email": "bookingimport.ru@akkonlines.com",
+      "documents_and_tariffs": "https://drive.google.com/drive/folders/1OXn35p7FRsIzSeVZO8UTNlVJRPV5JouL",
+      "schedule_url": "https://drive.google.com/drive/folders/1OXn35p7FRsIzSeVZO8UTNlVJRPV5JouL?usp=sharing",
+      "tracking_url": "https://sap.akkonlines.com/index.aspx",
+      "agent_for": "",
+      "full_name": "Akkon Lines",
+      "country": "Turkey",
+      "agent_in_ru": "ООО «Аккон С» (Akkon S)",
+      "agent_site": "https://akkons.ru",
+      "status": "Турецкая линия; подходит для траншипмента через Турцию, также выполняют прямые перевозки из Китая"
     },
     "Arkas": {
       "site": "",
@@ -72,7 +96,26 @@
         "name": "",
         "phone": "",
         "email": ""
-      }
+      },
+      "additional_contacts": [
+        {
+          "name": "Alexander Chertkov",
+          "role": "Sales & Marketing Representative / Import",
+          "email": "alexander.chertkov@arkas-russia.com",
+          "phone": "+7 (8617) 607-337 ext. 1102; +7 (964) 895-15-60",
+          "fax": "+7 (8617) 301-910",
+          "site": "https://www.arkas-russia.com"
+        },
+        {
+          "name": "Anna Martynenko",
+          "role": "Senior Sales Specialist / Import",
+          "email": "anna.pasynkova@arkas-russia.com",
+          "phone": "+7 (8617) 607-337 ext. 1107; +7 (964) 895-15-37",
+          "address": "353905, Novorossiysk, Nab. Admirala Serebryakova, 31, office 60",
+          "company": "ARKAS Russia Ltd."
+        }
+      ],
+      "agent_for": ""
     },
     "ExpertTrans": {
       "site": "",
@@ -81,7 +124,20 @@
         "name": "",
         "phone": "",
         "email": ""
-      }
+      },
+      "additional_contacts": [
+        {
+          "name": "Anna Baranova",
+          "email": "a.baranova@expert-trans.pro",
+          "phone": "+7 (8617) 600-016; +7 928 255 85 93"
+        },
+        {
+          "name": "Artem Zavalin",
+          "email": "a.zavalin@expert-trans.pro",
+          "phone": ""
+        }
+      ],
+      "agent_for": ""
     },
     "HUB Shipping": {
       "site": "https://hub-shipping.com",
@@ -90,7 +146,208 @@
         "name": "Мария Иванова",
         "phone": "+7 903 555-66-77",
         "email": "m.ivanova@hub.test"
-      }
+      },
+      "schedule_url": "https://hub-shipping.com/schedule/",
+      "logistics_site": "https://hub-logistics.com/ru/",
+      "additional_contacts": [
+        {
+          "name": "Natalia Pavlova",
+          "email": "natalia.pavlova@hub-shipping.com",
+          "phone": ""
+        }
+      ],
+      "agent_for": ""
+    },
+    "TRCONT": {
+      "additional_contacts": [
+        {
+          "name": "Victoria Vladislavovna Zanina",
+          "role": "Senior Sales & Customer Service Specialist",
+          "email": "zaninavv@trcont.ru",
+          "phone": "+7 (800) 100-22-20 ext. 4438",
+          "address": "353900, Novorossiysk, Ledneva 5, office 604",
+          "site": "https://www.trcont.com"
+        }
+      ],
+      "agent_for": ""
+    },
+    "Login NMP": {
+      "additional_contacts": [
+        {
+          "company": "Login NMP LLC",
+          "name": "Elena Novikova",
+          "role": "General Agent (STF Shipping Limited, China; formerly CStar Line, UAE)",
+          "email": "novikova.e@login-nmp.ru",
+          "phone": "+7 (914) 709-35-67",
+          "address": "Vladivostok, Russia, Semenovskaya 29, 6fl, office 622",
+          "site": "https://login-nmp.ru/",
+          "notes": "General agent in Russia for STF Shipping Limited (China) and formerly CStar Line (UAE)."
+        }
+      ],
+      "represented_lines": [
+        "STF Shipping Limited (China)",
+        "CStar Line (UAE)"
+      ],
+      "agent_for": "STF Shipping Limited (China), CStar Line (UAE)"
+    },
+    "ULD Shipping Turkey": {
+      "additional_contacts": [
+        {
+          "name": "Roman Solarev",
+          "role": "Operations / Multimodal",
+          "email": "roman.solarev@uldshipping.com",
+          "phone": "+7 (8617) 779-912 ext. 134; +7 989 770-45-30",
+          "address": "353900, Novorossiysk, Sovetov Street, 24, 7th floor",
+          "site": "https://www.uldshipping.com",
+          "notes": "Автодоставка, таможенное оформление, перетарка, хранение, сертификация"
+        }
+      ],
+      "requests_email": "russia.multimodal@uldshipping.com",
+      "schedule_url": "https://drive.google.com/drive/folders/1vGsRTbrWqadp4v?usp=sharing",
+      "instructions_url": "https://drive.google.com/drive/folders/1vGsRTbrWqadp4v?usp=sharing",
+      "agent_for": ""
+    },
+    "MODUL Co. Ltd.": {
+      "additional_contacts": [
+        {
+          "name": "Alena",
+          "role": "Rail import",
+          "email": "Moskalenko@modultrans.ru",
+          "phone": "+7 918 986-18-57"
+        },
+        {
+          "name": "",
+          "role": "Rail import",
+          "email": "Drozd@modultrans.ru",
+          "phone": ""
+        }
+      ],
+      "operator_type": "ЖД оператор",
+      "scope": "Импорт Китай → Новороссийск"
+    },
+    "Sarjak Container Lines": {
+      "additional_contacts": [
+        {
+          "name": "Yuri Gordeev",
+          "role": "Chief Business Development Representative",
+          "email": "yuri.g@sarjak.com",
+          "phone": "+7 985 220 81 82"
+        },
+        {
+          "name": "Nikolay Gordeev",
+          "role": "Deputy CEO for Business Development",
+          "email": "nikolay.gordeev@sarjak.com",
+          "phone": "+7 985 220 66 99"
+        },
+        {
+          "name": "Anastasiya Monakhova",
+          "role": "Senior Manager — Sales & Business Development",
+          "email": "anastasiya.monakhova@sarjak.com",
+          "phone": "+7 999 211 40 03"
+        }
+      ],
+      "site": "https://sarjak.com/our-network/",
+      "agent_for": ""
+    },
+    "Saigon Shipping Pvt Ltd": {
+      "additional_contacts": [
+        {
+          "name": "Pravesh Gadhvi",
+          "role": "Sales / Operations",
+          "email": "pravesh@saigonindia.com",
+          "phone": "+91 99252 37293",
+          "whatsapp": "+91 99252 37293"
+        },
+        {
+          "name": "",
+          "role": "General",
+          "email": "info@saigonindia.com",
+          "phone": ""
+        }
+      ],
+      "site": "",
+      "agent_for": ""
+    },
+    "Arneis": {
+      "additional_contacts": [
+        {
+          "name": "",
+          "role": "General",
+          "email": "info@arneis.ru",
+          "phone": "+7 918 267-50-74"
+        },
+        {
+          "name": "",
+          "role": "Sales",
+          "email": "sales@arneis.ru",
+          "phone": "+7 (495) 487-72-72; +7 (928) 427-01-12"
+        }
+      ],
+      "site": "https://arneis.ru",
+      "agent_for": ""
+    },
+    "XHL (Hua Xin Container Lines)": {
+      "site": "https://hxlines.com",
+      "agent_for": "",
+      "agent_in_ru": "ООО «Хуа Синь Лайнс Рус» (Hua Xin Lines Rus)",
+      "country": "Китай",
+      "additional_contacts": [
+        {
+          "name": "",
+          "role": "Office Vladivostok",
+          "email": "office@hxlines.ru",
+          "phone": "+7 914 658-01-10",
+          "address": "690001, Vladivostok, Pushkinskaya str., 32, 4th floor"
+        },
+        {
+          "name": "Alexey Vasyutin",
+          "role": "Sales",
+          "email": "Vasyutin.Alexey@hxlogi.com",
+          "phone": "+7 921 959-68-32",
+          "address": "198095, Saint Petersburg, Marshala Govorova str., 35, lit. A, 4th floor, office 435"
+        },
+        {
+          "name": "Kristina Ilyukova",
+          "role": "Customer Service",
+          "email": "ilyukova.kristina@hxlogi.com",
+          "phone": "+7 911 188-15-18",
+          "address": "198095, Saint Petersburg, Marshala Govorova str., 35, lit. A, 4th floor, office 435"
+        },
+        {
+          "name": "",
+          "role": "Office Saint Petersburg",
+          "email": "office.spb@hxlines.ru",
+          "phone": "",
+          "address": "198095, Saint Petersburg, Marshala Govorova str., 35, lit. A, 4th floor, office 435"
+        }
+      ]
+    },
+    "UGL Shipping (UniGlobal)": {
+      "site": "https://uglworldwide.com",
+      "country": "Hong Kong / China",
+      "agent_in_ru": "АО «Универсальный Экспедитор» (Universal Forwarder)",
+      "agent_site": "https://unfc.ru",
+      "agent_for": "",
+      "additional_contacts": [
+        {
+          "name": "",
+          "role": "Agent office Tuapse",
+          "email": "info@unfc.ru",
+          "phone": "+7 (86167) 715-91; +7 (86167) 224-40",
+          "address": "352800, Tuapse, Morskoy boulevard, 2",
+          "company": "Universal Forwarder (АО «Универсальный Экспедитор»)"
+        }
+      ]
+    },
+    "OVP": {
+      "full_name": "OVP Shipping (Ocean V Plus)",
+      "country": "China (Shanghai)",
+      "site": "https://ovp-shipping.com",
+      "site_ru": "https://ovp-shipping.ru",
+      "agent_in_ru": "ООО «ОВП Шиппинг» (OVP Shipping Russia)",
+      "status": "Часто работают совместными судами с Safetrans. Хороший прямой сервис.",
+      "additional_contacts": [],
+      "agent_for": ""
     }
   }
 }
