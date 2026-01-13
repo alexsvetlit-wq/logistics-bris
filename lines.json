@@ -1,0 +1,49 @@
+{
+  "SEA_LINE_INFO": {
+    "Fesco": {
+      "site": "https://www.fesco.ru",
+      "cloud": "https://drive.google.com/drive/folders/fesco-demo",
+      "manager": {
+        "name": "Иван Петров",
+        "phone": "+7 999 123-45-67",
+        "email": "ivan.petrov@fesco.test"
+      }
+    },
+    "Silmar": {
+      "site": "",
+      "cloud": "",
+      "manager": {
+        "name": "",
+        "phone": "",
+        "email": ""
+      }
+    },
+    "Akkon": {
+      "site": "",
+      "cloud": "",
+      "manager": {
+        "name": "",
+        "phone": "",
+        "email": ""
+      }
+    },
+    "Arkas": {
+      "site": "",
+      "cloud": "",
+      "manager": {
+        "name": "",
+        "phone": "",
+        "email": ""
+      }
+    },
+    "ExpertTrans": {
+      "site": "",
+      "cloud": "",
+      "manager": {
+        "name": "",
+        "phone": "",
+        "email": ""
+      }
+    }
+  }
+}
