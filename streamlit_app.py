@@ -782,6 +782,11 @@ def _show_sea_lines_email_registry():
     rows = sorted(rows, key=lambda x: x[0].lower())
 
     html = """
+    <style>
+      table {font-size: 16px;}
+      td {word-break: break-word;}
+      a {text-decoration: none;}
+    </style>
     <table style="width:100%; border-collapse:collapse;">
       <thead>
         <tr>
@@ -802,7 +807,7 @@ def _show_sea_lines_email_registry():
 
     html += "</tbody></table>"
 
-    st.markdown(html, unsafe_allow_html=True)
+    components.html(html, height=520, scrolling=True)
 
 
 
