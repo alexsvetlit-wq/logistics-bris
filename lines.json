@@ -9,9 +9,8 @@
         "email": "ivan.petrov@fesco.test"
       }
     },
-
     "Silmar": {
-      "site": "https://silmarshipping.example",
+      "site": "",
       "cloud": "",
       "manager": {
         "name": "",
@@ -19,9 +18,8 @@
         "email": ""
       }
     },
-
     "Akkon": {
-      "site": "https://akkonlines.example",
+      "site": "",
       "cloud": "",
       "manager": {
         "name": "",
@@ -29,9 +27,17 @@
         "email": ""
       }
     },
-
     "Arkas": {
-      "site": "https://www.arkas.com.tr",
+      "site": "",
+      "cloud": "",
+      "manager": {
+        "name": "",
+        "phone": "",
+        "email": ""
+      }
+    },
+    "ExpertTrans": {
+      "site": "",
       "cloud": "",
       "manager": {
         "name": "",
@@ -40,20 +46,7 @@
       }
     },
 
-    "ExpertTrans": {
-      "site": "https://expert-trans.example",
-      "cloud": "",
-      "manager": {
-        "name": "",
-        "phone": "",
-        "email": ""
-      }
-    }
-
-    /* 
-    👉 ДОБАВЛЯЕШЬ НОВУЮ ЛИНИЮ ТОЛЬКО ЗДЕСЬ:
-
-    ,"HUB Shipping": {
+    "HUB Shipping": {
       "site": "https://hub-shipping.com",
       "cloud": "https://drive.google.com/drive/folders/hub-demo",
       "manager": {
@@ -62,6 +55,5 @@
         "email": "m.ivanova@hub.test"
       }
     }
-    */
   }
 }
