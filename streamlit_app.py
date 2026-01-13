@@ -571,7 +571,7 @@ with st.sidebar:
     if is_sea and country == "Индия":
         line_c1, line_c2 = st.columns([6, 1])
         with line_c1:
-            sea_line = st.selectbox("Морская линия", ["Fesco", "Silmar", "Akkon", "Arkas", "ExpertTrans"])
+            sea_line = st.selectbox("Морская линия", sorted(list(SEA_LINE_INFO.keys())))
         with line_c2:
             open_line_info = st.button("ℹ️", help="Сайт/документы/контакты по выбранной линии", key="open_line_info_btn")
         is_direct = st.checkbox("Прямое судно", value=True)  # если выключить — считаем "непрямое"
