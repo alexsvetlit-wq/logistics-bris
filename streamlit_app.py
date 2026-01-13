@@ -284,9 +284,12 @@ def load_sea_line_info():
 
     return SEA_LINE_INFO_DEFAULT
 
-SEA_LINE_INFO = load_sea_line_info()
 
+def get_sea_line_info():
+    """Читает lines.json каждый запуск/перерисовку (без кэша)."""
+    return load_sea_line_info()
 
+SEA_LINE_INFO = get_sea_line_info()
 # =========================
 # Утилиты
 # =========================
@@ -569,6 +572,8 @@ with st.sidebar:
     sea_line = None
     is_direct = False
     if is_sea and country == "Индия":
+        # Обновляем список линий из lines.json на каждом rerun
+        SEA_LINE_INFO = get_sea_line_info()
         line_c1, line_c2 = st.columns([6, 1])
         with line_c1:
             sea_line = st.selectbox("Морская линия", sorted(list(SEA_LINE_INFO.keys())))
@@ -778,6 +783,8 @@ def _show_sea_line_dialog(_sea_line: str):
 
 
 if open_line_info and (sea_line is not None):
+    # Обновляем данные из lines.json прямо перед показом окна
+    SEA_LINE_INFO = get_sea_line_info()
     _show_sea_line_dialog(sea_line)
 
 # =========================
