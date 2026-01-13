@@ -575,7 +575,7 @@ with st.sidebar:
             sea_line = st.selectbox("Морская линия", sorted(list(SEA_LINE_INFO.keys())))
         with line_c2:
             open_line_info = st.button("ℹ️", help="Сайт/документы/контакты по выбранной линии", key="open_line_info_btn")
-open_email_registry = st.button("✉️", help="Реестр почт по всем морским линиям", key="open_email_registry_btn")
+            open_email_registry = st.button("✉️", help="Реестр почт по всем морским линиям", key="open_email_registry_btn")
         is_direct = st.checkbox("Прямое судно", value=True)  # если выключить — считаем "непрямое"
 
     use_auto_freight = False
