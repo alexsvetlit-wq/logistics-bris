@@ -237,6 +237,39 @@ INDIA_LINE_DEFAULTS_20 = {
     "ExpertTrans": {"direct": 2550.0, "indirect": 2400.0},
 }
 
+
+# =========================
+# (НОВОЕ) Справочник контактов по морским линиям (сайт/облако/менеджер)
+# Не влияет на расчёты. Используется только для кнопки ℹ️ рядом с выбором линии.
+# =========================
+SEA_LINE_INFO = {
+    "Fesco": {
+        "site": "https://www.fesco.ru",
+        "cloud": "",  # ссылка на облако с документами/контактами (опционально)
+        "manager": {"name": "", "phone": "", "email": ""},
+    },
+    "Silmar": {
+        "site": "",
+        "cloud": "",
+        "manager": {"name": "", "phone": "", "email": ""},
+    },
+    "Akkon": {
+        "site": "",
+        "cloud": "",
+        "manager": {"name": "", "phone": "", "email": ""},
+    },
+    "Arkas": {
+        "site": "",
+        "cloud": "",
+        "manager": {"name": "", "phone": "", "email": ""},
+    },
+    "ExpertTrans": {
+        "site": "",
+        "cloud": "",
+        "manager": {"name": "", "phone": "", "email": ""},
+    },
+}
+
 # =========================
 # Утилиты
 # =========================
@@ -384,6 +417,8 @@ def calc_model(
 # Sidebar
 # =========================
 
+open_line_info = False  # кнопка ℹ️ по морской линии
+
 with st.sidebar:
     st.header("Ввод данных")
 
@@ -517,7 +552,11 @@ with st.sidebar:
     sea_line = None
     is_direct = False
     if is_sea and country == "Индия":
-        sea_line = st.selectbox("Морская линия", ["Fesco", "Silmar", "Akkon", "Arkas", "ExpertTrans"])
+        line_c1, line_c2 = st.columns([6, 1])
+        with line_c1:
+            sea_line = st.selectbox("Морская линия", ["Fesco", "Silmar", "Akkon", "Arkas", "ExpertTrans"])
+        with line_c2:
+            open_line_info = st.button("ℹ️", help="Сайт/документы/контакты по выбранной линии", key="open_line_info_btn")
         is_direct = st.checkbox("Прямое судно", value=True)  # если выключить — считаем "непрямое"
 
     use_auto_freight = False
@@ -678,6 +717,47 @@ with st.sidebar:
 
     # Триггер расчёта (верхняя или нижняя кнопка)
     calc = bool(calc_top or calc_bottom)
+
+
+# =========================
+# (НОВОЕ) Инфо по выбранной морской линии (кнопка ℹ️)
+# =========================
+if open_line_info and (sea_line is not None):
+    info = SEA_LINE_INFO.get(sea_line, {})
+    mgr = (info.get("manager") or {})
+    with st.dialog(f"Инфо: {sea_line}"):
+        site = (info.get("site") or "").strip()
+        cloud = (info.get("cloud") or "").strip()
+
+        if site:
+            st.link_button("🌐 Открыть сайт линии", site)
+        else:
+            st.caption("🌐 Сайт линии: —")
+
+        if cloud:
+            st.link_button("☁️ Документы/контакты (облако)", cloud)
+        else:
+            st.caption("☁️ Облако документов: —")
+
+        st.divider()
+        st.markdown("#### Менеджер")
+
+        name = (mgr.get("name") or "").strip() or "—"
+        phone = (mgr.get("phone") or "").strip() or "—"
+        email = (mgr.get("email") or "").strip() or "—"
+
+        st.write(f"**{name}**")
+        st.write(f"📞 {phone}")
+        st.write(f"✉️ {email}")
+
+        # Быстрые ссылки (если заполнено)
+        if email != "—":
+            st.markdown(f"[Написать письмо](mailto:{email})")
+        if phone != "—":
+            # tel: лучше работает на телефоне, но пусть будет
+            tel = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+            st.markdown(f"[Позвонить](tel:{tel})")
+
 
 # =========================
 # Результат
