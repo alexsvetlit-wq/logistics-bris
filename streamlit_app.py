@@ -738,43 +738,47 @@ with st.sidebar:
 
 # =========================
 # (НОВОЕ) Инфо по выбранной морской линии (кнопка ℹ️)
+# Примечание: используем @st.dialog (совместимо с версиями Streamlit, где st.dialog — декоратор)
 # =========================
-if open_line_info and (sea_line is not None):
-    info = SEA_LINE_INFO.get(sea_line, {})
+@st.dialog("Инфо: морская линия")
+def _show_sea_line_dialog(_sea_line: str):
+    info = SEA_LINE_INFO.get(_sea_line, {})
     mgr = (info.get("manager") or {})
-    with st.dialog(f"Инфо: {sea_line}"):
-        site = (info.get("site") or "").strip()
-        cloud = (info.get("cloud") or "").strip()
 
-        if site:
-            st.link_button("🌐 Открыть сайт линии", site)
-        else:
-            st.caption("🌐 Сайт линии: —")
+    site = (info.get("site") or "").strip()
+    cloud = (info.get("cloud") or "").strip()
 
-        if cloud:
-            st.link_button("☁️ Документы/контакты (облако)", cloud)
-        else:
-            st.caption("☁️ Облако документов: —")
+    if site:
+        st.link_button("🌐 Открыть сайт линии", site)
+    else:
+        st.caption("🌐 Сайт линии: —")
 
-        st.divider()
-        st.markdown("#### Менеджер")
+    if cloud:
+        st.link_button("☁️ Документы/контакты (облако)", cloud)
+    else:
+        st.caption("☁️ Облако документов: —")
 
-        name = (mgr.get("name") or "").strip() or "—"
-        phone = (mgr.get("phone") or "").strip() or "—"
-        email = (mgr.get("email") or "").strip() or "—"
+    st.divider()
+    st.markdown("#### Менеджер")
 
-        st.write(f"**{name}**")
-        st.write(f"📞 {phone}")
-        st.write(f"✉️ {email}")
+    name = (mgr.get("name") or "").strip() or "—"
+    phone = (mgr.get("phone") or "").strip() or "—"
+    email = (mgr.get("email") or "").strip() or "—"
 
-        # Быстрые ссылки (если заполнено)
-        if email != "—":
-            st.markdown(f"[Написать письмо](mailto:{email})")
-        if phone != "—":
-            # tel: лучше работает на телефоне, но пусть будет
-            tel = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
-            st.markdown(f"[Позвонить](tel:{tel})")
+    st.write(f"**{name}**")
+    st.write(f"📞 {phone}")
+    st.write(f"✉️ {email}")
 
+    # Быстрые ссылки (если заполнено)
+    if email != "—":
+        st.markdown(f"[Написать письмо](mailto:{email})")
+    if phone != "—":
+        tel = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+        st.markdown(f"[Позвонить](tel:{tel})")
+
+
+if open_line_info and (sea_line is not None):
+    _show_sea_line_dialog(sea_line)
 
 # =========================
 # Результат
