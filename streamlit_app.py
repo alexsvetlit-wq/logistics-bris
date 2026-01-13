@@ -744,13 +744,11 @@ with st.sidebar:
 # =========================
 @st.dialog("Реестр почт морских линий")
 def _show_sea_lines_email_registry():
-    """
-    Показывает реестр всех морских линий и их email(ы).
-    Берём manager.email + additional_contacts[].email, объединяем через запятую.
-    """
     rows = []
+
     for line_name, info in (SEA_LINE_INFO or {}).items():
         emails = []
+
         mgr = info.get("manager") or {}
         m_email = (mgr.get("email") or "").strip()
         if m_email:
@@ -763,21 +761,49 @@ def _show_sea_lines_email_registry():
                 if e:
                     emails.append(e)
 
-        # уникализация с сохранением порядка
+        # уникальные, с сохранением порядка
         seen = set()
         uniq = []
         for e in emails:
-            if e.lower() not in seen:
-                seen.add(e.lower())
+            el = e.lower()
+            if el not in seen:
+                seen.add(el)
                 uniq.append(e)
 
-        rows.append({
-            "Линия": line_name,
-            "Email(ы)": ", ".join(uniq)
-        })
+        if uniq:
+            emails_html = "<br>".join(
+                [f'<a href="mailto:{e}" style="color:#1f6feb">{e}</a>' for e in uniq]
+            )
+        else:
+            emails_html = ""
 
-    rows = sorted(rows, key=lambda x: x["Линия"].lower())
-    st.dataframe(rows, use_container_width=True, hide_index=True)
+        rows.append((line_name, emails_html))
+
+    rows = sorted(rows, key=lambda x: x[0].lower())
+
+    html = """
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;">Линия</th>
+          <th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;">Email(ы)</th>
+        </tr>
+      </thead>
+      <tbody>
+    """
+
+    for line, emails_html in rows:
+        html += f"""
+        <tr>
+          <td style="vertical-align:top; padding:8px; border-bottom:1px solid #eee;">{line}</td>
+          <td style="padding:8px; border-bottom:1px solid #eee;">{emails_html}</td>
+        </tr>
+        """
+
+    html += "</tbody></table>"
+
+    st.markdown(html, unsafe_allow_html=True)
+
 
 
 @st.dialog("Сводная таблица морских линий")
