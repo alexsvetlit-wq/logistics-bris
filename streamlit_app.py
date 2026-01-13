@@ -151,6 +151,23 @@ st.set_page_config(
     page_icon="assets/bris_logo.png"
 )
 
+
+st.markdown("""
+<style>
+/* Уменьшаем заголовок Logistics калькулятор в 2 раза */
+h1 {
+    font-size: 1.25rem !important;
+}
+
+/* Уменьшаем заголовок "Печать / PDF" в 2 раза */
+h2 {
+    font-size: 1.1rem !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+
 # --- Header ---
 col1, col2 = st.columns([1, 5])
 with col1:
