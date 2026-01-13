@@ -2,20 +2,58 @@
   "SEA_LINE_INFO": {
     "Fesco": {
       "site": "https://www.fesco.ru",
-      "cloud": "https://drive.google.com/drive/folders/fesco-demo",
+      "cloud": "https://web.telegram.org/k/#@tg_fesco",
       "manager": {
-        "name": "Иван Петров",
-        "phone": "+7 999 123-45-67",
-        "email": "ivan.petrov@fesco.test"
-      }
+        "name": "Alina Butkova",
+        "phone": "8-800-23-444-99 ext. 25019; +7 918 642-04-11",
+        "email": "abutkova@fesco.com"
+      },
+      "additional_contacts": [
+        {
+          "name": "Elena Aleksandrovna Menzhulova",
+          "email": "EMenzhulova@fesco.com",
+          "phone": ""
+        },
+        {
+          "name": "Marina Sergeevna Belak",
+          "email": "MBelak@fesco.com",
+          "phone": ""
+        }
+      ],
+      "main_routes_and_rates": [
+        {
+          "route": "China (Qingdao / Shanghai) → Novorossiysk",
+          "container": "20DC / 40HC",
+          "rate_usd": "по запросу",
+          "vessel_type": "прямое / фидер",
+          "transit_time_days": "45–55",
+          "notes": "зависит от линии и расписания"
+        },
+        {
+          "route": "India (Mundra) → Novorossiysk",
+          "container": "20DC",
+          "rate_usd": "по запросу",
+          "vessel_type": "непрямое",
+          "transit_time_days": "35–45",
+          "notes": "через хаб"
+        },
+        {
+          "route": "Turkey → Novorossiysk",
+          "container": "20DC / 40HC",
+          "rate_usd": "по запросу",
+          "vessel_type": "прямое",
+          "transit_time_days": "10–14",
+          "notes": "короткое транзитное время"
+        }
+      ]
     },
     "Silmar": {
-      "site": "",
+      "site": "https://www.silmar.ru",
       "cloud": "",
       "manager": {
-        "name": "",
-        "phone": "",
-        "email": ""
+        "name": "Maria Sobchenko",
+        "phone": "+7 8617 30 50 40 ext. 243; +7 928 451 89 26",
+        "email": "m.sobchenko@silmar.spb.ru"
       }
     },
     "Akkon": {
@@ -45,7 +83,6 @@
         "email": ""
       }
     },
-
     "HUB Shipping": {
       "site": "https://hub-shipping.com",
       "cloud": "https://drive.google.com/drive/folders/hub-demo",
