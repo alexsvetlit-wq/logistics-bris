@@ -435,6 +435,7 @@ def calc_model(
 # =========================
 
 open_line_info = False  # кнопка ℹ️ по морской линии
+open_email_registry = False  # кнопка ✉️ реестр почт
 
 with st.sidebar:
     st.header("Ввод данных")
@@ -574,6 +575,7 @@ with st.sidebar:
             sea_line = st.selectbox("Морская линия", sorted(list(SEA_LINE_INFO.keys())))
         with line_c2:
             open_line_info = st.button("ℹ️", help="Сайт/документы/контакты по выбранной линии", key="open_line_info_btn")
+open_email_registry = st.button("✉️", help="Реестр почт по всем морским линиям", key="open_email_registry_btn")
         is_direct = st.checkbox("Прямое судно", value=True)  # если выключить — считаем "непрямое"
 
     use_auto_freight = False
@@ -740,6 +742,44 @@ with st.sidebar:
 # (НОВОЕ) Инфо по выбранной морской линии (кнопка ℹ️)
 # Примечание: используем @st.dialog (совместимо с версиями Streamlit, где st.dialog — декоратор)
 # =========================
+@st.dialog("Реестр почт морских линий")
+def _show_sea_lines_email_registry():
+    """
+    Показывает реестр всех морских линий и их email(ы).
+    Берём manager.email + additional_contacts[].email, объединяем через запятую.
+    """
+    rows = []
+    for line_name, info in (SEA_LINE_INFO or {}).items():
+        emails = []
+        mgr = info.get("manager") or {}
+        m_email = (mgr.get("email") or "").strip()
+        if m_email:
+            emails.append(m_email)
+
+        extra = info.get("additional_contacts") or []
+        if isinstance(extra, list):
+            for c in extra:
+                e = (c.get("email") or "").strip()
+                if e:
+                    emails.append(e)
+
+        # уникализация с сохранением порядка
+        seen = set()
+        uniq = []
+        for e in emails:
+            if e.lower() not in seen:
+                seen.add(e.lower())
+                uniq.append(e)
+
+        rows.append({
+            "Линия": line_name,
+            "Email(ы)": ", ".join(uniq)
+        })
+
+    rows = sorted(rows, key=lambda x: x["Линия"].lower())
+    st.dataframe(rows, use_container_width=True, hide_index=True)
+
+
 @st.dialog("Сводная таблица морских линий")
 def _show_sea_lines_summary():
     """
@@ -861,6 +901,10 @@ def _show_sea_line_dialog(_sea_line: str):
 
 if open_line_info and (sea_line is not None):
     _show_sea_line_dialog(sea_line)
+
+
+if open_email_registry:
+    _show_sea_lines_email_registry()
 
 # =========================
 # Результат
