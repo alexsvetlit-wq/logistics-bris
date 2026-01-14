@@ -862,15 +862,68 @@ def _show_sea_line_dialog(_sea_line: str):
     if st.button("📊 Сводная таблица ставок и сроков", use_container_width=True):
         _show_sea_lines_summary()
 
-    if site:
-        st.link_button("🌐 Открыть сайт линии", site)
-    else:
-        st.caption("🌐 Сайт линии: —")
+        # --- Лаконичные ссылки (кнопка + кликабельная/копируемая ссылка рядом) ---
+    st.markdown(
+        """
+        <style>
+          /* компактные кнопки в ℹ️-окне */
+          div[data-testid="stDialog"] a[data-testid="stLinkButton"] > div {
+            padding: 0.25rem 0.55rem !important;
+            min-height: 32px !important;
+            border-radius: 8px !important;
+          }
+          /* уменьшаем ширину: делаем кнопки "по содержимому" */
+          div[data-testid="stDialog"] a[data-testid="stLinkButton"] {
+            width: fit-content !important;
+          }
+          /* вид ссылки справа: синий, переносится */
+          .bris-inline-link a{
+            color:#1f6feb;
+            text-decoration: none;
+            word-break: break-word;
+          }
+          .bris-inline-link a:hover{ text-decoration: underline; }
+          .bris-inline-link{ padding-top: 0.35rem; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    if cloud:
-        st.link_button("☁️ Документы/контакты (облако)", cloud)
-    else:
-        st.caption("☁️ Облако документов: —")
+    def _inline_link(url: str) -> str:
+        if not url:
+            return "<span style='color:#999'>(—)</span>"
+        esc = url.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        return f"<span class='bris-inline-link'>(<a href='{esc}' target='_blank' rel='noopener noreferrer'>{esc}</a>)</span>"
+
+    tariffs = (info.get("tariffs") or "").strip()
+
+    # Сайт
+    r1c1, r1c2 = st.columns([1, 5])
+    with r1c1:
+        if site:
+            st.link_button("Сайт", site, use_container_width=False)
+        else:
+            st.link_button("Сайт", "https://example.com", disabled=True, use_container_width=False)
+    with r1c2:
+        st.markdown(_inline_link(site), unsafe_allow_html=True)
+
+    # Облако
+    r2c1, r2c2 = st.columns([1, 5])
+    with r2c1:
+        if cloud:
+            st.link_button("Облако", cloud, use_container_width=False)
+        else:
+            st.link_button("Облако", "https://example.com", disabled=True, use_container_width=False)
+    with r2c2:
+        st.markdown(_inline_link(cloud), unsafe_allow_html=True)
+
+    # Тарифы (опционально, если есть в JSON)
+    if tariffs:
+        r3c1, r3c2 = st.columns([1, 5])
+        with r3c1:
+            st.link_button("Тарифы", tariffs, use_container_width=False)
+        with r3c2:
+            st.markdown(_inline_link(tariffs), unsafe_allow_html=True)
 
     st.divider()
     st.markdown("#### Менеджер")
