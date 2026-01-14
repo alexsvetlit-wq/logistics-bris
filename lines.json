@@ -47,7 +47,8 @@
           "notes": "короткое транзитное время"
         }
       ],
-      "agent_for": ""
+      "agent_for": "",
+      "tariffs_url": "https://www.fesco.ru/clients/schedule/tariffs/"
     },
     "Silmar": {
       "site": "https://www.silmar.ru",
@@ -223,7 +224,8 @@
         }
       ],
       "operator_type": "ЖД оператор",
-      "scope": "Импорт Китай → Новороссийск"
+      "scope": "Импорт Китай → Новороссийск",
+      "agent_for": ""
     },
     "Sarjak Container Lines": {
       "additional_contacts": [
@@ -347,6 +349,32 @@
       "agent_in_ru": "ООО «ОВП Шиппинг» (OVP Shipping Russia)",
       "status": "Часто работают совместными судами с Safetrans. Хороший прямой сервис.",
       "additional_contacts": [],
+      "agent_for": ""
+    },
+    "RSL": {
+      "full_name": "RSL Container Lines (Real Shipping / Russian Shipping Lines — NVOCC brand)",
+      "country": "UAE / Singapore",
+      "agent_in_ru": "ТЭК «Посейдон» (TEK Poseidon)",
+      "agent_site": "https://tekposeidon.ru",
+      "site": "",
+      "status": "NVOCC линия. Работают через агента ТЭК «Посейдон».",
+      "additional_contacts": [
+        {
+          "name": "Alexander",
+          "role": "Office / Terminal",
+          "phone": "+7 (8617) 729-101",
+          "email": "",
+          "address": "353900, Novorossiysk, Pobedy str., 16B (entrance from Kommunisticheskaya)"
+        },
+        {
+          "name": "",
+          "role": "Terminal",
+          "phone": "+7 (908) 693-16-22",
+          "email": "",
+          "address": "Novorossiysk, Kirillovka area, 2nd railway loop",
+          "working_hours": "10:00–19:00 (Sat–Sun off)"
+        }
+      ],
       "agent_for": ""
     }
   }
