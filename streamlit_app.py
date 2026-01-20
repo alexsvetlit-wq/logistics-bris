@@ -1048,7 +1048,7 @@ if calc:
     
         st.divider()
         c5, c6 = st.columns(2)
-        c5.metric("Итого стоимость товара в НВРСК , RUB", f"{res['total_rub']:,.0f}")
+        c5.metric("Итого стоимость партии товара, RUB", f"{res['total_rub']:,.0f}")
         c6.metric(f"Себестоимость, RUB/{unit_sym}", f"{res['cost_rub_m2']:,.2f}")
     
 
