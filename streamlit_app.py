@@ -1141,7 +1141,7 @@ if calc:
             <td style="text-align:right">{_fmt_money(exp_service_rub * containers_qty, 2)} USD</td>
           </tr>
           <tr>
-            <td>Агентская комиссия от подбора фрахта O/F (Ocean Freight), %</td>
+            <td>Агентская комиссия от подбора фрахта O/F(% х Ocean Freight),USD</td>
             <td style="text-align:right">{_fmt_money(exp_commission_pct, 2)} %</td>
           </tr>
           <tr>
