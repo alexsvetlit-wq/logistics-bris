@@ -660,7 +660,7 @@ with st.sidebar:
     )
 
     lr_restack_cross = st.number_input(
-        "Перетарка на СВХ кросс-докинг (из ктк в авто), RUB/1 фура",
+        "Перетарка на СВХ кросс-докинг (из ктк в авто/склад), RUB/1 фура",
         value=9000.0, step=250.0
     )
 
@@ -1069,7 +1069,7 @@ if calc:
         ("Контейнеров", str(containers_qty)),
         ("Порт отгрузки", port_loading),
         ("Порт выгрузки", port_discharge),
-        ("Курс USD→RUB", _fmt_money(currency_rate, 2)),
+        ("Курс USD→RUB(в т.ч ЦБ+2,5%)", _fmt_money(currency_rate, 2)),
         ("Инвойс (итого)", f"{_fmt_money(invoice_total, 2)} {invoice_currency}"),
         ("Товар", product_type),
         ("Поверхность", finish),
@@ -1077,9 +1077,9 @@ if calc:
         ("Пошлина, %", _fmt_money(duty_pct, 2)),
         ("НДС, %", _fmt_money(VAT_PCT_FIXED, 2)),
         ("Кол-во", f"{_fmt_money(qty_m2, 2)} {unit}"),
-        ("Цена", f"{_fmt_money(price_per_m2, 2)} {price_currency}/{unit}"),
+        ("Цена (ср.расчетная цена по кол-ву)", f"{_fmt_money(price_per_m2, 2)} {price_currency}/{unit}"),
         ("Фрахт", f"{_fmt_money(freight_usd, 2)} USD/конт."),
-        ("DTHC портовые сборы", f"{_fmt_money(insurance_usd, 2)} USD/конт."),
+        ("DTHC (портовые сборы)", f"{_fmt_money(insurance_usd, 2)} USD/конт."),
     ]
 
     # Детализация локальных расходов
@@ -1125,7 +1125,7 @@ if calc:
     if print_show_rewards:
         rewards_block_html = f"""
       <div class="box">
-        <h3>Вознаграждение экспедитора и технического импортера</h3>
+        <h3>Оплата за комплекс работ экспедитора и технического импортера</h3>
         <table class="t totals">
           <tr>
             <td>Услуга по экспедированию / оформлению (100USD/ктк), USD</td>
@@ -1140,7 +1140,7 @@ if calc:
             <td style="text-align:right">{_fmt_money(res.get("factory_pay_usd", 0.0), 2)} USD</td>
           </tr>
           <tr>
-            <td>Сумма вознаграждений (USD)</td>
+            <td>Сумма вознаграждений (USD),всего</td>
             <td style="text-align:right">{_fmt_money(res.get("fees_usd", 0.0), 2)} USD</td>
           </tr>
         </table>
@@ -1318,7 +1318,7 @@ if calc:
       {cost_all_block_html}
 
       <div class="box">
-        <h3>Расценки на прямые локальные расходы в РФ (актуализация на дату расчета)</h3>
+        <h3>Расценки на прямые локальные расходы в РФ (справочные)</h3>
         <table class="t">
           {_rows_local_html}
         </table>
