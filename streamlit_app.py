@@ -1077,7 +1077,7 @@ if calc:
         ("Пошлина, %", _fmt_money(duty_pct, 2)),
         ("НДС, %", _fmt_money(VAT_PCT_FIXED, 2)),
         ("Кол-во", f"{_fmt_money(qty_m2, 2)} {unit}"),
-        ("Цена (ср.расчетная цена по кол-ву)", f"{_fmt_money(price_per_m2, 2)} {price_currency}/{unit}"),
+        ("Цена (ср.расчетная цена по кол-ву)", f"{_fmt_money(price_per_m2, 3)} {price_currency}/{unit}"),
         ("Фрахт", f"{_fmt_money(freight_usd, 2)} USD/конт."),
         ("DTHC (портовые сборы)", f"{_fmt_money(insurance_usd, 2)} USD/конт."),
     ]
