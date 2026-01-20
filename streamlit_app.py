@@ -546,11 +546,11 @@ with st.sidebar:
     if unit == "м²":
         qty_m2 = st.number_input("Кол-во, м²", value=1200.0, step=10.0)
         price_label = f"Цена товара, {price_currency}/м²"
-        price_per_m2 = st.number_input(price_label, value=7.5, step=0.1)
+        price_per_m2 = st.number_input(price_label, value=7.500, step=0.001, format="%.3f")
     else:
         qty_m2 = st.number_input("Кол-во, шт.", value=1000.0, step=10.0)
         price_label = f"Цена товара, {price_currency}/шт."
-        price_per_m2 = st.number_input(price_label, value=7.5, step=0.1)
+        price_per_m2 = st.number_input(price_label, value=7.500, step=0.001, format="%.3f")
 
     st.divider()
 
