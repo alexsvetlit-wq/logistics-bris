@@ -1138,7 +1138,7 @@ if calc:
         <table class="t totals">
           <tr>
             <td>Услуга по экспедированию / оформлению (100USD/ктк), USD</td>
-            <td style="text-align:right">{_fmt_money(exp_service_rub, 2)} USD</td>
+            <td style="text-align:right">{_fmt_money(exp_service_rub * containers_qty, 2)} USD</td>
           </tr>
           <tr>
             <td>Агентская комиссия от подбора фрахта O/F (Ocean Freight), %</td>
