@@ -1110,7 +1110,7 @@ if calc:
         ("Пошлина, USD", res["duty_usd"], "USD"),
         ("НДС 22%+тамож.сбор, USD", res["vat_usd"], "USD"),
         ("Локальные расходы в РФ, всего", local_costs_rub_input, "₽"),
-        ("Итого стоимость товара в НВРСК, RUB", res["total_rub"], "₽"),
+        ("Итого стоимость партии товара, RUB", res["total_rub"], "₽"),
         (f"Себестоимость, RUB/{unit_sym}", res["cost_rub_m2"], "₽"),
     ]
 
