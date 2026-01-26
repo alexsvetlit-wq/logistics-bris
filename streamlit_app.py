@@ -1078,7 +1078,7 @@ if calc:
         ("Контейнеров", str(containers_qty)),
         ("Порт отгрузки", port_loading),
         ("Порт выгрузки", port_discharge),
-        ("Курс USD→RUB(в т.ч ЦБ+2,5%)", _fmt_money(currency_rate, 2)),
+        ("Курс на дату платежа USD→RUB(в т.ч ЦБ+2,5%)", _fmt_money(currency_rate, 2)),
         ("Инвойс (итого)", f"{_fmt_money(invoice_total, 2)} {invoice_currency}"),
         ("Товар", product_type),
         ("Поверхность", finish),
