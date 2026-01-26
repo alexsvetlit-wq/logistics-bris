@@ -499,7 +499,7 @@ with st.sidebar:
         )
 
     # --- Курсы валют ---
-    currency_rate = st.number_input("Курс ЦБ+2% конвертация USD→RUB", value=95.0, step=0.1)
+    currency_rate = st.number_input("Курс ЦБ+2,5% конвертация USD→RUB", value=80.0, step=0.1)
 
     usd_cny = 0.0
     usd_inr = 0.0
