@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 import json
 import os
 import datetime
+import requests
 # --- Fixed sidebar helper button (scroll sidebar to top) ---
 components.html(
     '''
@@ -287,6 +288,27 @@ def load_sea_line_info():
 SEA_LINE_INFO = load_sea_line_info()
 
 
+
+# =========================
+# Курсы ЦБ РФ (USD)
+# =========================
+@st.cache_data(ttl=3600, show_spinner=False)
+def get_cbr_usd_rate(date_obj: datetime.date | None = None) -> float | None:
+    """Официальный курс ЦБ РФ USD→RUB на дату.
+    Источник: cbr-xml-daily.ru (зеркало данных ЦБ). При ошибке возвращает None.
+    """
+    try:
+        if date_obj is None:
+            url = "https://www.cbr-xml-daily.ru/daily_json.js"
+        else:
+            url = f"https://www.cbr-xml-daily.ru/archive/{date_obj:%Y/%m/%d}/daily_json.js"
+        r = requests.get(url, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        return float(data["Valute"]["USD"]["Value"])
+    except Exception:
+        return None
+
 # =========================
 # Утилиты
 # =========================
@@ -508,8 +530,27 @@ with st.sidebar:
         )
 
     # --- Курсы валют ---
-    currency_rate = st.number_input("Курс ЦБ+2,5% конвертация USD→RUB", value=80.0, step=0.1)
 
+    # --- Курс USD→RUB: ЦБ (чистый) + 2,5% конвертация ---
+    cbr_usd_rate = get_cbr_usd_rate(calc_date)
+    if cbr_usd_rate is None:
+        st.warning("Не удалось подтянуть курс ЦБ. Введи курс вручную.")
+        cbr_usd_rate = 0.0
+
+    st.number_input(
+        "Курс ЦБ USD→RUB (чистый)",
+        value=float(cbr_usd_rate),
+        step=0.01,
+        disabled=True,
+        key="cbr_usd_rate_display",
+    )
+
+    currency_rate = st.number_input(
+        "Курс USD→RUB (ЦБ+2,5% конвертация)",
+        value=float(cbr_usd_rate) * 1.025 if cbr_usd_rate else 80.0,
+        step=0.1,
+        key="currency_rate",
+    )
     usd_cny = 0.0
     usd_inr = 0.0
 
@@ -1133,6 +1174,7 @@ if calc:
         ("Контейнеров", str(containers_qty)),
         ("Порт отгрузки", port_loading),
         ("Порт выгрузки", port_discharge),
+        ("Курс ЦБ USD→RUB (чистый)", _fmt_money(cbr_usd_rate, 2)),
         ("Курс на дату платежа USD→RUB(в т.ч ЦБ+2,5%)", _fmt_money(currency_rate, 2)),
         ("Инвойс (итого)", f"{_fmt_money(invoice_total, 2)} {invoice_currency}"),
         ("Товар", product_type),
@@ -1358,7 +1400,7 @@ if calc:
     <img class="logo" src="assets/bris_logo.png" />
     <div>
       <div class="title">BRIS Logistics — расчёт себестоимости</div>
-      <div class="subtitle">{country} • {incoterms} • {transport} • Контейнеров: {containers_qty} • Дата: {calc_date.strftime("%d.%m.%Y") if hasattr(calc_date, "strftime") else str(calc_date)}</div>
+      <div class="subtitle">{country} • {incoterms} • {transport} • Контейнеров: {containers_qty} • Дата: {calc_date.strftime("%d.%m.%Y") if hasattr(calc_date, "strftime") else str(calc_date)} • USD ЦБ: {_fmt_money(cbr_usd_rate, 2)}</div>
     </div>
   </div>
 
