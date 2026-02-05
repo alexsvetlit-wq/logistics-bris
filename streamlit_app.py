@@ -431,7 +431,11 @@ def calc_model(
     cost_rub_m2 = total_rub / qty_m2 if qty_m2 else 0
 
     # Себестоимость с учетом всех расходов
-    cost_all_usd_m2 = total_usd_all / qty_m2 if qty_m2 else 0
+    # Себестоимость USD/м² (новая логика):
+    # (Себестоимость в RUB/м² переводим в USD по курсу ЦБ+2,5%) + (сумма вознаграждений всего / м²)
+    cost_all_usd_m2 = (
+        (cost_all_rub_m2 / usd_rub) + (fees_usd / qty_m2)
+    ) if qty_m2 else 0
     cost_all_rub_m2 = total_rub_all / qty_m2 if qty_m2 else 0
 
     return {
