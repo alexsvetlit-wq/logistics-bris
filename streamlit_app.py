@@ -610,10 +610,8 @@ with st.sidebar:
     # Поле "как раньше" (ручной ввод, если детализацию не используем)
     local_costs_rub_input = st.number_input(
         "Локальные расходы в РФ всего , RUB",
-        value=float(st.session_state.get("local_costs_total_rub", 24000.0)),
-        step=1000.0,
-        key="local_costs_total_rub",
-        disabled=True
+        value=24000.0,
+        step=1000.0
     )
 
     # =========================
@@ -656,27 +654,6 @@ with st.sidebar:
     # =========================
     st.subheader("Локальные расходы РФ (детализация)")
 
-
-    st.markdown("### Параметры для расчёта детализации")
-
-    pallets_qty = st.number_input(
-        "Количество паллет (для ПРР и хранения)",
-        value=20,
-        step=1
-    )
-
-    tons_qty = st.number_input(
-        "Вес груза, тонн (для ручного ПРР)",
-        value=22.0,
-        step=0.5
-    )
-
-    storage_days = st.number_input(
-        "Дней хранения на СВХ",
-        value=5,
-        step=1
-    )
-
     lr_ktt_out = st.number_input(
         "Вывоз ктк из порта на СВХ в т.ч сдача в депо, RUB/1 ктк",
         value=24000.0, step=500.0
@@ -717,23 +694,17 @@ with st.sidebar:
         value=0.0, step=1000.0
     )
 
-    
     # --- Сумма локальных расходов РФ (детализация) ---
-    # ВАЖНО: здесь считаем ИТОГИ, а не складываем ставки.
-    # Часть строк задана как RUB/паллет, RUB/тонна, RUB/паллетодень и т.д.
     local_costs_rub_calc = (
-        lr_ktt_out * float(containers_qty)                 # RUB/1 ктк × ктк
-        + lr_restack_cross                                 # RUB/1 фура (как единовременно)
-        + lr_prr_mech * float(pallets_qty)                 # RUB/паллет × паллет
-        + lr_prr_manual * float(tons_qty)                  # RUB/тонна × тонн
-        + lr_restack_ktt * float(pallets_qty)              # RUB/паллет × паллет
-        + lr_restack_terminal * float(containers_qty)      # RUB/ктк лифт × ктк
-        + lr_storage * float(pallets_qty) * float(storage_days)  # RUB/паллетодень × паллет × дни
-        + lr_delivery_rf                                   # RUB/авто (как единовременно)
+        lr_ktt_out
+        + lr_prr_mech
+        + lr_prr_manual
+        + lr_restack_ktt
+        + lr_restack_cross
+        + lr_restack_terminal
+        + lr_storage
+        + lr_delivery_rf
     )
-
-    # Автозаполнение поля "Локальные расходы в РФ всего" из суммы детализации
-    st.session_state["local_costs_total_rub"] = float(local_costs_rub_calc)
 
     st.caption(f"Сумма детализации: {local_costs_rub_calc:,.0f} ₽".replace(",", " "))
 
