@@ -603,7 +603,7 @@ with st.sidebar:
             st.warning("Для этого выбора нет дефолтной ставки — введи вручную (сними галочку).")
     else:
         # оставляем как было: ручной ввод
-        freight_usd = st.number_input("Фрахт, USD/конт.", value=4500.0, step=50.0)
+        freight_usd = st.number_input("Фрахт, USD/конт.", value=2500.0, step=50.0)
 
     insurance_usd = st.number_input("DTHC портовые сборы, USD/конт.", value=0.0, step=10.0)
 
@@ -611,7 +611,7 @@ with st.sidebar:
     local_costs_rub_input = st.number_input(
         "Локальные расходы в РФ всего , RUB",
         value=24000.0,
-        step=1000.0
+        step=24000.0
     )
 
     # =========================
@@ -656,42 +656,42 @@ with st.sidebar:
 
     lr_ktt_out = st.number_input(
         "Вывоз ктк из порта на СВХ в т.ч сдача в депо, RUB/1 ктк",
-        value=24000.0, step=500.0
+        value=18000.0, step=18000.0
     )
 
     lr_restack_cross = st.number_input(
         "Перетарка на СВХ кросс-докинг (из ктк в авто/склад), RUB/1 фура",
-        value=9000.0, step=250.0
+        value=9000.0, step=9000.0
     )
 
     lr_prr_mech = st.number_input(
         "ПРР механизированная (из ктк -склад- авто), RUB/паллет",
-        value=500.0, step=250.0
+        value=500.0, step=500.0
     )
 
     lr_prr_manual = st.number_input(
         "ПРР ручная (из ктк авто/склад) за 1 тн без паллеты, RUB/тонна",
-        value=800.0, step=50.0
+        value=900.0, step=900.0
     )
 
     lr_restack_ktt = st.number_input(
         "Паллетированние(вкл.поддон+стрейч+пплента), RUB/паллет",
-        value=1300.0, step=50.0
+        value=1300.0, step=1300.0
     )
 
     lr_restack_terminal = st.number_input(
         "Перетарка на СВХ (с ктквоз снять/поставить), RUB/ктк лифт",
-        value=1500.0, step=50.0
+        value=1500.0, step=1500.0
     )
 
     lr_storage = st.number_input(
         "Хранение на СВХ (начиная с 10 дня хран.), RUB/паллетодень",
-        value=30.0, step=5.0
+        value=30.0, step=30.0
     )
 
     lr_delivery_rf = st.number_input(
         "Доставка по РФ до склада клиента (авто 20 тонн), RUB/авто",
-        value=0.0, step=1000.0
+        value=0.0, step=5000.0
     )
 
     # --- Сумма локальных расходов РФ (детализация) ---
