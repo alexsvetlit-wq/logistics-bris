@@ -610,8 +610,10 @@ with st.sidebar:
     # Поле "как раньше" (ручной ввод, если детализацию не используем)
     local_costs_rub_input = st.number_input(
         "Локальные расходы в РФ всего , RUB",
-        value=24000.0,
-        step=1000.0
+        value=float(st.session_state.get("local_costs_total_rub", 24000.0)),
+        step=1000.0,
+        key="local_costs_total_rub",
+        disabled=True
     )
 
     # =========================
@@ -729,7 +731,10 @@ with st.sidebar:
         + lr_storage * float(pallets_qty) * float(storage_days)  # RUB/паллетодень × паллет × дни
         + lr_delivery_rf                                   # RUB/авто (как единовременно)
     )
-    
+
+    # Автозаполнение поля "Локальные расходы в РФ всего" из суммы детализации
+    st.session_state["local_costs_total_rub"] = float(local_costs_rub_calc)
+
     st.caption(f"Сумма детализации: {local_costs_rub_calc:,.0f} ₽".replace(",", " "))
 
     # --- Что используем в расчётах ---
