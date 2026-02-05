@@ -1200,8 +1200,8 @@ if calc:
         ("ПРР механизированная (из ктк -склад- авто),RUB/паллет от:", lr_prr_mech, "₽"),
         ("ПРР ручная (из ктк авто/склад) за 1тн. без паллеты,RUB/тн. от:", lr_prr_manual, "₽"),
         ("Паллетированние(поддон+стрейч+пп лента),RUB/паллет от:", lr_restack_ktt, "₽"),
-        ("Перетарка на СВХ (с ктквоз снять/поставить),RUB/ктк лифт от:", lr_restack_terminal, "₽"),
-        ("Таможенное оформление в Р.Ф (1 ГТД/1 +1000 руб за каждый доп.ктк),RUB", lr_storage, "₽"),
+        ("Крановые операции на СВХ (с ктквоз снять/поставить),RUB/ктк лифт от:", lr_restack_terminal, "₽"),
+        ("Услуга таможенного брокера (1 ГТД/1 +1000 руб за каждый доп.ктк),RUB", lr_storage, "₽"),
         ("Доставка по РФ до склада клиента (авто 20 тонн),RUB/авто от:", lr_delivery_rf, "₽"),
     ]
 
@@ -1236,19 +1236,19 @@ if calc:
     if print_show_rewards:
         rewards_block_html = f"""
       <div class="box">
-        <h3>Вознаграждение за комплекс работ экспедитора и технического импортера
+        <h3>Комиссия оператора ВЭД  и технического импортера
         </h3>
         <table class="t totals">
           <tr>
-            <td>Услуга по экспедированию / оформлению (100USD/ктк), USD</td>
+            <td>Транспортно-экспедиционное обслуживание (ТЭО) (100USD/ктк), USD</td>
             <td style="text-align:right">{_fmt_money(exp_service_rub * containers_qty, 2)} USD</td>
           </tr>
           <tr>
-            <td>Агентская комиссия от подбора фрахта (% х Ocean Freight х N), USD</td>
+            <td>Комиссия за организацию международной перевозки(% х Ocean Freight х N), USD</td>
             <td style="text-align:right">{_fmt_money((freight_usd * float(containers_qty)) * (exp_commission_pct / 100.0), 2)} USD</td>
           </tr>
           <tr>
-            <td>Оплата на фабрику за клиента (USD)</td>
+            <td>Финансовое сопровождение закупки (платежный агент) (USD)</td>
             <td style="text-align:right">{_fmt_money(res.get("factory_pay_usd", 0.0), 2)} USD</td>
           </tr>
           <tr>
