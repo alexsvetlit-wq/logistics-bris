@@ -610,8 +610,8 @@ with st.sidebar:
     # Поле "как раньше" (ручной ввод, если детализацию не используем)
     local_costs_rub_input = st.number_input(
         "Локальные расходы в РФ всего , RUB",
-        value=24000.0,
-        step=24000.0
+        value=float(local_costs_rub_calc),
+        disabled=True
     )
 
     # =========================
@@ -709,7 +709,7 @@ with st.sidebar:
     st.caption(f"Сумма детализации: {local_costs_rub_calc:,.0f} ₽".replace(",", " "))
 
     # --- Что используем в расчётах ---
-    local_costs_rub = local_costs_rub_input  # вручную (НЕ зависит от детализации ниже)
+    local_costs_rub = local_costs_rub_calc  # автоматически из детализации
     local_rub = local_costs_rub  # совместимость с calc_model(..., local_rub, ...)
 
     st.caption(
