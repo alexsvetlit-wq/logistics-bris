@@ -655,25 +655,25 @@ with st.sidebar:
     st.subheader("Локальные расходы РФ (детализация)")
 
 
-st.markdown("### Параметры для расчёта детализации")
+    st.markdown("### Параметры для расчёта детализации")
 
-pallets_qty = st.number_input(
-    "Количество паллет (для ПРР и хранения)",
-    value=20,
-    step=1
-)
+    pallets_qty = st.number_input(
+        "Количество паллет (для ПРР и хранения)",
+        value=20,
+        step=1
+    )
 
-tons_qty = st.number_input(
-    "Вес груза, тонн (для ручного ПРР)",
-    value=22.0,
-    step=0.5
-)
+    tons_qty = st.number_input(
+        "Вес груза, тонн (для ручного ПРР)",
+        value=22.0,
+        step=0.5
+    )
 
-storage_days = st.number_input(
-    "Дней хранения на СВХ",
-    value=5,
-    step=1
-)
+    storage_days = st.number_input(
+        "Дней хранения на СВХ",
+        value=5,
+        step=1
+    )
 
     lr_ktt_out = st.number_input(
         "Вывоз ктк из порта на СВХ в т.ч сдача в депо, RUB/1 ктк",
@@ -730,7 +730,7 @@ storage_days = st.number_input(
         + lr_delivery_rf                                   # RUB/авто (как единовременно)
     )
     
-    st.caption(st.caption(f"Сумма детализации: {local_costs_rub_calc:,.0f} ₽".replace(",", " "))
+    st.caption(f"Сумма детализации: {local_costs_rub_calc:,.0f} ₽".replace(",", " "))
 
     # --- Что используем в расчётах ---
     local_costs_rub = local_costs_rub_input  # вручную (НЕ зависит от детализации ниже)
