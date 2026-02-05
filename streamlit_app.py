@@ -1115,16 +1115,6 @@ if calc:
         containers_qty,
         exp_commission_pct,
 )
-
-    # --- Вывод услуги по экспедированию / оформлению (итого) ---
-    expediting_fee_per_container = exp_service_rub
-    expediting_fee_total = expediting_fee_per_container * containers_qty
-    st.write(
-        f"Услуга по экспедированию / оформлению "
-        f"({expediting_fee_per_container:.2f} USD/контейнер × {containers_qty}): "
-        f"{expediting_fee_total:.2f} USD"
-    )
-
     # =========================
     # Контроль: товар (qty × price) vs инвойс — сравнение по целым USD
     # =========================
