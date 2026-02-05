@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 import json
 import os
-
+import datetime
 # --- Fixed sidebar helper button (scroll sidebar to top) ---
 components.html(
     '''
@@ -446,6 +446,15 @@ with st.sidebar:
 
 
     supplier = st.text_input("Фабрика / поставщик (как в инвойсе)")
+
+
+    # Дата расчёта (по умолчанию — текущая системная)
+    calc_date = st.date_input(
+        "Дата расчёта",
+        value=datetime.date.today(),
+        key="calc_date"
+    )
+
 
     # =========================
     # ВСТАВКА: общая стоимость товара по инвойсу (НЕ СВЯЗЫВАЕМ НИ С ЧЕМ)
@@ -1117,6 +1126,7 @@ if calc:
     # Данные (ввод)
     _print_rows_left = [
         ("Фабрика / поставщик", supplier if supplier else "—"),
+        ("Дата расчёта", calc_date.strftime("%d.%m.%Y") if hasattr(calc_date, "strftime") else str(calc_date)),
         ("Страна", country),
         ("Инкотермс", incoterms),
         ("Тип доставки", transport),
@@ -1348,7 +1358,7 @@ if calc:
     <img class="logo" src="assets/bris_logo.png" />
     <div>
       <div class="title">BRIS Logistics — расчёт себестоимости</div>
-      <div class="subtitle">{country} • {incoterms} • {transport} • Контейнеров: {containers_qty}</div>
+      <div class="subtitle">{country} • {incoterms} • {transport} • Контейнеров: {containers_qty} • Дата: {calc_date.strftime("%d.%m.%Y") if hasattr(calc_date, "strftime") else str(calc_date)}</div>
     </div>
   </div>
 
