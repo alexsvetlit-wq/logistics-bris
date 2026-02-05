@@ -607,12 +607,34 @@ with st.sidebar:
 
     insurance_usd = st.number_input("DTHC портовые сборы, USD/конт.", value=0.0, step=10.0)
 
-    # Поле "как раньше" (ручной ввод, если детализацию не используем)
+    # Поле "как раньше" — теперь автоматически из суммы детализации
+    # (значения берём из session_state, чтобы сумма считалась ДО блока детализации)
+    _lr_ktt_out = float(st.session_state.get("lr_ktt_out", 18000.0))
+    _lr_restack_cross = float(st.session_state.get("lr_restack_cross", 9000.0))
+    _lr_prr_mech = float(st.session_state.get("lr_prr_mech", 500.0))
+    _lr_prr_manual = float(st.session_state.get("lr_prr_manual", 900.0))
+    _lr_restack_ktt = float(st.session_state.get("lr_restack_ktt", 1300.0))
+    _lr_restack_terminal = float(st.session_state.get("lr_restack_terminal", 1500.0))
+    _lr_storage = float(st.session_state.get("lr_storage", 30.0))
+    _lr_delivery_rf = float(st.session_state.get("lr_delivery_rf", 0.0))
+
+    local_costs_rub_calc = (
+        _lr_ktt_out
+        + _lr_prr_mech
+        + _lr_prr_manual
+        + _lr_restack_ktt
+        + _lr_restack_cross
+        + _lr_restack_terminal
+        + _lr_storage
+        + _lr_delivery_rf
+    )
+
     local_costs_rub_input = st.number_input(
         "Локальные расходы в РФ всего , RUB",
         value=float(local_costs_rub_calc),
         disabled=True
     )
+
 
     # =========================
     # (Блок ввода) Вознаграждение экспедитора и технического импортера (для печатной формы)
@@ -656,42 +678,50 @@ with st.sidebar:
 
     lr_ktt_out = st.number_input(
         "Вывоз ктк из порта на СВХ в т.ч сдача в депо, RUB/1 ктк",
-        value=18000.0, step=18000.0
+        value=18000.0, step=18000.0,
+        key="lr_ktt_out",
     )
 
     lr_restack_cross = st.number_input(
         "Перетарка на СВХ кросс-докинг (из ктк в авто/склад), RUB/1 фура",
-        value=9000.0, step=9000.0
+        value=9000.0, step=9000.0,
+        key="lr_restack_cross",
     )
 
     lr_prr_mech = st.number_input(
         "ПРР механизированная (из ктк -склад- авто), RUB/паллет",
-        value=500.0, step=500.0
+        value=500.0, step=500.0,
+        key="lr_prr_mech",
     )
 
     lr_prr_manual = st.number_input(
         "ПРР ручная (из ктк авто/склад) за 1 тн без паллеты, RUB/тонна",
-        value=900.0, step=900.0
+        value=900.0, step=900.0,
+        key="lr_prr_manual",
     )
 
     lr_restack_ktt = st.number_input(
         "Паллетированние(вкл.поддон+стрейч+пплента), RUB/паллет",
-        value=1300.0, step=1300.0
+        value=1300.0, step=1300.0,
+        key="lr_restack_ktt",
     )
 
     lr_restack_terminal = st.number_input(
         "Перетарка на СВХ (с ктквоз снять/поставить), RUB/ктк лифт",
-        value=1500.0, step=1500.0
+        value=1500.0, step=1500.0,
+        key="lr_restack_terminal",
     )
 
     lr_storage = st.number_input(
         "Хранение на СВХ (начиная с 10 дня хран.), RUB/паллетодень",
-        value=30.0, step=30.0
+        value=30.0, step=30.0,
+        key="lr_storage",
     )
 
     lr_delivery_rf = st.number_input(
         "Доставка по РФ до склада клиента (авто 20 тонн), RUB/авто",
-        value=0.0, step=5000.0
+        value=0.0, step=5000.0,
+        key="lr_delivery_rf",
     )
 
     # --- Сумма локальных расходов РФ (детализация) ---
@@ -709,7 +739,7 @@ with st.sidebar:
     st.caption(f"Сумма детализации: {local_costs_rub_calc:,.0f} ₽".replace(",", " "))
 
     # --- Что используем в расчётах ---
-    local_costs_rub = local_costs_rub_calc  # автоматически из детализации
+    local_costs_rub = local_costs_rub_input  # автоматически из детализации
     local_rub = local_costs_rub  # совместимость с calc_model(..., local_rub, ...)
 
     st.caption(
