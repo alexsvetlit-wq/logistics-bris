@@ -631,15 +631,18 @@ with st.sidebar:
     # Логика:
     # 1) при первом запуске поле = сумма детализации
     # 2) при изменении полей детализации поле "Локальные расходы..." обновляется вместе с суммой детализации
-    if "local_costs_rub_input" not in st.session_state:
-        st.session_state["local_costs_rub_input"] = float(local_costs_rub_calc)
-
-    _prev_detail_sum = float(st.session_state.get("_prev_local_costs_detail_sum", float(local_costs_rub_calc)))
     _cur_detail_sum = float(local_costs_rub_calc)
 
-    if _cur_detail_sum != _prev_detail_sum:
-        st.session_state["local_costs_rub_input"] = _cur_detail_sum
+    if "_prev_local_costs_detail_sum" not in st.session_state:
+        # первый запуск
         st.session_state["_prev_local_costs_detail_sum"] = _cur_detail_sum
+        st.session_state["local_costs_rub_input"] = _cur_detail_sum
+    else:
+        _prev_detail_sum = float(st.session_state.get("_prev_local_costs_detail_sum", _cur_detail_sum))
+        # сравнение с округлением, чтобы не ловить "шум" float
+        if round(_cur_detail_sum, 6) != round(_prev_detail_sum, 6):
+            st.session_state["_prev_local_costs_detail_sum"] = _cur_detail_sum
+            st.session_state["local_costs_rub_input"] = _cur_detail_sum
 
     local_costs_rub_input = st.number_input(
         "Локальные расходы в РФ всего , RUB",
