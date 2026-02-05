@@ -1263,7 +1263,7 @@ if calc:
     if print_show_cost_all:
         cost_all_block_html = f"""
       <div class="box">
-        <h3>Себестоимость с учетом всех расходов</h3>
+        <h3>Себестоимость с учетом всех расходов и вознаграждений</h3>
         <table class="t totals">
           <tr>
             <td>Себестоимость, USD/{unit_sym}</td>
