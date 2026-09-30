@@ -1076,5 +1076,14 @@
     "status": "text_extracted_requires_validation",
     "error": false,
     "modified_at": "2026-09-25T09:18:30.939Z"
+  },
+  {
+    "id": "19J833kkqM9BZzSlWq7okchINgpBorSR0c7PQ7nnYvkU",
+    "title": "ОТГРУЗКИ ПЛИТКА (2) (11)",
+    "url": "https://docs.google.com/spreadsheets/d/19J833kkqM9BZzSlWq7okchINgpBorSR0c7PQ7nnYvkU/edit",
+    "path": "Google Drive / журнал фактических отгрузок",
+    "text_characters": 6953,
+    "status": "text_extracted_requires_validation",
+    "modified_at": "2026-09-24"
   }
 ]
