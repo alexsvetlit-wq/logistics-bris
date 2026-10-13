@@ -11,6 +11,10 @@ PARAMS = {"prefill": "1", "supplier": "LEEN SANITARY WARE", "invoice": "158200",
 
 class ShareTest(unittest.TestCase):
     def test_validation(self):
+        import datetime
+        self.assertEqual(SharedInputs({"prefill":"1", "date":"2026-09-30"}).date("date", datetime.date.today()), datetime.date(2026,9,30))
+        self.assertEqual(SharedInputs({"prefill":"1", "date":"wrong"}).date("date", datetime.date(2026,9,30)), datetime.date(2026,9,30))
+        self.assertEqual(SharedInputs({"prefill":"1", "usd_rub":"84.4283"}).number("usd_rub", 90), 84.4283)
         self.assertEqual(SharedInputs({"price": "200"}).number("price", 7.5), 7.5)
         for bad in ("nan", "inf", "-1", "1e999", "oops"):
             shared = SharedInputs({"prefill": "1", "price": bad})

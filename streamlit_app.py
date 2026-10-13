@@ -483,7 +483,7 @@ with st.sidebar:
     # Дата расчёта (по умолчанию — текущая системная)
     calc_date = st.date_input(
         "Дата расчёта",
-        value=datetime.date.today(),
+        value=shared.date("date", datetime.date.today()),
         key="calc_date"
     )
 
@@ -560,7 +560,7 @@ with st.sidebar:
 
     currency_rate = st.number_input(
         "Курс USD→RUB (ЦБ+2,5% конвертация)",
-        value=float(cbr_usd_rate) * 1.025 if cbr_usd_rate else 80.0,
+        value=shared.number("usd_rub", float(cbr_usd_rate) * 1.025 if cbr_usd_rate else 80.0, minimum=0.000001, maximum=10000),
         step=0.1,
         key="currency_rate",
     )

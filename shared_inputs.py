@@ -1,5 +1,6 @@
 """Validated optional widget defaults for a shareable calculation URL."""
 import math
+import datetime
 
 
 class SharedInputs:
@@ -34,3 +35,15 @@ class SharedInputs:
             self.errors.append(name)
             return default
         return options.index(value)
+
+    def date(self, name, default):
+        if name not in self.params:
+            return default
+        try:
+            value = datetime.date.fromisoformat(self.params[name])
+            if not datetime.date(2000, 1, 1) <= value <= datetime.date(2100, 12, 31):
+                raise ValueError("Date out of range")
+            return value
+        except (TypeError, ValueError):
+            self.errors.append(name)
+            return default
