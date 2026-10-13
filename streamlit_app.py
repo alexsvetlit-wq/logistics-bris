@@ -4,6 +4,9 @@ import json
 import os
 import datetime
 import requests
+from shared_inputs import SharedInputs
+
+shared = SharedInputs(st.query_params)
 # --- Fixed sidebar helper button (scroll sidebar to top) ---
 components.html(
     '''
@@ -474,7 +477,7 @@ with st.sidebar:
 
 
 
-    supplier = st.text_input("Фабрика / поставщик (как в инвойсе)")
+    supplier = st.text_input("Фабрика / поставщик (как в инвойсе)", value=shared.text("supplier"))
 
 
     # Дата расчёта (по умолчанию — текущая системная)
@@ -493,22 +496,23 @@ with st.sidebar:
         invoice_total = st.number_input(
             "Общая стоимость товара по инвойсу",
             min_value=0.0,
-            value=0.0,
+            value=shared.number("invoice", 0.0),
             step=100.0,
         )
     with inv_c2:
         invoice_currency = st.selectbox(
             "Валюта (инвойс)",
             ["USD", "CNY", "INR", "RUB", "EUR"],
-            index=0
+            index=shared.index("invoice_currency", ["USD", "CNY", "INR", "RUB", "EUR"])
         )
 
-    country = st.selectbox("Страна", ["Индия", "Китай"], index=0)
-    incoterms = st.selectbox("Инкотермс", ["EXW", "FOB", "CIF", "DAP"], index=1)
+    country = st.selectbox("Страна", ["Индия", "Китай"], index=shared.index("country", ["Индия", "Китай"]))
+    incoterms = st.selectbox("Инкотермс", ["EXW", "FOB", "CIF", "DAP"], index=shared.index("incoterms", ["EXW", "FOB", "CIF", "DAP"], 1))
 
     transport = st.selectbox(
         "Тип доставки",
         ["Море (20фут.контейнер)", "Море (40фут.контейнер)", "ЖД", "Авто"],
+        index=shared.index("transport", ["Море (20фут.контейнер)", "Море (40фут.контейнер)", "ЖД", "Авто"]),
     )
 
     # =========================
@@ -517,7 +521,7 @@ with st.sidebar:
     containers_qty = st.number_input(
         "Количество контейнеров",
         min_value=1,
-        value=1,
+        value=shared.number("containers", 1, minimum=1, maximum=10000, integer=True),
         step=1
     )
 
@@ -526,14 +530,16 @@ with st.sidebar:
 
     with c1:
         if country == "Индия":
-            port_loading = st.selectbox("Порт отгрузки", ["Mundra", "Nhava Sheva"])
+            loading_ports = ["Mundra", "Nhava Sheva"]
         else:
-            port_loading = st.selectbox("Порт отгрузки", ["Qingdao", "Shanghai", "Nansha", "Foshan"])
+            loading_ports = ["Qingdao", "Shanghai", "Nansha", "Foshan", "Shenzhen"]
+        port_loading = st.selectbox("Порт отгрузки", loading_ports, index=shared.index("loading", loading_ports))
 
     with c2:
         port_discharge = st.selectbox(
             "Порт выгрузки",
-            ["Новороссийск", "Санкт-Петербург", "Владивосток"]
+            ["Новороссийск", "Санкт-Петербург", "Владивосток"],
+            index=shared.index("discharge", ["Новороссийск", "Санкт-Петербург", "Владивосток"])
         )
 
     # --- Курсы валют ---
@@ -563,18 +569,18 @@ with st.sidebar:
 
     if country == "Китай":
         usd_cny = st.number_input("Курс ЦБ+2% конвертация USD→CNY (RMB)", value=7.20, step=0.01)
-        price_currency = st.selectbox("Валюта цены товара", ["CNY", "USD"], index=0)
+        price_currency = st.selectbox("Валюта цены товара", ["CNY", "USD"], index=shared.index("price_currency", ["CNY", "USD"]))
 
     elif country == "Индия":
         usd_inr = st.number_input("Курс ЦБ+2% конвертация USD→INR", value=83.0, step=0.1)
-        price_currency = st.selectbox("Валюта цены товара", ["USD", "INR"], index=0)
+        price_currency = st.selectbox("Валюта цены товара", ["USD", "INR"], index=shared.index("price_currency", ["USD", "INR"]))
 
     st.divider()
 
     # --- Товар ---
     st.subheader("Товар / партия")
 
-    product_type = st.selectbox("Тип товара", ["Керамогранит", "Сантехника (унитазы)"])
+    product_type = st.selectbox("Тип товара", ["Керамогранит", "Сантехника (унитазы)"], index=shared.index("product", ["Керамогранит", "Сантехника (унитазы)"]))
 
     if product_type == "Керамогранит":
         finish = st.selectbox("Поверхность", ["Глазурованный", "Неглазурованный"])
@@ -597,17 +603,17 @@ with st.sidebar:
     # =========================
     # ВСТАВКА: выбор ед. измерения (шт / м²) — БОЛЬШЕ НИЧЕГО НЕ МЕНЯЕМ
     # =========================
-    unit = st.selectbox("Ед. измерения", ["м²", "шт."], index=0)
+    unit = st.selectbox("Ед. измерения", ["м²", "шт."], index=shared.index("unit", ["м²", "шт."]))
     unit_sym = "м²" if str(unit).strip() in ["м²", "м2", "m2", "m²"] else "шт."
 
     if unit == "м²":
-        qty_m2 = st.number_input("Кол-во, м²", value=1200.0, step=10.0)
+        qty_m2 = st.number_input("Кол-во, м²", value=shared.number("quantity", 1200.0, minimum=0.001), step=10.0)
         price_label = f"Цена товара, {price_currency}/м²"
-        price_per_m2 = st.number_input(price_label, value=7.500, step=0.001, format="%.3f")
+        price_per_m2 = st.number_input(price_label, value=shared.number("price", 7.500), step=0.001, format="%.3f")
     else:
-        qty_m2 = st.number_input("Кол-во, шт.", value=1000.0, step=10.0)
+        qty_m2 = st.number_input("Кол-во, шт.", value=shared.number("quantity", 1000.0, minimum=1), step=10.0)
         price_label = f"Цена товара, {price_currency}/шт."
-        price_per_m2 = st.number_input(price_label, value=7.500, step=0.001, format="%.3f")
+        price_per_m2 = st.number_input(price_label, value=shared.number("price", 7.500), step=0.001, format="%.3f")
 
     st.divider()
 
@@ -835,6 +841,10 @@ with st.sidebar:
     )
 
     calc_bottom = st.button("Рассчитать", type="primary", key="calc_bottom")
+    if shared.params:
+        st.info("Товарные параметры загружены из ссылки. Курсы, код ТН ВЭД, налоги и логистические ставки требуют отдельного подтверждения; это не готовое КП. Цена и количество доступны каждому, кому вы передадите ссылку.")
+    if shared.errors:
+        st.warning("Некорректные параметры ссылки не применены: " + ", ".join(dict.fromkeys(shared.errors)))
 
     # Триггер расчёта (верхняя или нижняя кнопка)
     calc = bool(calc_top or calc_bottom)
