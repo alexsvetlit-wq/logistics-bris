@@ -342,6 +342,8 @@ def infer_hs_and_duty(product_type: str, finish: str):
 # (НОВОЕ) Ставка 2026 (фикс) по диапазонам таможенной стоимости (RUB)
 # =========================
 def vat_fee_2026_rub(customs_value_rub: float) -> float:
+    # Compare the customs value rounded to kopecks, not a floating-point residue.
+    customs_value_rub = round(customs_value_rub, 2)
     if customs_value_rub <= 200_000:
         return 1_231.0
     if customs_value_rub <= 450_000:
@@ -353,9 +355,7 @@ def vat_fee_2026_rub(customs_value_rub: float) -> float:
     if customs_value_rub <= 4_200_000:
         return 18_465.0
     if customs_value_rub <= 5_500_000:
-        return 24_620.0
-    if customs_value_rub <= 7_000_000:
-        return 49_240.0
+        return 21_344.0
     if customs_value_rub <= 10_000_000:
         return 49_240.0
     return 73_860.0
